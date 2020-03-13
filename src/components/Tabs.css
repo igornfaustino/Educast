@@ -1,0 +1,16 @@
+.btn-tab{
+  border-radius: 0px !important;
+  background-color: #333333 !important;
+  margin: 3px;
+}
+
+.btn.active{
+  background-color: #0099ff !important;
+  border-color: #0099ff !important;
+  box-shadow: none !important;
+}
+
+.icon-btn-tab{
+  margin: 5px;
+  margin-right: 10px;
+}
