@@ -1,0 +1,266 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+html {
+  box-sizing: border-box;
+  /* font-size: 62.5%; 1rem = 10px, 10px/16px = 62.5% */
+}
+
+/*  GENERAL STYLE */
+
+.test-header {
+  display: flex;
+  width: 86%;
+  height: 50px;
+  margin-left: 5%;
+
+  background-color: rgb(53, 52, 52);
+  color: white;
+
+  overflow-y: hidden;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.timeline__timeIndicator {
+  background-color: rgb(53, 52, 52);
+  color: white;
+  width: 90%;
+  overflow-y: hidden;
+  overflow-x: hidden;
+  white-space: nowrap;
+  transform: rotateX(180deg);
+}
+
+.timeIndicator--blackbox {
+  width: 10%;
+  min-width: 10%;
+  background-color: rgb(53, 52, 52);
+}
+
+.timeIndicator__container {
+  transform: rotateX(180deg);
+}
+
+.test-timeline {
+  display: flex;
+  width: 86%;
+  height: 60px;
+  margin-left: 5%;
+  margin-top: 3px;
+
+  color: white;
+}
+
+.btnContainer {
+  background-color: rgb(53, 52, 52);
+  color: white;
+
+  height: 100%;
+  width: 10%;
+
+  /* to align text and icon*/
+  display: flex;
+  justify-content: space-around;
+}
+
+.btnContainer__button {
+  fill: rgb(0, 174, 255);
+  height: 1.2rem;
+  width: 1.2rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btnContainer__button:hover {
+  transform: scale(1.5);
+}
+
+.btnContainer__left {
+  display: flex;
+  justify-content: space-around;
+  align-self: center;
+}
+
+.btnContainer__right {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+.btnContainer__text {
+  margin-left: 1rem;
+}
+
+.btnContainer__text---smallMargin {
+  margin-left: 0.5rem;
+}
+
+.btnContainer__icon {
+  height: 1.5rem;
+  width: 1.5rem;
+}
+
+.timeline__video {
+  background-color: rgba(228, 226, 226, 0.788);
+  width: 90%;
+  height: 100%;
+  width: 90%;
+  position: relative;
+  padding: 0;
+
+  overflow-y: hidden;
+  overflow-x: hidden;
+}
+
+.timeline__chapter {
+  width: 90%;
+  background-color: rgba(228, 226, 226, 0.788);
+}
+
+.timer-vertical-whitebar {
+  position: absolute;
+  height: 7px;
+  width: 2px;
+  bottom: 0;
+  background-color: white;
+}
+
+.big {
+  height: 15px;
+  width: 3px;
+}
+
+.trecoAzul {
+  position: absolute;
+  background-color: #2196f3;
+  z-index: 200;
+  top: -15px;
+  height: 8.6rem;
+  width: 2px;
+}
+
+.trecoAzul:hover {
+  cursor: pointer;
+}
+
+.scene-limiter {
+  height: 3.9rem;
+  width: 5px;
+  background-color: #2196f3;
+}
+
+.scene-content {
+  background-color: rgba(60, 183, 231, 0.719);
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  position: absolute;
+}
+
+.test-scrollbar {
+  display: flex;
+  /* flex-wrap: wrap; */
+  width: 86%;
+  height: 30px;
+  margin-left: 5%;
+  margin-top: 3px;
+
+  color: white;
+
+  /* overflow-y: hidden;
+      overflow-x: auto;
+      white-space: nowrap; */
+}
+
+.scrollbar__container {
+  display: flex;
+  flex-wrap: wrap;
+  width: 70%;
+}
+
+.timeline__scrollbar {
+  width: 100%;
+  min-width: 100%;
+  background-color: rgb(53, 52, 52);
+  color: white;
+  position: relative;
+
+  overflow-y: hidden;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.timeline__scrollbar::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(80, 80, 80, 0.3);
+  -webkit-box-shadow: inset 0 0 6px rgba(80, 80, 80, 0.3);
+  /* border-radius: 10px; */
+  background-color: #666666;
+}
+
+.timeline__scrollbar::-webkit-scrollbar {
+  width: 1000px;
+  background-color: #ebebeb;
+}
+
+.timeline__scrollbar::-webkit-scrollbar-thumb {
+  box-shadow: inset 0 0 6px rgba(80, 80, 80, 0.3);
+  -webkit-box-shadow: inset 0 0 6px rgba(66, 62, 62, 0.3);
+  background-color: #d1cfcf;
+}
+
+.scrollbar__blackbox {
+  width: 100%;
+  min-width: 100%;
+  background-color: rgb(53, 52, 52);
+}
+
+.zoom__bar {
+  display: flex; /* establish flex container */
+  /* flex-direction: column;  */
+  justify-content: space-around; /* center items vertically, in this case */
+
+  align-items: center; /* center items horizontally, in this case */
+  background-color: rgb(53, 52, 52);
+  color: white;
+  width: 20%;
+}
+
+.slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 8px;
+  border-radius: 5px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: 0.2s;
+  transition: opacity 0.2s;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: rgb(0, 174, 255);
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: rgb(0, 174, 255);
+  cursor: pointer;
+}
