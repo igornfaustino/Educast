@@ -1,0 +1,47 @@
+@import '../variables.scss';
+
+.header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 8px 16px;
+  background-color: $dark-gray;
+}
+
+.header--branding {
+  color: $primary-color;
+  align-items: baseline;
+  white-space: nowrap;
+  font-size: 1.125rem;
+  font-style: normal;
+  font-weight: bold;
+  line-height: 24px;
+}
+
+.icon {
+  color: $primary-color;
+  margin-left: 16px;
+  margin-right: 8px;
+}
+
+.header--text {
+  color: $text-light;
+  font-size: 1rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.header--left-side {
+  display: flex;
+  flex-direction: row;
+  max-width: 70%;
+  align-items: center;
+}
+
+.header--right-side {
+  display: flex;
+  flex-direction: row;
+  max-width: 30%;
+  align-items: center;
+}
