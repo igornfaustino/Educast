@@ -1,91 +1,38 @@
-.video-div {
-	background-color: gray;
-	width: 100%;
+.App {
+  text-align: center;
 }
 
-.app {
-	background-color: #333333;
-	display: flex;
-	flex-flow: column;
-	height: 100vh;
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
 }
 
-.full {
-	height: 100%;
-	width: 100%;
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
 }
 
-.app-buttons {
-	margin: 3px !important;
-	color: white !important;
-	border-radius: 0px !important;
-	font-size: 0.875rem !important;
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
 }
 
-.icon-btn {
-	margin: 5px;
-	margin-right: 10px;
-	@media (max-width: 615px) {
-		margin: 0px;
-		margin-right: 0px;
-	}
+.App-link {
+  color: #61dafb;
 }
 
-.stepper-buttons-container {
-	height: 20%;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-}
-
-.stepper-container {
-	display: flex;
-	justify-content: center;
-	font-size: 1.125rem;
-}
-
-.app-buttons-container {
-	display: flex;
-	align-self: flex-end;
-	position: absolute;
-	@media (max-width: 400px) {
-		margin-left: 10px !important;
-	}
-}
-
-.edition-div {
-	background-color: #f1f1f1;
-	height: 100%;
-	padding: 10px;
-	flex: 1 1 auto;
-}
-
-.edition-div-container {
-	height: 80%;
-}
-
-.app-home-buttons {
-	@media (max-width: 615px) {
-		font-size: 1.5rem !important;
-		svg {
-			width: 1.6875rem !important;
-			height: 1.6875rem !important;
-		}
-	}
-
-	@media (max-width: 500px) {
-		font-size: 0.9rem !important;
-		svg {
-			width: 1rem !important;
-			height: 1rem !important;
-		}
-	}
-
-	@media (max-width: 400px) {
-		font-size: 0.5rem !important;
-		svg {
-			width: 0.7rem !important;
-			height: 0.7rem !important;
-		}
-	}
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
