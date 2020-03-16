@@ -1,10 +1,19 @@
 form {
+<<<<<<< HEAD
   margin: 20px;
 }
 .container {
   float: left;
   width: 40%;
   margin-right: 50px;
+=======
+  margin: 15px;
+}
+.container {
+  float: left;
+  width: 45%;
+  margin-right: 40px;
+>>>>>>> Adicionado componente de metadata
 }
 @media (max-width: 1200px) {
   .container {
@@ -22,6 +31,7 @@ label {
   width: 100%;
 }
 
+<<<<<<< HEAD
 h4 {
   font-style: normal;
   font-weight: normal;
@@ -67,3 +77,25 @@ input {
 //   background-color: #ddd;
 //   transition: 0.3s;
 // }
+=======
+input,
+textarea {
+  padding: 2px 5px;
+  border: 2px solid #eee;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+  background-color: #eee;
+  outline: none;
+  width: 100%;
+}
+
+textarea {
+    height: 100px;
+}
+
+input[type="text"]:focus,
+textarea:focus {
+  border: 2px solid #ddd;
+  background-color: #ddd;
+}
+>>>>>>> Adicionado componente de metadata
