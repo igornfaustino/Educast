@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './App.css';
+import './App.scss';
 import Tabs from './components/Tabs';
 import { BrowserRouter } from 'react-router-dom';
 import { Container, Button } from 'reactstrap';
