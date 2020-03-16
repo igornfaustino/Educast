@@ -1,0 +1,44 @@
+form {
+  margin: 15px;
+}
+.container {
+  float: left;
+  width: 45%;
+  margin-right: 40px;
+}
+@media (max-width: 1200px) {
+  .container {
+    float: left;
+    width: 100%;
+    margin-right: 15px;
+  }
+}
+
+.group {
+  clear: both;
+}
+
+label {
+  width: 100%;
+}
+
+input,
+textarea {
+  padding: 2px 5px;
+  border: 2px solid #eee;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+  background-color: #eee;
+  outline: none;
+  width: 100%;
+}
+
+textarea {
+    height: 100px;
+}
+
+input[type="text"]:focus,
+textarea:focus {
+  border: 2px solid #ddd;
+  background-color: #ddd;
+}
