@@ -1,13 +1,12 @@
 import React from 'react';
 import './App.css';
-import RouteContentArea from './components/ContentArea';
+import Tabs from './components/Tabs';
 import { BrowserRouter } from 'react-router-dom';
 
 function App() {
   return (
     <BrowserRouter>
-      <div>Teste de parte fixa</div>
-      <RouteContentArea />
+      <Tabs/>
     </BrowserRouter>
   );
 }
