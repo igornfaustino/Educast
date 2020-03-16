@@ -1,0 +1,36 @@
+form {
+    margin: 15px;
+}
+
+.container {
+    float: left;
+}
+
+.container-left {
+    float: left;
+    background-color: red;
+}
+
+.container-right {
+    float: left;
+    width: 50%;
+}
+
+label {
+    width: 100%;
+}
+
+input[type=text] {
+    padding: 2px 5px;
+    border: 2px solid #EEE;
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+    background-color: #EEE;
+    outline: none;
+    width: 50%;
+}
+
+input[type=text]:focus {
+    border: 2px solid #DDD;
+    background-color: #DDD;
+}
