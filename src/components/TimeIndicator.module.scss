@@ -1,0 +1,49 @@
+.test-header {
+  display: flex;
+  width: 86%;
+  height: 50px;
+  margin-left: 5%;
+  margin-top: 100px;
+
+  background-color: rgb(53, 52, 52);
+  color: white;
+
+  overflow-y: hidden;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.timeIndicator--blackbox {
+  width: 10%;
+  min-width: 10%;
+  background-color: rgb(53, 52, 52);
+}
+
+.timeline__timeIndicator {
+  background-color: rgb(53, 52, 52);
+  color: white;
+  width: 90%;
+  overflow-y: hidden;
+  overflow-x: hidden;
+  white-space: nowrap;
+  transform: rotateX(180deg);
+}
+
+.timeIndicator__container {
+  transform: rotateX(180deg);
+
+  display: flex;
+}
+
+.timer-vertical-whitebar {
+  position: absolute;
+  height: 7px;
+  width: 2px;
+  bottom: 0;
+  background-color: white;
+}
+
+.timer-vertical-whitebar--big {
+  height: 15px;
+  width: 3px;
+}

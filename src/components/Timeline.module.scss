@@ -1,0 +1,102 @@
+.timeline {
+  display: flex;
+  width: 86%;
+  height: 60px;
+  margin-left: 5%;
+  margin-top: 3px;
+
+  color: white;
+}
+
+.btnContainer {
+  background-color: rgb(53, 52, 52);
+  color: white;
+
+  height: 100%;
+  width: 10%;
+
+  /* to align text and icon*/
+  display: flex;
+  justify-content: space-around;
+}
+
+.btnContainer__button {
+  fill: rgb(0, 174, 255);
+  height: 1.2rem;
+  width: 1.2rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btnContainer__button:hover {
+  transform: scale(1.5);
+}
+
+.btnContainer__left {
+  display: flex;
+  justify-content: space-around;
+  align-self: center;
+}
+
+.btnContainer__right {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+.btnContainer__text {
+  margin-left: 1rem;
+}
+
+.btnContainer__text--smallMargin {
+  margin-left: 0.5rem;
+}
+
+.timeline__video {
+  background-color: rgba(228, 226, 226, 0.788);
+  height: 100%;
+  width: 90%;
+  position: relative;
+
+  overflow-y: hidden;
+  overflow-x: hidden;
+}
+
+.timeline__chapter {
+  width: 90%;
+  height: 100%;
+  z-index: -10;
+  background-color: rgba(228, 226, 226, 0.788);
+}
+
+.blueStick {
+  position: absolute;
+  background-color: #2196f3;
+  z-index: 200;
+  top: -15px;
+  height: 8.7rem;
+  width: 2px;
+  overflow-y: visible;
+  /* padding-bottom: 30px;
+      margin-bottom: -30px; */
+}
+
+.blueStick:hover {
+  cursor: pointer;
+}
+
+.scene-limiter {
+  height: 3.9rem;
+  width: 5px;
+  background-color: #2196f3;
+}
+
+.wrapper {
+  background-color: rgba(228, 226, 226, 0.788);
+  height: 100%;
+  width: 90%;
+  position: relative;
+
+  overflow-y: hidden;
+  overflow-x: hidden;
+}
