@@ -136,11 +136,11 @@ const Timeline = ({
     [arrayOfDeltaPositions]
   );
   return (
-    <div className="timeline__wrapper">
-      <div className="buttonsWrapper">
+    <div className={styles["timeline__wrapper"]}>
+      <div className={styles["buttonsWrapper"]}>
         <div className={styles["btnContainer"]} ref={videoBoxRef}>
           <div className={styles["btnContainer__left"]}>
-            <GiFilmStrip className="btnContainer__icon" />
+            <GiFilmStrip className={styles["btnContainer__icon"]} />
             <span className={styles["btnContainer__text"]}>Vídeo</span>
           </div>
 
@@ -155,7 +155,7 @@ const Timeline = ({
 
         <div className={styles["btnContainer"]}>
           <div className={styles["btnContainer__left"]}>
-            <GiStack className="btnContainer__icon" />
+            <GiStack className={styles["btnContainer__icon"]} />
             <span className={styles["btnContainer__text--smallMargin"]}>
               Capítulos
             </span>
@@ -170,40 +170,31 @@ const Timeline = ({
           </div>
         </div>
       </div>
-      <div className={styles["timeline"]}>
-        <div className={styles["wrapper"]}>
-          <div
-            style={{
-              height: "100%",
-              width: timerDivWidth + "px",
-              backgroundColor: "transparent"
-            }}
-            className="timeline__video-invisible"
-          >
-            <div className={styles["timeline__video"]} ref={videoTimelineRef}>
-              <Draggable
-                axis="x"
-                handle=".handle"
-                onDrag={handleDrag}
-                bounds=".timeline__video-invisible"
-                grid={[10, 0]}
-              >
-                <div className={cx("handle", styles["blueStick"])}></div>
-              </Draggable>
-              {scenes}
-            </div>
 
-            <div
-              className={styles["timeline__chapter"]}
-              ref={chapterTimelineRef}
-              style={{
-                position: "relative"
-                // overflowY: "hidden",
-                // overflowX: "hidden",
-                // whiteSpace: "nowrap"
-              }}
-            ></div>
+      <div className={styles["timeline"]}>
+        <div
+          style={{
+            width: timerDivWidth + "px"
+          }}
+          className={styles["timeline__video-invisible"]}
+        >
+          <Draggable
+            axis="x"
+            handle=".handle"
+            onDrag={handleDrag}
+            bounds=".timeline__video-invisible"
+            grid={[10, 0]}
+          >
+            <div className={cx("handle", styles["blueStick"])}></div>
+          </Draggable>
+          <div className={styles["timeline__video"]} ref={videoTimelineRef}>
+            {scenes}
           </div>
+
+          <div
+            className={styles["timeline__chapter"]}
+            ref={chapterTimelineRef}
+          ></div>
         </div>
       </div>
     </div>
