@@ -1,7 +1,5 @@
 .btn-tab {
-	border-radius: 0px !important;
-	background-color: #333333 !important;
-	margin: 3px;
+  background-color: #333333 !important;
 }
 
 .btn.active {
@@ -10,16 +8,30 @@
 	box-shadow: none !important;
 }
 
-.icon-btn-tab {
-	margin: 5px;
-	margin-right: 10px;
-}
 
 .stepper-inner-box {
 	display: inline-block;
 }
 
 .stepper-outer-box {
-	width: '100%';
-	text-align: center;
+  text-align: center;
+}
+
+
+.container-tabs-content {
+  background-color: white;
+  height: 100%;
+  width: 100% !important;
+  margin: 3px !important;
+  margin-top: 0 !important;
+}
+
+.container-buttons-tab { 
+  display: flex;
+  width: 70%;
+}
+
+.tabs {
+  display: flex;
+  flex-direction: column;
 }

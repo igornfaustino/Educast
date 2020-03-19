@@ -52,16 +52,16 @@ function Tabs(props) {
 	]);
 
 	const updateActiveButton = useCallback(
-		(path) => {
+		path => {
 			let _path = path;
-			let index = buttons.findIndex((b) => b.path === _path);
+			let index = buttons.findIndex(b => b.path === _path);
 			if (index === -1) {
 				index = 0;
 				_path = '/'; // update unexpected path for one that is expected
 			}
 			setStep(index);
 			setButtons(
-				buttons.map((b) =>
+				buttons.map(b =>
 					b.path === _path ? { ...b, active: true } : { ...b, active: false }
 				)
 			);
@@ -75,10 +75,10 @@ function Tabs(props) {
 	}, []); // must not put the dependencies here to avoid infinite loop
 
 	const onButtonClick = useCallback(
-		(element) => {
+		element => {
 			const index =
 				typeof element == 'object'
-					? buttons.findIndex((e) => e.title === element.title)
+					? buttons.findIndex(e => e.title === element.title)
 					: element;
 			const path = buttons[index].path;
 			history.push(buttons[index].path);
@@ -89,12 +89,12 @@ function Tabs(props) {
 
 	const renderTabButtons = useMemo(
 		() =>
-			buttons.map((element) => {
+			buttons.map(element => {
 				return (
 					<ButtonToggle
 						key={element.title}
 						active={element.active}
-						className="btn-tab"
+						className="btn-tab app-buttons"
 						onClick={() => onButtonClick(element)}
 					>
 						{element.icon}
@@ -106,14 +106,14 @@ function Tabs(props) {
 	);
 
 	return (
-		<div className="container">
-			<ButtonGroup>{renderTabButtons}</ButtonGroup>
-			<RouteContentArea />
-			<div className="stepper-outer-box">
-				<div className="stepper-inner-box">
-					<StepperComponent step={step} onButtonClick={onButtonClick} />
-				</div>
-			</div>
+		<div className="full tabs">
+			<ButtonGroup className="container-buttons-tab">
+				{renderTabButtons}
+			</ButtonGroup>
+			<ButtonGroup></ButtonGroup>
+			<Container fluid className="container-tabs-content">
+				<RouteContentArea />
+			</Container>
 		</div>
 	);
 }
