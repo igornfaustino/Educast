@@ -10,7 +10,6 @@ const TimeIndicator = ({ videoLength, timelineIndicatorRef }) => {
 
   const generateVerticalWhiteBarsAndTimers = videoLength => {
     let arrayOfWhiteBarsAndTimers = [];
-    console.log("oi");
 
     for (let i = 0; i <= videoLength; i = i + 1) {
       // check if i is multiple of 10
@@ -74,16 +73,11 @@ const TimeIndicator = ({ videoLength, timelineIndicatorRef }) => {
     return React.Children.toArray(arrayOfWhiteBarsAndTimers);
   };
   return (
-    <div className={styles["test-header"]}>
-      <div className={styles["timeIndicator--blackbox"]}> </div>
-      <div
-        className={styles["timeline__timeIndicator"]}
-        ref={timelineIndicatorRef}
-      >
-        <div className={styles["timeIndicator__container"]}>
-          {generateVerticalWhiteBarsAndTimers(videoLength)}
-        </div>
-      </div>
+    <div
+      className={styles["timeIndicator__container"]}
+      // style={{ width: videoLength * 10 + "px" }}
+    >
+      {generateVerticalWhiteBarsAndTimers(videoLength)}
     </div>
   );
 };

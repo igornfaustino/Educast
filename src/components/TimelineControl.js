@@ -14,17 +14,17 @@ const TimelineControl = ({
   timerDivWidth
 }) => {
   const handleScroll = () => {
-    const tmp = timelineIndicatorRef;
+    // const tmp = timelineIndicatorRef;
     const tmp2 = videoTimelineRef;
-    const tmp3 = chapterTimelineRef;
+    // const tmp3 = chapterTimelineRef;
 
-    tmp.current.scrollLeft = mainScrollbarRef.current.scrollLeft;
+    // tmp.current.scrollLeft = mainScrollbarRef.current.scrollLeft;
     tmp2.current.scrollLeft = mainScrollbarRef.current.scrollLeft;
-    tmp3.current.scrollLeft = mainScrollbarRef.current.scrollLeft;
+    // tmp3.current.scrollLeft = mainScrollbarRef.current.scrollLeft;
 
-    setTimelineIndicatorRef(tmp);
+    // setTimelineIndicatorRef(tmp);
     setVideoTimelineRef(tmp2);
-    setChapterTimelineRef(tmp3);
+    // setChapterTimelineRef(tmp3);
   };
 
   return (

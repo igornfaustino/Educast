@@ -1,16 +1,14 @@
 .test-header {
-  display: flex;
-  width: 86%;
-  height: 40px;
-  margin-left: 5%;
-  margin-top: 10px;
+  // display: flex;
+  width: 100%;
+  height: 20%;
 
   background-color: rgb(53, 52, 52);
   color: white;
 
-  overflow-y: hidden;
-  overflow-x: auto;
-  white-space: nowrap;
+  // overflow-y: hidden;
+  // overflow-x: hidden;
+  // white-space: nowrap;
 }
 
 .timeIndicator--blackbox {
@@ -19,20 +17,15 @@
   background-color: rgb(53, 52, 52);
 }
 
-.timeline__timeIndicator {
-  background-color: rgb(53, 52, 52);
-  color: white;
-  width: 90%;
-  overflow-y: hidden;
-  overflow-x: hidden;
-  white-space: nowrap;
-  transform: rotateX(180deg);
-}
-
 .timeIndicator__container {
-  transform: rotateX(180deg);
+  height: 20%;
+  background-color: rgb(53, 52, 52);
+  top: 0;
+  color: white;
+  // height: 100%;
+  position: relative;
 
-  display: flex;
+  // display: flex;
 }
 
 .timer-vertical-whitebar {
