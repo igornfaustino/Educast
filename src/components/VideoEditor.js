@@ -54,10 +54,10 @@ const VideoEditor = () => {
     <div>
       <h1 style={{ marginTop: "0px" }}>x: {deltaPosition.x}</h1>
 
-      <TimeIndicator
+      {/* <TimeIndicator
         videoLength={videoLength}
         timelineIndicatorRef={timelineIndicatorRef}
-      />
+      /> */}
       <Timeline
         videoBoxRef={videoBoxRef}
         timerDivWidth={timerDivWidth}
@@ -67,6 +67,8 @@ const VideoEditor = () => {
         setArrayOfDeltaPositions={setArrayOfDeltaPositions}
         setDeltaPosition={setDeltaPosition}
         videoTimelineRef={videoTimelineRef}
+        timelineIndicatorRef={timelineIndicatorRef}
+        videoLength={videoLength}
       />
       <TimelineControl
         chapterTimelineRef={chapterTimelineRef}

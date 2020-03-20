@@ -1,10 +1,16 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useReducer } from "react";
 import { GiFilmStrip, GiStack } from "react-icons/gi";
 import { FaPlusSquare, FaMinusSquare } from "react-icons/fa";
 import Draggable from "react-draggable";
+import TimeIndicator from "./TimeIndicator";
 
 import cx from "classnames";
 import styles from "./Timeline.module.scss";
+
+const newHandleDrag = (state, action) => {
+  console.log(state.x);
+  return { x: state.x + action.desloc };
+};
 
 const Timeline = ({
   videoBoxRef,
@@ -14,16 +20,44 @@ const Timeline = ({
   setArrayOfDeltaPositions,
   deltaPosition,
   setDeltaPosition,
-  arrayOfDeltaPositions
+  arrayOfDeltaPositions,
+  videoLength,
+  timelineIndicatorRef
 }) => {
+  const [test, setTest] = useState({ x: 0, y: 0 });
+  const [alo, dispatch] = useReducer(newHandleDrag, { x: 0, y: 0 });
+  const [test2, setTest2] = useState({ x: 20, y: 0 });
+
+  const testDrag = (e, ui) => {
+    // let tmp = { ...test };
+    // if (tmp.x >= 100) {
+    //   console.log(tmp.x);
+    //   console.log("sou maior");
+    //   tmp.x = 90;
+    // } else {
+    //   tmp.x += ui.deltaX;
+    //   console.log(tmp);
+    // }
+    // setTest({ ...tmp });
+    // setTest(prevState => {
+    //   return { ...prevState };
+    // });
+    dispatch({ desloc: ui.deltaX });
+  };
+
+  useEffect(() => {
+    console.log(test);
+  }, [test]);
+
   const createScene = () => {
     // create two objects to hold stick's position
     setArrayOfDeltaPositions(prevState => {
       let tmp = [...prevState];
       tmp.push([
-        { x: 0, y: 0 },
-        { x: 0, y: 0 }
+        { x: deltaPosition.x, y: 0 },
+        { x: deltaPosition.x + 20, y: 0 }
       ]);
+
       return [...tmp];
     });
   };
@@ -37,16 +71,35 @@ const Timeline = ({
     });
   };
 
-  const dynamicHandleDrag = (e, ui, tupleIdx, sceneIdx) => {
-    console.log("calling dynamic handle drag");
-    // console.log(arrayOfDeltaPositions);
-    // console.log(idx);
+  // useEffect(() => {
+  //   console.log(arrayOfDeltaPositions);
+  //   console.log(scenes);
+  // }, [arrayOfDeltaPositions]);
 
+  const dynamicHandleDrag = (e, ui, tupleIdx, sceneIdx) => {
+    // change the stick's position
     if (arrayOfDeltaPositions.length > 0) {
       setArrayOfDeltaPositions(prevState => {
         let tmpArrayDeltaPosition = [...prevState];
         const tuple = tmpArrayDeltaPosition[sceneIdx];
-        console.log(tuple);
+        // console.log(tuple);
+
+        if (
+          tmpArrayDeltaPosition.some((val, idx) => {
+            if (idx !== sceneIdx) {
+              return (
+                tuple[tupleIdx].x + ui.deltaX >= val[0].x &&
+                tuple[tupleIdx].x + ui.deltaX <= val[1].x
+              );
+            }
+            return false;
+          })
+        ) {
+          // console.log([...tmpArrayDeltaPosition]);
+          // alert("conflito");
+          return [...tmpArrayDeltaPosition];
+        }
+
         tmpArrayDeltaPosition[sceneIdx][tupleIdx] = {
           x: tuple[tupleIdx].x + ui.deltaX,
           y: tuple[tupleIdx].y + ui.deltaY
@@ -58,7 +111,7 @@ const Timeline = ({
 
   const scenes = useMemo(
     () =>
-      arrayOfDeltaPositions.map((scene, idx) => {
+      arrayOfDeltaPositions.map((position, idx) => {
         const idxInicio = 0;
         const idxFim = 1;
 
@@ -69,9 +122,11 @@ const Timeline = ({
             bounds=".timeline__video-invisible"
             grid={[10, 0]}
             defaultPosition={{ x: deltaPosition.x, y: 0 }}
-            onDrag={(e, ui) => {
-              dynamicHandleDrag(e, ui, idxInicio, idx);
-            }}
+            position={alo}
+            onDrag={testDrag}
+            // onDrag={(e, ui) => {
+            //   dynamicHandleDrag(e, ui, idxInicio, idx);
+            // }}
           >
             <div
               className={cx("handle", styles["scene-limiter"])}
@@ -79,7 +134,8 @@ const Timeline = ({
                 position: "absolute",
                 color: "blue",
                 width: "7px",
-                top: "0"
+                top: "0",
+                zIndex: 300
               }}
             ></div>
           </Draggable>
@@ -91,7 +147,8 @@ const Timeline = ({
             handle=".handle"
             bounds=".timeline__video-invisible"
             grid={[10, 0]}
-            defaultPosition={{ x: deltaPosition.x + 20, y: 0 }}
+            // defaultPosition={{ x: deltaPosition.x + 20, y: 0 }}
+            position={position[idxFim]}
             onDrag={(e, ui) => {
               dynamicHandleDrag(e, ui, idxFim, idx);
             }}
@@ -113,15 +170,15 @@ const Timeline = ({
             className={styles["scene-content"]}
             style={{
               top: "0",
-              marginLeft: deltaPosition.x + "px",
-              width: arrayOfDeltaPositions[idx]
-                ? arrayOfDeltaPositions[idx].x -
-                  arrayOfDeltaPositions[idx].x +
-                  "px"
-                : "20px"
+              marginLeft: arrayOfDeltaPositions[idx][0].x + 7 + "px", // 7 is the scene-limiter width
+              width:
+                arrayOfDeltaPositions[idx][1].x -
+                arrayOfDeltaPositions[idx][0].x +
+                // + 20 coz of the second scene's default position
+                "px"
             }}
           >
-            Cena 1
+            Cena {idx + 1}
           </div>
         );
 
@@ -138,6 +195,8 @@ const Timeline = ({
   return (
     <div className={styles["timeline__wrapper"]}>
       <div className={styles["buttonsWrapper"]}>
+        <div className={styles["blackbox"]} />
+
         <div className={styles["btnContainer"]} ref={videoBoxRef}>
           <div className={styles["btnContainer__left"]}>
             <GiFilmStrip className={styles["btnContainer__icon"]} />
@@ -153,7 +212,7 @@ const Timeline = ({
           </div>
         </div>
 
-        <div className={styles["btnContainer"]}>
+        <div className={styles["btnContainer"]} style={{}}>
           <div className={styles["btnContainer__left"]}>
             <GiStack className={styles["btnContainer__icon"]} />
             <span className={styles["btnContainer__text--smallMargin"]}>
@@ -171,31 +230,33 @@ const Timeline = ({
         </div>
       </div>
 
-      <div className={styles["timeline"]}>
+      <div className={styles["timeline"]} ref={videoTimelineRef}>
         <div
           style={{
-            width: timerDivWidth + "px"
+            width: timerDivWidth + 34 + "px"
           }}
           className={styles["timeline__video-invisible"]}
         >
-          <Draggable
-            axis="x"
-            handle=".handle"
-            onDrag={handleDrag}
-            bounds=".timeline__video-invisible"
-            grid={[10, 0]}
-          >
-            <div className={cx("handle", styles["blueStick"])}></div>
-          </Draggable>
-          <div className={styles["timeline__video"]} ref={videoTimelineRef}>
-            {scenes}
-          </div>
+          <TimeIndicator
+            timelineIndicatorRef={timelineIndicatorRef}
+            videoLength={videoLength}
+          />
+          <div className={styles["timeline__video"]}>{scenes}</div>
 
           <div
             className={styles["timeline__chapter"]}
             ref={chapterTimelineRef}
           ></div>
         </div>
+        <Draggable
+          axis="x"
+          handle=".handle"
+          onDrag={handleDrag}
+          bounds=".timeline__video-invisible"
+          grid={[10, 0]}
+        >
+          <div className={cx("handle", styles["blueStick"])}></div>
+        </Draggable>
       </div>
     </div>
   );
