@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useMemo, useReducer } from "react";
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  useReducer,
+  useCallback
+} from "react";
 import { GiFilmStrip, GiStack } from "react-icons/gi";
 import { FaPlusSquare, FaMinusSquare } from "react-icons/fa";
 import Draggable from "react-draggable";
@@ -7,59 +13,50 @@ import TimeIndicator from "./TimeIndicator";
 import cx from "classnames";
 import styles from "./Timeline.module.scss";
 
-const newHandleDrag = (state, action) => {
-  console.log(state.x);
-  return { x: state.x + action.desloc };
-};
-
 const Timeline = ({
   videoBoxRef,
   timerDivWidth,
   chapterTimelineRef,
   videoTimelineRef,
-  setArrayOfDeltaPositions,
   deltaPosition,
   setDeltaPosition,
-  arrayOfDeltaPositions,
   videoLength,
-  timelineIndicatorRef
+  timelineIndicatorRef,
+  scenes,
+  dispatchScene,
+  chapters,
+  dispatchChapter
 }) => {
-  const [test, setTest] = useState({ x: 0, y: 0 });
-  const [alo, dispatch] = useReducer(newHandleDrag, { x: 0, y: 0 });
-  const [test2, setTest2] = useState({ x: 20, y: 0 });
+  const [selectedScenes, setSelectedScenes] = useState([]);
+  const [selectedChapters, setSelectedChapters] = useState([]);
 
-  const testDrag = (e, ui) => {
-    // let tmp = { ...test };
-    // if (tmp.x >= 100) {
-    //   console.log(tmp.x);
-    //   console.log("sou maior");
-    //   tmp.x = 90;
-    // } else {
-    //   tmp.x += ui.deltaX;
-    //   console.log(tmp);
-    // }
-    // setTest({ ...tmp });
-    // setTest(prevState => {
-    //   return { ...prevState };
-    // });
-    dispatch({ desloc: ui.deltaX });
+  const deleteScene = () => {
+    dispatchScene({ type: "delete", deleteIdx: selectedScenes });
+    setSelectedScenes([]);
   };
 
-  useEffect(() => {
-    console.log(test);
-  }, [test]);
+  const deleteChapter = () => {
+    dispatchChapter({ type: "delete", deleteIdx: selectedChapters });
+    setSelectedChapters([]);
+  };
 
   const createScene = () => {
     // create two objects to hold stick's position
-    setArrayOfDeltaPositions(prevState => {
-      let tmp = [...prevState];
-      tmp.push([
-        { x: deltaPosition.x, y: 0 },
-        { x: deltaPosition.x + 20, y: 0 }
-      ]);
+    const scene = {
+      start: { x: deltaPosition.x, y: 0 },
+      end: { x: deltaPosition.x + 20, y: 0 }
+    };
 
-      return [...tmp];
-    });
+    dispatchScene({ sceneIdx: -1, scene });
+  };
+
+  const createChapter = () => {
+    const chapter = {
+      start: { x: deltaPosition.x, y: 0 },
+      end: { x: deltaPosition.x + 20, y: 0 }
+    };
+
+    dispatchChapter({ type: "create", chapter });
   };
 
   const handleDrag = (e, ui) => {
@@ -71,72 +68,31 @@ const Timeline = ({
     });
   };
 
-  // useEffect(() => {
-  //   console.log(arrayOfDeltaPositions);
-  //   console.log(scenes);
-  // }, [arrayOfDeltaPositions]);
-
-  const dynamicHandleDrag = (e, ui, tupleIdx, sceneIdx) => {
-    // change the stick's position
-    if (arrayOfDeltaPositions.length > 0) {
-      setArrayOfDeltaPositions(prevState => {
-        let tmpArrayDeltaPosition = [...prevState];
-        const tuple = tmpArrayDeltaPosition[sceneIdx];
-        // console.log(tuple);
-
-        if (
-          tmpArrayDeltaPosition.some((val, idx) => {
-            if (idx !== sceneIdx) {
-              return (
-                tuple[tupleIdx].x + ui.deltaX >= val[0].x &&
-                tuple[tupleIdx].x + ui.deltaX <= val[1].x
-              );
-            }
-            return false;
-          })
-        ) {
-          // console.log([...tmpArrayDeltaPosition]);
-          // alert("conflito");
-          return [...tmpArrayDeltaPosition];
-        }
-
-        tmpArrayDeltaPosition[sceneIdx][tupleIdx] = {
-          x: tuple[tupleIdx].x + ui.deltaX,
-          y: tuple[tupleIdx].y + ui.deltaY
-        };
-        return [...tmpArrayDeltaPosition];
-      });
-    }
-  };
-
-  const scenes = useMemo(
+  const renderScene = useMemo(
     () =>
-      arrayOfDeltaPositions.map((position, idx) => {
-        const idxInicio = 0;
-        const idxFim = 1;
-
+      scenes.map((scene, idx) => {
         const sceneStartBar = (
           <Draggable
             axis="x"
             handle=".handle"
             bounds=".timeline__video-invisible"
             grid={[10, 0]}
-            defaultPosition={{ x: deltaPosition.x, y: 0 }}
-            position={alo}
-            onDrag={testDrag}
-            // onDrag={(e, ui) => {
-            //   dynamicHandleDrag(e, ui, idxInicio, idx);
-            // }}
+            position={scenes[idx].start}
+            onDrag={(e, ui) => {
+              // ve qual pauzinho tu tá usando
+              const scene = {
+                start: { x: ui.x, y: 0 },
+                end: scenes[idx].end
+              };
+              dispatchScene({ sceneIdx: idx, scene });
+            }}
           >
             <div
-              className={cx("handle", styles["scene-limiter"])}
-              style={{
-                position: "absolute",
-                color: "blue",
-                width: "7px",
-                top: "0",
-                zIndex: 300
-              }}
+              className={cx(
+                "handle",
+                styles["scene-limiter"],
+                styles["scene-limiter---start"]
+              )}
             ></div>
           </Draggable>
         );
@@ -147,20 +103,22 @@ const Timeline = ({
             handle=".handle"
             bounds=".timeline__video-invisible"
             grid={[10, 0]}
-            // defaultPosition={{ x: deltaPosition.x + 20, y: 0 }}
-            position={position[idxFim]}
+            position={scenes[idx].end}
             onDrag={(e, ui) => {
-              dynamicHandleDrag(e, ui, idxFim, idx);
+              // ve qual pauzinho tu tá usando
+              const scene = {
+                start: scenes[idx].start,
+                end: { x: ui.x, y: 0 }
+              };
+              dispatchScene({ sceneIdx: idx, scene });
             }}
           >
             <div
-              className={cx("handle", styles["scene-limiter"])}
-              style={{
-                position: "absolute",
-                color: "blue",
-                width: "7px",
-                top: "0"
-              }}
+              className={cx(
+                "handle",
+                styles["scene-limiter"],
+                styles["scene-limiter---end"]
+              )}
             ></div>
           </Draggable>
         );
@@ -169,13 +127,26 @@ const Timeline = ({
           <div
             className={styles["scene-content"]}
             style={{
-              top: "0",
-              marginLeft: arrayOfDeltaPositions[idx][0].x + 7 + "px", // 7 is the scene-limiter width
+              marginLeft: scenes[idx].start.x + 4 + "px", // 7 is the scene-limiter width
               width:
-                arrayOfDeltaPositions[idx][1].x -
-                arrayOfDeltaPositions[idx][0].x +
-                // + 20 coz of the second scene's default position
-                "px"
+                scenes[idx].end.x -
+                scenes[idx].start.x +
+                // + 20 bcos of the second scene's default position
+                "px",
+              backgroundColor: selectedScenes.includes(idx)
+                ? "#80b9e7"
+                : "#cfcdcd"
+            }}
+            onClick={() => {
+              setSelectedScenes(prevState => {
+                const tmpSelectedScenes = [...prevState];
+                if (tmpSelectedScenes.indexOf(idx) !== -1) {
+                  tmpSelectedScenes.splice(tmpSelectedScenes.indexOf(idx), 1);
+                } else {
+                  tmpSelectedScenes.push(idx);
+                }
+                return [...tmpSelectedScenes];
+              });
             }}
           >
             Cena {idx + 1}
@@ -190,8 +161,101 @@ const Timeline = ({
           </>
         );
       }),
-    [arrayOfDeltaPositions]
+    [scenes, dispatchScene, selectedScenes]
   );
+
+  const renderChapter = useMemo(
+    () =>
+      chapters.map((chapter, idx) => {
+        const chapterStartBar = (
+          <Draggable
+            axis="x"
+            handle=".handle"
+            bounds=".timeline__video-invisible"
+            grid={[10, 0]}
+            position={chapters[idx].start}
+            onDrag={(e, ui) => {
+              const chapter = {
+                start: { x: ui.x, y: 0 },
+                end: chapters[idx].end
+              };
+              dispatchChapter({ chapterIdx: idx, chapter });
+            }}
+          >
+            <div className={cx("handle", styles["chapter-limiter"])}></div>
+          </Draggable>
+        );
+
+        const chapterEndBar = (
+          <Draggable
+            axis="x"
+            handle=".handle"
+            bounds=".timeline__video-invisible"
+            grid={[10, 0]}
+            position={chapters[idx].end}
+            onDrag={(e, ui) => {
+              const chapter = {
+                start: chapters[idx].start,
+                end: { x: ui.x, y: 0 }
+              };
+              dispatchChapter({ chapterIdx: idx, chapter });
+            }}
+          >
+            <div
+              className={cx("handle", styles["chapter-limiter"])}
+              // style={{
+              //   borderTopColor: selectedChapters.includes(idx)
+              //     ? "#80b9e7"
+              //     : "gray"
+              // }}
+            ></div>
+          </Draggable>
+        );
+
+        const chapterContent = (
+          <div
+            className={styles["scene-content"]}
+            style={{
+              marginLeft: chapters[idx].start.x + 4 + "px", // 7 is the scene-limiter width
+              width:
+                chapters[idx].end.x -
+                chapters[idx].start.x +
+                // + 20 bcos of the second scene's default position
+                "px",
+              backgroundColor: selectedChapters.includes(idx)
+                ? "#80b9e7"
+                : "#cfcdcd"
+            }}
+            onClick={() => {
+              setSelectedChapters(prevState => {
+                const tmpSelectedChapters = [...prevState];
+                if (tmpSelectedChapters.indexOf(idx) !== -1) {
+                  tmpSelectedChapters.splice(
+                    tmpSelectedChapters.indexOf(idx),
+                    1
+                  );
+                } else {
+                  tmpSelectedChapters.push(idx);
+                }
+                return [...tmpSelectedChapters];
+              });
+            }}
+          >
+            {/* Chapter {idx + 1} */}
+          </div>
+        );
+
+        return (
+          <>
+            {chapterStartBar}
+            {chapterContent}
+            {chapterEndBar}
+          </>
+        );
+      }),
+    [chapters, dispatchChapter, selectedChapters]
+  );
+
   return (
     <div className={styles["timeline__wrapper"]}>
       <div className={styles["buttonsWrapper"]}>
@@ -208,7 +272,10 @@ const Timeline = ({
               className={styles["btnContainer__button"]}
               onClick={createScene}
             />
-            <FaMinusSquare className={styles["btnContainer__button"]} />
+            <FaMinusSquare
+              className={styles["btnContainer__button"]}
+              onClick={deleteScene}
+            />
           </div>
         </div>
 
@@ -223,9 +290,12 @@ const Timeline = ({
           <div className={styles["btnContainer__right"]}>
             <FaPlusSquare
               className={styles["btnContainer__button"]}
-              onClick={createScene}
+              onClick={createChapter}
             />
-            <FaMinusSquare className={styles["btnContainer__button"]} />
+            <FaMinusSquare
+              className={styles["btnContainer__button"]}
+              onClick={deleteChapter}
+            />
           </div>
         </div>
       </div>
@@ -241,13 +311,24 @@ const Timeline = ({
             timelineIndicatorRef={timelineIndicatorRef}
             videoLength={videoLength}
           />
-          <div className={styles["timeline__video"]}>{scenes}</div>
 
           <div
-            className={styles["timeline__chapter"]}
+            className={cx(
+              styles["timeline__video"],
+              styles["timeline__content"]
+            )}
+          >
+            {renderScene}
+          </div>
+
+          <div
+            className={cx(styles["timeline__content"])}
             ref={chapterTimelineRef}
-          ></div>
+          >
+            {renderChapter}
+          </div>
         </div>
+
         <Draggable
           axis="x"
           handle=".handle"
@@ -255,7 +336,7 @@ const Timeline = ({
           bounds=".timeline__video-invisible"
           grid={[10, 0]}
         >
-          <div className={cx("handle", styles["blueStick"])}></div>
+          <div className={cx("handle", styles["stick"])}></div>
         </Draggable>
       </div>
     </div>

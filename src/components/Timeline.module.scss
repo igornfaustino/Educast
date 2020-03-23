@@ -1,11 +1,17 @@
 $primary-color: rgba(228, 226, 226, 0.788);
+$scene-limiter-width: 4px;
+$scene-limiter-triangle-width: 9px;
+$scene-limiter-color: #2196f3;
+$scene-pseudo-margin-distance: 3px;
+$scene-pseudo-top-distance: 35%;
+$chapter-limiter-size: 0.35rem;
 
 .timeline__wrapper {
   display: flex;
   flex-wrap: nowrap;
   width: 86%;
   margin-left: 5%;
-  height: 180px;
+  height: 200px;
   margin-top: 3px;
 }
 
@@ -15,7 +21,6 @@ $primary-color: rgba(228, 226, 226, 0.788);
   min-width: 15%;
   height: 100%;
   flex-wrap: wrap;
-  // flex-direction: column;
 }
 
 .timeline {
@@ -36,7 +41,7 @@ $primary-color: rgba(228, 226, 226, 0.788);
   background-color: rgb(53, 52, 52);
   color: white;
 
-  height: 38%;
+  height: 36%;
   width: 100%;
 
   /* to align text and icon*/
@@ -46,9 +51,8 @@ $primary-color: rgba(228, 226, 226, 0.788);
 
 .blackbox {
   width: 100%;
-  height: 20%;
+  height: 25%;
   background-color: rgb(53, 52, 52);
-  // margin-bottom: 3px;
 }
 
 .btnContainer__button {
@@ -89,55 +93,145 @@ $primary-color: rgba(228, 226, 226, 0.788);
 }
 
 .timeline__video {
-  background-color: $primary-color;
-  height: 38%;
-  width: 100%;
   margin-top: 3px;
   margin-bottom: 2px;
-  position: relative;
-
-  // overflow-y: hidden;
-  // overflow-x: hidden;
 }
 
-.timeline__chapter {
-  width: 100%;
-  height: 38%;
-  z-index: -10;
+.timeline__content {
   background-color: $primary-color;
   position: relative;
-
-  // overflow-y: hidden;
-  // overflow-x: hidden;
+  width: 100%;
+  height: 36%;
 }
 
-.blueStick {
+.stick {
   position: absolute;
   background-color: #2196f3;
   z-index: 200;
-  top: -15px;
-  height: 12rem;
+  top: 2.5rem;
+  height: 9.9rem;
   width: 2px;
   overflow-y: visible;
-  /* padding-bottom: 30px;
-      margin-bottom: -30px; */
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    right: -9.01px;
+    top: -8.5px;
+    border-top: 10px solid rgba(33, 150, 243, 0.5);
+    border-bottom: 10px solid transparent;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    right: -30px;
+    top: -38.3px;
+    z-index: -20;
+    border-top: 15px solid rgba(33, 150, 243, 0.5);
+    border-bottom: 15px solid rgba(33, 150, 243, 0.5);
+    border-left: 30px solid rgba(33, 150, 243, 0.5);
+    border-right: 30px solid rgba(33, 150, 243, 0.5);
+  }
 }
 
-.blueStick:hover {
-  cursor: pointer;
+// CHAPTER STYLES
+
+.chapter-limiter {
+  height: 10%;
+  width: $scene-limiter-width;
+  // background-color: $scene-limiter-color;
+  position: absolute;
+  top: 0.99rem;
+  z-index: 300;
+  left: -2px;
+  // cursor: col-resize;
+
+  border-top: $chapter-limiter-size solid gray;
+  border-bottom: $chapter-limiter-size solid transparent;
+  border-left: $chapter-limiter-size solid transparent;
+  border-right: $chapter-limiter-size solid transparent;
 }
+
+.chapter-limiter::before {
+  content: "";
+  position: absolute;
+  top: -1.45rem;
+  right: -$chapter-limiter-size;
+
+  border-top: 0.55rem solid gray;
+  border-bottom: 0.55rem solid gray;
+  border-left: $chapter-limiter-size solid gray;
+  border-right: $chapter-limiter-size solid gray;
+}
+.chapter-limiter::after {
+  content: "";
+  position: absolute;
+  top: -0.5375rem;
+  left: -0.0725rem;
+  background-color: white;
+  height: 0.1875rem;
+  width: 0.1875rem;
+  border-radius: 50%;
+}
+
+// SCENE STYLES
 
 .scene-limiter {
-  // height: 3.9rem;
   height: 100%;
-  width: 5px;
-  background-color: #2196f3;
+  width: $scene-limiter-width;
+  background-color: $scene-limiter-color;
+  position: absolute;
+  top: 0;
+  z-index: 300;
+}
+
+.scene-limiter---start::before {
+  content: "";
+  position: absolute;
+
+  right: $scene-pseudo-margin-distance;
+  top: $scene-pseudo-top-distance;
+  border-top: $scene-limiter-triangle-width solid transparent;
+  border-bottom: $scene-limiter-triangle-width solid transparent;
+  border-left: $scene-limiter-triangle-width solid transparent;
+  border-right: $scene-limiter-triangle-width solid $scene-limiter-color;
+}
+
+.scene-limiter---end::after {
+  content: "";
+  position: absolute;
+
+  left: $scene-pseudo-margin-distance;
+  top: $scene-pseudo-top-distance;
+  border-top: $scene-limiter-triangle-width solid transparent;
+  border-bottom: $scene-limiter-triangle-width solid transparent;
+  border-left: $scene-limiter-triangle-width solid $scene-limiter-color;
+  border-right: $scene-limiter-triangle-width solid transparent;
 }
 
 .scene-content {
-  background-color: #80b9e7;
-  position: absolute;
-  text-align: center;
-  height: 100%;
   display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  height: 100%;
+  position: absolute;
+  // background-color: #80b9e7;
+  background-color: #cfcdcd;
+
+  &:hover {
+    cursor: pointer;
+  }
 }

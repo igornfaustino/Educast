@@ -1,31 +1,10 @@
-.test-header {
-  // display: flex;
-  width: 100%;
-  height: 20%;
-
-  background-color: rgb(53, 52, 52);
-  color: white;
-
-  // overflow-y: hidden;
-  // overflow-x: hidden;
-  // white-space: nowrap;
-}
-
-.timeIndicator--blackbox {
-  width: 15%;
-  min-width: 15%;
-  background-color: rgb(53, 52, 52);
-}
-
 .timeIndicator__container {
-  height: 20%;
+  height: 25%;
   background-color: rgb(53, 52, 52);
   top: 0;
   color: white;
-  // height: 100%;
   position: relative;
-
-  // display: flex;
+  font-size: 0.8rem;
 }
 
 .timer-vertical-whitebar {

@@ -52,7 +52,7 @@ const TimelineControl = ({
 
       <div className={styles["zoom__bar"]}>
         <MdZoomOut className={styles["btnContainer__icon"]} />
-        <div>
+        <div className={styles["slider-box"]}>
           <input
             type="range"
             min="1"
