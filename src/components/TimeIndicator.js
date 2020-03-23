@@ -13,19 +13,18 @@ const TimeIndicator = ({ videoLength, timelineIndicatorRef }) => {
 
     for (let i = 0; i <= videoLength; i = i + 1) {
       // check if i is multiple of 10
-      if (i % 10 === 0) {
+      if (i !== 0 && i % 10 === 0) {
         // create the timer
         var hours = Math.floor(i / 3600);
         var minutes = Math.floor(i / 60);
         var seconds = i - minutes * 60;
-        // seconds = i - hours * 3600;
 
         arrayOfWhiteBarsAndTimers.push(
           <span
             style={{
-              bottom: 15,
+              bottom: 20,
               position: "absolute",
-              marginLeft: i * 10 - 27 + "px",
+              marginLeft: i * 10 - 21 + "px",
               zIndex: 50
             }}
           >{`${str_pad_left(hours, "0", 2)}:${str_pad_left(
@@ -51,7 +50,10 @@ const TimeIndicator = ({ videoLength, timelineIndicatorRef }) => {
         if (i === 0) {
           arrayOfWhiteBarsAndTimers.push(
             <div
-              className={styles["timer-vertical-whitebar"]}
+              className={cx(
+                styles["timer-vertical-whitebar--big"],
+                styles["timer-vertical-whitebar"]
+              )}
               style={{
                 marginLeft: 0 + "px"
               }}
