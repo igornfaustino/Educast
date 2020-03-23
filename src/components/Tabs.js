@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import StepperComponent from './Stepper';
 import { ButtonToggle, ButtonGroup } from 'reactstrap';
 import './Tabs.css';
@@ -51,38 +51,63 @@ function Tabs(props) {
 		},
 	]);
 
-	const onButtonClick = element => {
-		const index =
-			typeof element == 'object'
-				? buttons.findIndex(e => e.title === element.title)
-				: element;
-		const title = buttons[index].title;
-		setStep(index);
-		history.push(buttons[index].path);
-		setButtons(
-			buttons.map(b =>
-				b.title === title ? { ...b, active: true } : { ...b, active: false }
-			)
-		);
-	};
+	const updateActiveButton = useCallback(
+		(path) => {
+			let _path = path;
+			let index = buttons.findIndex((b) => b.path === _path);
+			if (index === -1) {
+				index = 0;
+				_path = '/'; // update unexpected path for one that is expected
+			}
+			setStep(index);
+			setButtons(
+				buttons.map((b) =>
+					b.path === _path ? { ...b, active: true } : { ...b, active: false }
+				)
+			);
+		},
+		[buttons]
+	);
+
+	useEffect(() => {
+		const path = window.location.pathname;
+		updateActiveButton(path);
+	}, []); // must not put the dependencies here to avoid infinite loop
+
+	const onButtonClick = useCallback(
+		(element) => {
+			const index =
+				typeof element == 'object'
+					? buttons.findIndex((e) => e.title === element.title)
+					: element;
+			const path = buttons[index].path;
+			history.push(buttons[index].path);
+			updateActiveButton(path);
+		},
+		[buttons, history, updateActiveButton]
+	);
+
+	const renderTabButtons = useMemo(
+		() =>
+			buttons.map((element) => {
+				return (
+					<ButtonToggle
+						key={element.title}
+						active={element.active}
+						className="btn-tab"
+						onClick={() => onButtonClick(element)}
+					>
+						{element.icon}
+						<span>{element.title}</span>
+					</ButtonToggle>
+				);
+			}),
+		[buttons, onButtonClick]
+	);
 
 	return (
 		<div className="container">
-			<ButtonGroup>
-				{buttons.map(element => {
-					return (
-						<ButtonToggle
-							key={element.title}
-							active={element.active}
-							className="btn-tab"
-							onClick={() => onButtonClick(element)}
-						>
-							{element.icon}
-							<span>{element.title}</span>
-						</ButtonToggle>
-					);
-				})}
-			</ButtonGroup>
+			<ButtonGroup>{renderTabButtons}</ButtonGroup>
 			<RouteContentArea />
 			<div className="stepper-outer-box">
 				<div className="stepper-inner-box">
