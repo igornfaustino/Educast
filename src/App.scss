@@ -1,6 +1,6 @@
 .video-div {
   background-color: gray;
-  height: 50%;
+  height: 50vh;
   width: 100%;
 }
 
@@ -20,11 +20,16 @@
   margin: 3px !important;
   color: white !important;
   border-radius: 0px !important;
+  font-size: 0.875rem !important;
 }
 
 .icon-btn {
   margin: 5px;
   margin-right: 10px;
+  @media (max-width: 615px){
+    margin: 0px;
+    margin-right: 0px;
+  }
 }
 
 .stepper-buttons-container {
@@ -37,6 +42,7 @@
 .stepper-container {
   display: flex;
   justify-content: center;
+  font-size: 1.125rem;
 }
 
 .app-buttons-container {
@@ -52,4 +58,14 @@
 
 .edition-div-container {
   height: 80%;
+}
+
+.app-home-buttons{
+  @media (max-width: 615px){
+    font-size: 1.5rem !important;
+    svg {
+      width: 1.6875rem !important;
+      height: 1.6875rem !important;
+    }
+  }
 }

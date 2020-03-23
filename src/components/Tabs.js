@@ -1,55 +1,53 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import StepperComponent from './Stepper';
-import { ButtonToggle, ButtonGroup } from 'reactstrap';
-import './Tabs.css';
-import { FaTags, FaBuffer, FaImage } from 'react-icons/fa';
-import { FiScissors } from 'react-icons/fi';
-import { IoIosFolderOpen } from 'react-icons/io';
-import { MdChat } from 'react-icons/md';
-import RouteContentArea from './ContentArea';
-import { useHistory } from 'react-router-dom';
+import React, { useState, useEffect, useCallback, useMemo } from "react";
+import { ButtonToggle, ButtonGroup, Container } from "reactstrap";
+import "./Tabs.scss";
+import { FaTags, FaBuffer, FaImage } from "react-icons/fa";
+import { FiScissors } from "react-icons/fi";
+import { IoIosFolderOpen } from "react-icons/io";
+import { MdChat } from "react-icons/md";
+import RouteContentArea from "./ContentArea";
+import { useHistory } from "react-router-dom";
 
-function Tabs(props) {
-	let [step, setStep] = useState(0);
-	let history = useHistory();
-	const [buttons, setButtons] = useState([
-		{
-			title: 'Metadados',
-			icon: <FaTags className="icon-btn-tab" size={20} />,
-			active: true,
-			path: '/',
-		},
-		{
-			title: 'Edição',
-			icon: <FiScissors className="icon-btn-tab" size={20} />,
-			active: false,
-			path: '/editor',
-		},
-		{
-			title: 'Capítulos',
-			icon: <FaBuffer className="icon-btn-tab" size={20} />,
-			active: false,
-			path: '/chapters',
-		},
-		{
-			title: 'Documentos',
-			icon: <IoIosFolderOpen className="icon-btn-tab" size={20} />,
-			active: false,
-			path: '/documents',
-		},
-		{
-			title: 'Branding',
-			icon: <FaImage className="icon-btn-tab" size={20} />,
-			active: false,
-			path: '/branding',
-		},
-		{
-			title: 'Legendas',
-			icon: <MdChat className="icon-btn-tab" size={20} />,
-			active: false,
-			path: '/subtitles',
-		},
-	]);
+function Tabs({ step, setStep }) {
+  let history = useHistory();
+  const [buttons, setButtons] = useState([
+    {
+      title: "Metadados",
+      icon: <FaTags className="icon-btn" size='1rem' />,
+      active: true,
+      path: "/"
+    },
+    {
+      title: "Edição",
+      icon: <FiScissors className="icon-btn" size='1rem' />,
+      active: false,
+      path: "/editor"
+    },
+    {
+      title: "Capítulos",
+      icon: <FaBuffer className="icon-btn" size='1rem' />,
+      active: false,
+      path: "/chapters"
+    },
+    {
+      title: "Documentos",
+      icon: <IoIosFolderOpen className="icon-btn" size='1rem' />,
+      active: false,
+      path: "/documents"
+    },
+    {
+      title: "Branding",
+      icon: <FaImage className="icon-btn" size='1rem' />,
+      active: false,
+      path: "/branding"
+    },
+    {
+      title: "Legendas",
+      icon: <MdChat className="icon-btn" size='1rem' />,
+      active: false,
+      path: "/subtitles"
+    }
+  ]);
 
 	const updateActiveButton = useCallback(
 		path => {
@@ -66,7 +64,7 @@ function Tabs(props) {
 				)
 			);
 		},
-		[buttons]
+		[buttons, setStep]
 	);
 
 	useEffect(() => {

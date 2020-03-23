@@ -26,12 +26,12 @@ function App() {
               <StepperComponent step={step} />
             </div>
             <div className='app-buttons-container'>
-              <Button color='warning' className='app-buttons'>
-                <FaSave size={20} className='icon-btn'/>
+              <Button color='warning' className='app-buttons app-home-buttons'>
+                <FaSave size='1rem' className='icon-btn'/>
                 Salvar
               </Button>
-              <Button color='primary' className='app-buttons'>
-                <FaShare size={20} className='icon-btn'/>
+              <Button color='primary' className='app-buttons  app-home-buttons'>
+                <FaShare size='1rem' className='icon-btn'/>
                 Publicar
               </Button>
             </div>
