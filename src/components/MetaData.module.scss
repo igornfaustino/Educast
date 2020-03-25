@@ -1,10 +1,10 @@
 form {
-  margin: 15px;
+  margin: 20px;
 }
 .container {
   float: left;
-  width: 45%;
-  margin-right: 40px;
+  width: 40%;
+  margin-right: 50px;
 }
 @media (max-width: 1200px) {
   .container {
@@ -22,23 +22,37 @@ label {
   width: 100%;
 }
 
-input,
-textarea {
-  padding: 2px 5px;
+input {
+  padding: 5px 5px;
   border: 2px solid #eee;
-  -webkit-transition: 0.5s;
-  transition: 0.5s;
   background-color: #eee;
   outline: none;
   width: 100%;
 }
 
-textarea {
-    height: 100px;
+.textarea-comment {
+  padding: 5px 5px;
+  border: 2px solid #eee;
+  background: #ececec;
+  outline: none;
+  width: 100%;
+  resize: none;
+  height: 100px;
+}
+
+.textarea-tag {
+  padding: 5px 5px;
+  border: 2px solid #eee;
+  background: #ececec;
+  outline: none;
+  width: 100%;
+  resize: none;
+  overflow: hidden;
 }
 
 input[type="text"]:focus,
 textarea:focus {
   border: 2px solid #ddd;
   background-color: #ddd;
+  transition: 0.3s;
 }
