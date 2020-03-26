@@ -49,6 +49,9 @@
   display: flex;
   align-self: flex-end;
   position: absolute;
+  @media (max-width: 400px){
+    margin-left: 10px !important;
+  }
 }
 
 .edition-div {
@@ -66,6 +69,22 @@
     svg {
       width: 1.6875rem !important;
       height: 1.6875rem !important;
+    }
+  }
+
+  @media (max-width: 500px){
+    font-size: 0.9rem !important;
+    svg {
+      width: 1rem !important;
+      height: 1rem !important;
+    }
+  }
+
+  @media (max-width: 400px){
+    font-size: 0.5rem !important;
+    svg {
+      width: 0.7rem !important;
+      height: 0.7rem !important;
     }
   }
 }
