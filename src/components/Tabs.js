@@ -1,65 +1,65 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
-import { ButtonToggle, ButtonGroup, Container } from "reactstrap";
-import "./Tabs.scss";
-import { FaTags, FaBuffer, FaImage } from "react-icons/fa";
-import { FiScissors } from "react-icons/fi";
-import { IoIosFolderOpen } from "react-icons/io";
-import { MdChat } from "react-icons/md";
-import RouteContentArea from "./ContentArea";
-import { useHistory } from "react-router-dom";
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { ButtonToggle, ButtonGroup, Container } from 'reactstrap';
+import './Tabs.scss';
+import { FaTags, FaBuffer, FaImage } from 'react-icons/fa';
+import { FiScissors } from 'react-icons/fi';
+import { IoIosFolderOpen } from 'react-icons/io';
+import { MdChat } from 'react-icons/md';
+import RouteContentArea from './ContentArea';
+import { useHistory } from 'react-router-dom';
 
 function Tabs({ step, setStep }) {
-  let history = useHistory();
-  const [buttons, setButtons] = useState([
-    {
-      title: "Metadados",
-      icon: <FaTags className="icon-btn" size='1rem' />,
-      active: true,
-      path: "/"
-    },
-    {
-      title: "Edição",
-      icon: <FiScissors className="icon-btn" size='1rem' />,
-      active: false,
-      path: "/editor"
-    },
-    {
-      title: "Capítulos",
-      icon: <FaBuffer className="icon-btn" size='1rem' />,
-      active: false,
-      path: "/chapters"
-    },
-    {
-      title: "Documentos",
-      icon: <IoIosFolderOpen className="icon-btn" size='1rem' />,
-      active: false,
-      path: "/documents"
-    },
-    {
-      title: "Branding",
-      icon: <FaImage className="icon-btn" size='1rem' />,
-      active: false,
-      path: "/branding"
-    },
-    {
-      title: "Legendas",
-      icon: <MdChat className="icon-btn" size='1rem' />,
-      active: false,
-      path: "/subtitles"
-    }
-  ]);
+	let history = useHistory();
+	const [buttons, setButtons] = useState([
+		{
+			title: 'Metadados',
+			icon: <FaTags className="icon-btn" size="1rem" />,
+			active: true,
+			path: '/',
+		},
+		{
+			title: 'Edição',
+			icon: <FiScissors className="icon-btn" size="1rem" />,
+			active: false,
+			path: '/editor',
+		},
+		{
+			title: 'Capítulos',
+			icon: <FaBuffer className="icon-btn" size="1rem" />,
+			active: false,
+			path: '/chapters',
+		},
+		{
+			title: 'Documentos',
+			icon: <IoIosFolderOpen className="icon-btn" size="1rem" />,
+			active: false,
+			path: '/documents',
+		},
+		{
+			title: 'Branding',
+			icon: <FaImage className="icon-btn" size="1rem" />,
+			active: false,
+			path: '/branding',
+		},
+		{
+			title: 'Legendas',
+			icon: <MdChat className="icon-btn" size="1rem" />,
+			active: false,
+			path: '/subtitles',
+		},
+	]);
 
 	const updateActiveButton = useCallback(
-		path => {
+		(path) => {
 			let _path = path;
-			let index = buttons.findIndex(b => b.path === _path);
+			let index = buttons.findIndex((b) => b.path === _path);
 			if (index === -1) {
 				index = 0;
 				_path = '/'; // update unexpected path for one that is expected
 			}
 			setStep(index);
 			setButtons(
-				buttons.map(b =>
+				buttons.map((b) =>
 					b.path === _path ? { ...b, active: true } : { ...b, active: false }
 				)
 			);
@@ -73,10 +73,10 @@ function Tabs({ step, setStep }) {
 	}, []); // must not put the dependencies here to avoid infinite loop
 
 	const onButtonClick = useCallback(
-		element => {
+		(element) => {
 			const index =
 				typeof element == 'object'
-					? buttons.findIndex(e => e.title === element.title)
+					? buttons.findIndex((e) => e.title === element.title)
 					: element;
 			const path = buttons[index].path;
 			history.push(buttons[index].path);
@@ -87,7 +87,7 @@ function Tabs({ step, setStep }) {
 
 	const renderTabButtons = useMemo(
 		() =>
-			buttons.map(element => {
+			buttons.map((element) => {
 				return (
 					<ButtonToggle
 						key={element.title}
