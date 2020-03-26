@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from 'react'
-
 import Swal from 'sweetalert2'
-// import withReactContent from 'sweetalert2-react-content'
 import CustomSlider from './CustomSlider'
 import ImageUpload from './ImageUpload'
-
-// import './S.css'
 
 const Chapters = () => {
   const [chapters, setChapters] = useState([])
@@ -62,15 +58,20 @@ const Chapters = () => {
     }))
   }
 
-  const handleTitleChange = (event) => {
-    // how should i do this
+  const updateTitleFunction = (id, newTitle) => {
+    setChapters(chapters.filter(chapter => {
+      if (chapter.id === id) {
+        chapter.thumbnail = newTitle
+      }
+      console.log('title changed', newTitle)
+      return chapter
+    }))
   }
 
-  const deleteChapter = (id) => {
+  const deleteChapterFunction = (id) => {
     const chapter = chapters.find(chapter => chapter.id === id)
     Swal.fire({
       text: 'Excluir Capítulo: ' + chapter.title + '?',
-      // text: "You won't be able to revert this!",
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -81,16 +82,16 @@ const Chapters = () => {
         setChapters(chapters.filter(chapter => {
           return chapter.id !== id
         }))
-        Swal.fire(
-          'Capítulo Excluído!'
-        )
       }
     })
   }
 
   return (
-    <div className="sliderr">
-      <CustomSlider name='slider' cards={chapters} deleteFunction={deleteChapter}></CustomSlider>
+    <div>
+      <CustomSlider chapters={chapters}
+                    deleteChapterFunction={deleteChapterFunction}
+                    updateTitleFunction={updateTitleFunction} 
+      />
       <ImageUpload></ImageUpload>
     </div>
   )

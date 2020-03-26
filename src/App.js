@@ -1,5 +1,4 @@
 import React from 'react';
-import './App.css';
 import Tabs from './components/Tabs';
 import { BrowserRouter } from 'react-router-dom';
 
