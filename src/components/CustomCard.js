@@ -1,16 +1,14 @@
-import React from 'react';
-
+import React, {useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import { FaUpload, FaImages, FaTimes, FaRegImage, FaChalkboardTeacher } from 'react-icons/fa';
+import { FaUpload, FaImages, FaTimes, FaChalkboardTeacher } from 'react-icons/fa';
 import Box from '@material-ui/core/Box';
 import EditableTextField from './EditableTextField'
-
-import './CustomCard.css'
+import styles from './CustomCard.module.css'
 
 const useStyles = makeStyles({
   root: {
@@ -24,7 +22,7 @@ const useStyles = makeStyles({
   title: {
     fontSize: 17,
   },
-  button: {
+  deleteButton: {
     float: 'center',
     maxWidth: '25px',
     maxHeight: '25px',
@@ -69,54 +67,66 @@ function importAll(r) {
 }
 const images = importAll(require.context('../sampleImages/', false, /\.(png|jpe?g|svg)$/));
 
-// chapterId, timeStamps, title, deleteFunction, thumbnailFunction, titleEditFunction
-const CustomCard = ({ chapterId, deleteFunction }) => {
+const CustomCard = ({ chapter, deleteChapterFunction, updateTitleFunction }) => {
+  const [imageFile, setImageFile] = useState('');
   const classes = useStyles();
+
   return (
     <Card className={classes.root} square={true}>
       <CardHeader
         className={classes.cardHeader}
         title={
           <Typography className={classes.title} variant="h5" component="h5">
-            Capítulo {chapterId}
+            Capítulo {chapter.id}
           </Typography>
         }
         action={
           <Button
-            key={chapterId}
+            key={chapter.id}
             variant="contained"
             color="secondary"
-            className={classes.button}
+            className={classes.deleteButton}
             startIcon={<FaTimes />} 
-            onClick={deleteFunction}/>
+            onClick={deleteChapterFunction}
+          />
         }
       />
       <CardMedia
         className={classes.media}
         image={images[1]}
-        title="Burger">
+        title={'burger'}
+      >
         <Box
           position="absolute"
           top="5%"
-          left="85%">
+          left="85%"
+        >
           <Button className={classes.thumbnailButton} startIcon={<FaImages />} />
         </Box>
         <Box
           position="absolute"
           top="30%"
-          left="85%">
+          left="85%"
+        >
           <Button className={classes.thumbnailButton} startIcon={<FaChalkboardTeacher />} />
         </Box>
         <Box
           position="absolute"
           top="55%"
-          left="85%">
-          <Button key={chapterId} className={classes.thumbnailButton} startIcon={<FaUpload />} />
+          left="85%"
+        >
+          <Button key={chapter.id} className={classes.thumbnailButton} startIcon={<FaUpload />} />
         </Box>
       </CardMedia>
       <div className={classes.cardActions}>
-        <div className="time-label">In {'1:00:00::2:00:00'}</div>
-        <EditableTextField name={'title-form'} type='text' value={'bring euro down'} />
+        <div className={styles['CustomCard__TimeLabel']}>
+          In {chapter.initTime}::{chapter.finalTime}
+        </div>
+        <EditableTextField type='text'
+                           value={chapter.title}
+                           updateTitleFunction={updateTitleFunction}
+                           chapter={chapter}
+        />
       </div>
     </Card>
   );

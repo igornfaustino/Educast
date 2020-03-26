@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import './App.scss';
+import React from 'react';
 import Tabs from './components/Tabs';
 import { BrowserRouter } from 'react-router-dom';
 import { Container, Button } from 'reactstrap';

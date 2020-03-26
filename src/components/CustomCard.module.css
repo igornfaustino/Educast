@@ -1,0 +1,15 @@
+.CustomCard__TimeLabel {
+  color: blue;
+}
+
+.CustomCard__DeleteButton {
+  float: center;
+  max-width: 25px;
+  max-height: 25px;
+  min-width: 25px;
+  min-height: 25px;
+  padding-right: 4px;
+  padding-top: 3px;
+  color: #12AADA;
+  background: white;
+}
