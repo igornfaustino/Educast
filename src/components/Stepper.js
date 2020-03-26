@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Stepper from 'react-stepper-horizontal';
 
-function StepperComponent({ step, onButtonClick }) {
+function StepperComponent({ step }) {
 	const [steps] = useState([{}, {}, {}, {}, {}, {}]);
 
 	return (

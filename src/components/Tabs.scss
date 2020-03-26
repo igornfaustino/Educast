@@ -1,0 +1,37 @@
+.btn-tab {
+	background-color: #333333 !important;
+	@media (max-width: 615px) {
+		span {
+			display: none;
+		}
+
+		svg {
+			width: 1.6875rem !important;
+			height: 1.6875rem !important;
+		}
+	}
+}
+
+.btn.active {
+	background-color: #0099ff !important;
+	border-color: #0099ff !important;
+	box-shadow: none !important;
+}
+
+.container-tabs-content {
+	background-color: white;
+	height: 100%;
+	width: 100% !important;
+	margin: 3px !important;
+	margin-top: 0 !important;
+}
+
+.container-buttons-tab {
+	display: flex-wrap;
+	width: 70%;
+}
+
+.tabs {
+	display: flex;
+	flex-direction: column;
+}
