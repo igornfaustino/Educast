@@ -1,103 +1,160 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
-
-import videojs from 'video.js';
+import React, { useCallback, useRef, useEffect } from 'react';
 
 import VideoContainerHeader from './VideoContainerHeader';
 import VideoControl from './VideoControl';
 
 import styles from './VideoContainer.module.scss';
+import { useVideo } from '../hooks/useVideo';
 
-// TODO: discover where to put this
 const videoJSOptions = {
-  controls: false,
-  fluid: false,
-  sources: [
-    {
-      src:
-        'https://cdn.videvo.net/videvo_files/video/premium/video0061/large_watermarked/4k0154_preview.mp4',
-      type: 'video/mp4'
-    }
-  ]
+	controls: false,
+	fluid: false,
+	sources: [
+		{
+			src:
+				'https://livestream01.fccn.pt/EducastVod2/_definst_/mp4:clips/0228xx/Clip_022864/ProducedClips/mpeg4_standard_V1_presenter_46.mp4/playlist.m3u8',
+			type: 'application/x-mpegURL',
+		},
+	],
 };
 
-// TODO: handle 2 video
+const videoJSOptionsApresentacao = {
+	controls: false,
+	fluid: false,
+	sources: [
+		{
+			src:
+				'https://livestream01.fccn.pt/EducastVod2/_definst_/mp4:clips/0228xx/Clip_022864/ProducedClips/mpeg4_standard_V1_screens_46.mp4/playlist.m3u8',
+			type: 'application/x-mpegURL',
+		},
+	],
+};
+
 // TODO: handle fullscreen
 function VideoContainer() {
-  const [duration, setDuration] = useState(2000);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [clickedTime, setClickedTime] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isReady, setIsReady] = useState(false); // TODO: use this to sync both videos
+	const video1Ref = useRef(null);
+	const video2Ref = useRef(null);
+	const {
+		isPlaying,
+		duration,
+		currentTime,
+		isSeeking: isPlayer1Seeking,
+		play: playPlayer1,
+		pause: pausePlayer1,
+		isWaiting: isPlayer1Waiting,
+		setClickedTime: setClickedTimeVideo1,
+		handlePlayPauseButton: handlePlayPauseButtonVideo1,
+		handleVolumeChange: handleVolumeChangeVideo1,
+	} = useVideo(video1Ref, videoJSOptions);
+	const {
+		play: playPlayer2,
+		pause: pausePlayer2,
+		isSeeking: isPlayer2Seeking,
+		isWaiting: isPlayer2Waiting,
+		setClickedTime: setClickedTimeVideo2,
+		handlePlayPauseButton: handlePlayPauseButtonVideo2,
+		handleVolumeChange: handleVolumeChangeVideo2,
+	} = useVideo(video2Ref, videoJSOptionsApresentacao);
 
-  const videoRef = useRef(null);
+	const handleTimelineClick = useCallback(
+		(time) => {
+			setClickedTimeVideo1(time);
+			setClickedTimeVideo2(time);
+		},
+		[setClickedTimeVideo1, setClickedTimeVideo2]
+	);
 
-  const handlePlayPauseButton = useCallback(() => {
-    const player = videojs(videoRef.current);
+	const handlePlayPauseButton = useCallback(() => {
+		handlePlayPauseButtonVideo1();
+		handlePlayPauseButtonVideo2();
+	}, [handlePlayPauseButtonVideo1, handlePlayPauseButtonVideo2]);
 
-    if (!isPlaying) player.play();
-    else player.pause();
+	const handleVolumeChange = useCallback(
+		(volume) => {
+			handleVolumeChangeVideo1(volume);
+			handleVolumeChangeVideo2(volume);
+		},
+		[handleVolumeChangeVideo1, handleVolumeChangeVideo2]
+	);
 
-    return setIsPlaying(!isPlaying);
-  }, [isPlaying]);
+	const handleSeeking = useCallback(() => {
+		if (isPlaying) {
+			if (isPlayer1Seeking && !isPlayer2Seeking) {
+				pausePlayer2();
+			} else if (!isPlayer1Seeking && isPlayer2Seeking) {
+				pausePlayer1();
+			}
+		}
+	}, [
+		isPlayer1Seeking,
+		isPlayer2Seeking,
+		isPlaying,
+		pausePlayer1,
+		pausePlayer2,
+	]);
 
-  const handleVolumeChange = useCallback(volume => {
-    const player = videojs(videoRef.current);
-    player.volume(volume);
-  }, []);
+	const handleWaiting = useCallback(() => {
+		if (isPlayer1Waiting && !isPlayer2Waiting) {
+			pausePlayer2();
+		} else if (!isPlayer1Waiting && isPlayer2Waiting) {
+			pausePlayer1();
+		}
+	}, [isPlayer1Waiting, isPlayer2Waiting, pausePlayer1, pausePlayer2]);
 
-  // TODO: Separate thin into a hook?
-  useEffect(() => {
-    const player = videojs(videoRef.current, videoJSOptions);
+	useEffect(() => {
+		if (isPlayer1Seeking || isPlayer2Seeking) {
+			handleSeeking();
+		} else if (isPlayer1Waiting || isPlayer2Waiting) {
+			handleWaiting();
+		} else if (isPlaying) {
+			playPlayer1();
+			playPlayer2();
+		}
+	}, [
+		handleSeeking,
+		handleWaiting,
+		isPlayer1Seeking,
+		isPlayer1Waiting,
+		isPlayer2Seeking,
+		isPlayer2Waiting,
+		isPlaying,
+		pausePlayer1,
+		pausePlayer2,
+		playPlayer1,
+		playPlayer2,
+	]);
 
-    player.one('loadedmetadata', () => {
-      setDuration(player.duration());
-    });
-
-    player.one('loadeddata', () => {
-      setIsReady(true);
-      player.setInterval(() => {
-        setCurrentTime(player.currentTime());
-      }, 100);
-    });
-  }, []);
-
-  useEffect(() => {
-    const player = videojs(videoRef.current);
-    player.currentTime(clickedTime);
-  }, [clickedTime]);
-
-  useEffect(() => {
-    const player = videojs(videoRef.current);
-
-    return () => {
-      player.dispose();
-    };
-  }, []);
-
-  return (
-    <>
-      <VideoContainerHeader
-        title="Titulo de video teste 1"
-        date="19 de abril de 2018"
-      />
-      <div className={styles.wrapper}>
-        <div
-          data-vjs-player
-          style={{ height: '100%', width: '100%' }} // i dunno why.. but with a class this doesn't work...
-        >
-          <video ref={videoRef} className="video-js"></video>
-        </div>
-      </div>
-      <VideoControl
-        duration={duration}
-        currentTime={currentTime}
-        setCurrentTime={setClickedTime}
-        isPlaying={isPlaying}
-        handlePlayPauseButton={handlePlayPauseButton}
-        handleVolumeChange={handleVolumeChange}
-      />
-    </>
-  );
+	return (
+		<>
+			<VideoContainerHeader
+				title="Titulo de video teste 1"
+				date="19 de abril de 2018"
+			/>
+			<div className={styles.wrapper}>
+				<div
+					data-vjs-player
+					style={{ height: '100%' }} // i dunno why.. but with a class this doesn't work...
+				>
+					<video ref={video1Ref} className="video-js"></video>
+				</div>
+				<div className={styles.space} />
+				<div
+					data-vjs-player
+					style={{ height: '100%' }} // i dunno why.. but with a class this doesn't work...
+				>
+					<video ref={video2Ref} className="video-js"></video>
+				</div>
+			</div>
+			<VideoControl
+				duration={duration}
+				currentTime={currentTime}
+				setCurrentTime={handleTimelineClick}
+				isPlaying={isPlaying}
+				handlePlayPauseButton={handlePlayPauseButton}
+				handleVolumeChange={handleVolumeChange}
+			/>
+		</>
+	);
 }
 
 export default VideoContainer;
