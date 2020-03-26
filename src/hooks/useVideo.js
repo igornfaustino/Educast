@@ -2,75 +2,117 @@ import { useState, useEffect, useCallback } from 'react';
 import videojs from 'video.js';
 
 export function useVideo(videoRef, videoJSOptions) {
-  const [duration, setDuration] = useState(2000);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [clickedTime, setClickedTime] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isReady, setIsReady] = useState(false); // TODO: use this to sync both videos
+	const [duration, setDuration] = useState(2000);
+	const [currentTime, setCurrentTime] = useState(0);
+	const [clickedTime, setClickedTime] = useState(0);
+	const [isPlaying, setIsPlaying] = useState(false);
+	const [isReady, setIsReady] = useState(false);
+	const [isWaiting, setIsWaiting] = useState(false);
+	const [isSeeking, setIsSeeking] = useState(false);
 
-  const handlePlayPauseButton = useCallback(() => {
-    if (videoRef.current) {
-      const player = videojs(videoRef.current);
+	const handlePlayPauseButton = useCallback(() => {
+		if (videoRef.current) {
+			const player = videojs(videoRef.current);
 
-      if (!isPlaying) player.play();
-      else player.pause();
+			if (!isPlaying) player.play();
+			else player.pause();
 
-      return setIsPlaying(!isPlaying);
-    }
-  }, [isPlaying, videoRef]);
+			return setIsPlaying(!isPlaying);
+		}
+	}, [isPlaying, videoRef]);
 
-  const handleVolumeChange = useCallback(
-    volume => {
-      if (videoRef.current) {
-        const player = videojs(videoRef.current);
-        player.volume(volume);
-      }
-    },
-    [videoRef]
-  );
+	const play = useCallback(() => {
+		if (videoRef.current) {
+			const player = videojs(videoRef.current);
+			player.play();
+		}
+	}, [videoRef]);
 
-  useEffect(() => {
-    if (videoRef.current) {
-      const player = videojs(videoRef.current, videoJSOptions);
+	const pause = useCallback(() => {
+		if (videoRef.current) {
+			const player = videojs(videoRef.current);
+			player.pause();
+		}
+	}, [videoRef]);
 
-      player.one('loadedmetadata', () => {
-        setDuration(player.duration());
-      });
+	const handleVolumeChange = useCallback(
+		(volume) => {
+			if (videoRef.current) {
+				const player = videojs(videoRef.current);
+				player.volume(volume);
+			}
+		},
+		[videoRef]
+	);
 
-      player.one('loadeddata', () => {
-        setIsReady(true);
-        player.setInterval(() => {
-          setCurrentTime(player.currentTime());
-        }, 100);
-      });
-    }
-  }, [videoJSOptions, videoRef]);
+	useEffect(() => {
+		if (videoRef.current) {
+			const player = videojs(videoRef.current, videoJSOptions);
+			let seeking = false;
 
-  useEffect(() => {
-    if (videoRef.current) {
-      const player = videojs(videoRef.current);
-      player.currentTime(clickedTime);
-    }
-  }, [clickedTime, videoRef]);
+			player.one('loadedmetadata', () => {
+				console.log(player.videoHeight());
+				setDuration(player.duration());
+			});
 
-  useEffect(() => {
-    if (videoRef.current) {
-      const player = videojs(videoRef.current);
+			player.one('loadeddata', () => {
+				setIsReady(true);
+				player.setInterval(() => {
+					setCurrentTime(player.currentTime());
+				}, 100);
+			});
 
-      return () => {
-        player.dispose();
-      };
-    }
-  }, [videoRef]);
+			player.on('waiting', () => {
+				if (!seeking) {
+					setIsWaiting(true);
+				}
+			});
 
-  return {
-    duration,
-    currentTime,
-    setClickedTime,
-    isPlaying,
-    setIsPlaying,
-    isReady,
-    handlePlayPauseButton,
-    handleVolumeChange
-  };
+			player.on('seeking', () => {
+				seeking = true;
+				setIsSeeking(true);
+			});
+
+			player.on('playing', () => {
+				setIsWaiting(false);
+			});
+
+			player.on('seeked', () => {
+				seeking = false;
+				setIsSeeking(false);
+			});
+		}
+	}, [videoJSOptions, videoRef]);
+
+	useEffect(() => {
+		if (videoRef.current) {
+			const player = videojs(videoRef.current);
+			player.currentTime(clickedTime);
+		}
+	}, [clickedTime, videoRef]);
+
+	useEffect(() => {
+		if (videoRef.current) {
+			const player = videojs(videoRef.current);
+
+			return () => {
+				player.dispose();
+			};
+		}
+	}, [videoRef]);
+
+	return {
+		duration,
+		currentTime,
+		setClickedTime,
+		isPlaying,
+		setIsPlaying,
+		isReady,
+		isSeeking,
+		isWaiting,
+		play,
+		pause,
+		handlePlayPauseButton,
+		handleVolumeChange,
+	};
 }
