@@ -9,6 +9,7 @@ export function useVideo(videoRef, videoJSOptions) {
 	const [isReady, setIsReady] = useState(false);
 	const [isWaiting, setIsWaiting] = useState(false);
 	const [isSeeking, setIsSeeking] = useState(false);
+	const [size, setSize] = useState({ height: 0, width: 0 });
 
 	const handlePlayPauseButton = useCallback(() => {
 		if (videoRef.current) {
@@ -51,7 +52,10 @@ export function useVideo(videoRef, videoJSOptions) {
 			let seeking = false;
 
 			player.one('loadedmetadata', () => {
-				console.log(player.videoHeight());
+				setSize({
+					height: player.videoHeight(),
+					width: player.videoWidth(),
+				});
 				setDuration(player.duration());
 			});
 
@@ -109,6 +113,7 @@ export function useVideo(videoRef, videoJSOptions) {
 		setIsPlaying,
 		isReady,
 		isSeeking,
+		size,
 		isWaiting,
 		play,
 		pause,
