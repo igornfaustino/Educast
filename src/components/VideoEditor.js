@@ -54,57 +54,6 @@ const sceneReducer = (state, action) => {
   return [...updatedState];
 };
 
-// handle chapter changes
-const chapterReducer = (state, action) => {
-  let updatedState = [...state];
-
-  // delete chapter
-  if (action.type === "delete") {
-    const updatedState = state.filter((val, idx) => {
-      return !action.deleteIdx.includes(idx);
-    });
-    return [...updatedState];
-  }
-
-  // create chapter
-  if (action.type === "create") {
-    return [...state, action.chapter];
-  }
-
-  // if the moved stick exceeded his brother's position in the wrong side
-  if (
-    action.chapter.start.x >= action.chapter.end.x ||
-    action.chapter.end.x <= action.chapter.start.x
-  ) {
-    return [...state];
-  }
-
-  if (
-    state.some((stick, idx) => {
-      if (action.chapterIdx !== idx) {
-        return (
-          (stick.start.x <= action.chapter.end.x && // if the moved stick is between another chapter
-            stick.end.x >= action.chapter.end.x) ||
-          (stick.end.x >= action.chapter.start.x &&
-            stick.start.x <= action.chapter.start.x) ||
-          (action.chapter.end.x >= stick.end.x && // if the moved stick exceeded another chapter
-            action.chapter.start.x <= stick.start.x) ||
-          (action.chapter.start.x <= stick.start.x &&
-            action.chapter.end.x >= stick.end.x)
-        );
-      }
-      return false;
-    })
-  ) {
-    // return the previous state
-    return [...state];
-  }
-
-  // just update
-  updatedState[action.chapterIdx] = action.chapter; // {start: {x,y }, end: {x,y}}
-  return [...updatedState];
-};
-
 const VideoEditor = () => {
   const videoBoxRef = useState(React.createRef())[0];
 
@@ -120,8 +69,6 @@ const VideoEditor = () => {
   const [deltaPosition, setDeltaPosition] = useState({ x: 0, y: 0 });
 
   const [scenes, dispatchScene] = useReducer(sceneReducer, []);
-
-  const [chapters, dispatchChapter] = useReducer(chapterReducer, []);
 
   const timerDivWidth = useState(videoLength * 10)[0];
 
@@ -140,8 +87,6 @@ const VideoEditor = () => {
         videoLength={videoLength}
         scenes={scenes}
         dispatchScene={dispatchScene}
-        chapters={chapters}
-        dispatchChapter={dispatchChapter}
       />
       <TimelineControl
         chapterTimelineRef={chapterTimelineRef}
