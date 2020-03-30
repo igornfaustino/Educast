@@ -23,12 +23,12 @@ const Timeline = ({
   videoLength,
   timelineIndicatorRef,
   scenes,
-  dispatchScene,
-  chapters,
-  dispatchChapter
+  dispatchScene
 }) => {
   const [selectedScenes, setSelectedScenes] = useState([]);
   const [selectedChapters, setSelectedChapters] = useState([]);
+
+  const [markInChapters, setMarkInChapters] = useState([]);
 
   const deleteScene = () => {
     dispatchScene({ type: "delete", deleteIdx: selectedScenes });
@@ -36,7 +36,14 @@ const Timeline = ({
   };
 
   const deleteChapter = () => {
-    dispatchChapter({ type: "delete", deleteIdx: selectedChapters });
+    // dispatchChapter({ type: "delete", deleteIdx: selectedChapters });
+    setMarkInChapters(prevState => {
+      const tmp = prevState.filter((val, idx) => {
+        return !selectedChapters.includes(idx);
+      });
+
+      return [...tmp];
+    });
     setSelectedChapters([]);
   };
 
@@ -50,14 +57,108 @@ const Timeline = ({
     dispatchScene({ sceneIdx: -1, scene });
   };
 
-  const createChapter = () => {
-    const chapter = {
-      start: { x: deltaPosition.x, y: 0 },
-      end: { x: deltaPosition.x + 20, y: 0 }
-    };
+  const createChapterNew = () => {
+    // Verify if the main marker is in a scene
+    if (
+      !scenes.some(el => {
+        return deltaPosition.x >= el.start.x && deltaPosition.x <= el.end.x;
+      })
+    ) {
+      alert("É necessário criar o capítulo em uma cena");
+      return;
+    }
 
-    dispatchChapter({ type: "create", chapter });
+    setMarkInChapters(prevState => {
+      let tmpMarkInChapter = [...prevState];
+
+      tmpMarkInChapter.push(deltaPosition.x);
+      tmpMarkInChapter.sort((a, b) => a - b);
+
+      return [...tmpMarkInChapter];
+    });
   };
+
+  const renderChapterNew = useMemo(
+    () =>
+      markInChapters.map((markIn, idx) => {
+        // check if it is between chapters
+        if (markInChapters[idx - 1] && markInChapters[idx + 1]) {
+        }
+
+        // check if it is the first chapter
+        if (!markInChapters[idx - 1] && !markInChapters[idx + 1]) {
+        }
+
+        // check if it is the last chapter
+        if (!markInChapters[idx + 1]) {
+        }
+
+        const endSceneX = Math.max.apply(
+          Math,
+          scenes.map(function(scene) {
+            return scene.end.x;
+          })
+        );
+
+        const endTag = (
+          <div
+            className={styles["chapter-limiter"]}
+            style={{
+              marginLeft: markInChapters[idx + 1]
+                ? markInChapters[idx + 1]
+                : endSceneX
+            }}
+          ></div>
+        );
+
+        const startTag = (
+          <div
+            className={styles["chapter-limiter"]}
+            style={{ marginLeft: markIn }}
+          ></div>
+        );
+
+        const chapterContent = (
+          <div
+            className={styles["scene-content"]}
+            style={{
+              marginLeft: markIn + 4 + "px", // 4 is the scene-limiter width
+              width: markInChapters[idx + 1]
+                ? markInChapters[idx + 1] - markIn + "px"
+                : endSceneX - markIn + "px",
+              backgroundColor: selectedChapters.includes(idx)
+                ? "#80b9e7"
+                : "#cfcdcd"
+            }}
+            onClick={() => {
+              setSelectedChapters(prevState => {
+                const tmpSelectedChapters = [...prevState];
+                if (tmpSelectedChapters.indexOf(idx) !== -1) {
+                  tmpSelectedChapters.splice(
+                    tmpSelectedChapters.indexOf(idx),
+                    1
+                  );
+                } else {
+                  tmpSelectedChapters.push(idx);
+                }
+                return [...tmpSelectedChapters];
+              });
+            }}
+          >
+            Capítulo {idx + 1}
+          </div>
+        );
+
+        return (
+          <>
+            {startTag}
+            {chapterContent}
+            {endTag}
+          </>
+        );
+      }),
+    [markInChapters, scenes, selectedChapters]
+  );
 
   const handleDrag = (e, ui) => {
     const { x, y } = deltaPosition;
@@ -71,6 +172,7 @@ const Timeline = ({
   const renderScene = useMemo(
     () =>
       scenes.map((scene, idx) => {
+        console.log("asdkakda");
         const sceneStartBar = (
           <Draggable
             axis="x"
@@ -164,98 +266,6 @@ const Timeline = ({
     [scenes, dispatchScene, selectedScenes]
   );
 
-  const renderChapter = useMemo(
-    () =>
-      chapters.map((chapter, idx) => {
-        const chapterStartBar = (
-          <Draggable
-            axis="x"
-            handle=".handle"
-            bounds=".timeline__video-invisible"
-            grid={[10, 0]}
-            position={chapters[idx].start}
-            onDrag={(e, ui) => {
-              const chapter = {
-                start: { x: ui.x, y: 0 },
-                end: chapters[idx].end
-              };
-              dispatchChapter({ chapterIdx: idx, chapter });
-            }}
-          >
-            <div className={cx("handle", styles["chapter-limiter"])}></div>
-          </Draggable>
-        );
-
-        const chapterEndBar = (
-          <Draggable
-            axis="x"
-            handle=".handle"
-            bounds=".timeline__video-invisible"
-            grid={[10, 0]}
-            position={chapters[idx].end}
-            onDrag={(e, ui) => {
-              const chapter = {
-                start: chapters[idx].start,
-                end: { x: ui.x, y: 0 }
-              };
-              dispatchChapter({ chapterIdx: idx, chapter });
-            }}
-          >
-            <div
-              className={cx("handle", styles["chapter-limiter"])}
-              // style={{
-              //   borderTopColor: selectedChapters.includes(idx)
-              //     ? "#80b9e7"
-              //     : "gray"
-              // }}
-            ></div>
-          </Draggable>
-        );
-
-        const chapterContent = (
-          <div
-            className={styles["scene-content"]}
-            style={{
-              marginLeft: chapters[idx].start.x + 4 + "px", // 7 is the scene-limiter width
-              width:
-                chapters[idx].end.x -
-                chapters[idx].start.x +
-                // + 20 bcos of the second scene's default position
-                "px",
-              backgroundColor: selectedChapters.includes(idx)
-                ? "#80b9e7"
-                : "#cfcdcd"
-            }}
-            onClick={() => {
-              setSelectedChapters(prevState => {
-                const tmpSelectedChapters = [...prevState];
-                if (tmpSelectedChapters.indexOf(idx) !== -1) {
-                  tmpSelectedChapters.splice(
-                    tmpSelectedChapters.indexOf(idx),
-                    1
-                  );
-                } else {
-                  tmpSelectedChapters.push(idx);
-                }
-                return [...tmpSelectedChapters];
-              });
-            }}
-          >
-            {/* Chapter {idx + 1} */}
-          </div>
-        );
-
-        return (
-          <>
-            {chapterStartBar}
-            {chapterContent}
-            {chapterEndBar}
-          </>
-        );
-      }),
-    [chapters, dispatchChapter, selectedChapters]
-  );
-
   return (
     <div className={styles["timeline__wrapper"]}>
       <div className={styles["buttonsWrapper"]}>
@@ -290,7 +300,7 @@ const Timeline = ({
           <div className={styles["btnContainer__right"]}>
             <FaPlusSquare
               className={styles["btnContainer__button"]}
-              onClick={createChapter}
+              onClick={createChapterNew}
             />
             <FaMinusSquare
               className={styles["btnContainer__button"]}
@@ -325,7 +335,7 @@ const Timeline = ({
             className={cx(styles["timeline__content"])}
             ref={chapterTimelineRef}
           >
-            {renderChapter}
+            {renderChapterNew}
           </div>
         </div>
 
