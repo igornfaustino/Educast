@@ -38,13 +38,27 @@ const videoJSOptionsApresentacao = {
 		},
 	],
 };
+// const videoJSOptionsApresentacao = {
+// 	controls: false,
+// 	fluid: false,
+// 	sources: [
+// 		{
+// 			src:
+// 				'https://sample-videos.com/abc/video708/mp4/240/big_buck_bunny_240p_20mb.mp4',
+// 			type: 'video/mp4',
+// 		},
+// 	],
+// };
 
 // TODO: handle fullscreen
 function VideoContainer() {
 	const video1Ref = useRef(null);
 	const video2Ref = useRef(null);
 	const wrapperRef = useRef(null);
+	const fullscreenArea = useRef(null);
 	const [maxWidth, setMaxWidth] = useState(0);
+	const [maxHeight, setMaxHeight] = useState(0);
+	const [isFullscreen, setIsFullscreen] = useState(false);
 	const windowSize = useWindowSize();
 	const {
 		isPlaying,
@@ -71,6 +85,7 @@ function VideoContainer() {
 	} = useVideo(video2Ref, videoJSOptionsApresentacao);
 	const { heigth, width1, width2 } = useVideoHeigth(
 		maxWidth,
+		maxHeight,
 		sizeVideo1,
 		sizeVideo2
 	);
@@ -144,26 +159,42 @@ function VideoContainer() {
 	]);
 
 	useEffect(() => {
+		if (isFullscreen) return;
 		const totalWidth = wrapperRef.current.offsetWidth;
 		const paddingWidth = 16;
 		const dividerSize = 8;
+
+		const maxHeight = parseInt(windowSize[1] * 0.4);
+
+		setMaxHeight(maxHeight);
 		setMaxWidth(totalWidth - paddingWidth - dividerSize);
-	}, [windowSize]);
+	}, [isFullscreen, windowSize]);
 
 	const wrapperStyle = useMemo(() => {
-		if (!video1Ref.current || !video2Ref.current) return { height: '40vh' };
 		return { height: heigth + 16 };
 	}, [heigth]);
 
 	const video1Style = useMemo(() => {
-		if (!video1Ref.current || !video2Ref.current) return { height: '100%' };
-		return { height: '100%', width: width1 };
+		return { height: '100%', width: width1 || undefined };
 	}, [width1]);
 
 	const video2Style = useMemo(() => {
-		if (!video1Ref.current || !video2Ref.current) return { height: '100%' };
-		return { height: '100%', width: width2 };
+		return { height: '100%', width: width2 || undefined };
 	}, [width2]);
+
+	const handleFullscreen = useCallback(() => {
+		if (!isFullscreen) {
+			fullscreenArea.current.requestFullscreen();
+			setIsFullscreen(true);
+			const maxHeight = parseInt(windowSize[1]);
+			const maxWidth = parseInt(windowSize[0]);
+			setMaxWidth(maxWidth - 8);
+			setMaxHeight(maxHeight);
+		} else {
+			document.exitFullscreen();
+			setIsFullscreen(false);
+		}
+	}, [isFullscreen, windowSize]);
 
 	return (
 		<>
@@ -171,23 +202,35 @@ function VideoContainer() {
 				title="Titulo de video teste 1"
 				date="19 de abril de 2018"
 			/>
-			<div className={styles.wrapper} ref={wrapperRef} style={wrapperStyle}>
-				<div data-vjs-player style={video1Style}>
-					<video ref={video1Ref} className="video-js"></video>
+			<div
+				ref={fullscreenArea}
+				style={{
+					height: '100%',
+					display: 'flex',
+					flexDirection: 'column',
+					justifyContent: 'center',
+				}}
+			>
+				<div className={styles.wrapper} ref={wrapperRef} style={wrapperStyle}>
+					<div data-vjs-player style={video1Style}>
+						<video ref={video1Ref} className="video-js"></video>
+					</div>
+					<div className={styles.space} />
+					<div data-vjs-player style={video2Style}>
+						<video ref={video2Ref} className="video-js"></video>
+					</div>
 				</div>
-				<div className={styles.space} />
-				<div data-vjs-player style={video2Style}>
-					<video ref={video2Ref} className="video-js"></video>
-				</div>
+
+				<VideoControl
+					duration={duration}
+					currentTime={currentTime}
+					setCurrentTime={handleTimelineClick}
+					isPlaying={isPlaying}
+					handlePlayPauseButton={handlePlayPauseButton}
+					handleVolumeChange={handleVolumeChange}
+					handleFullscreen={handleFullscreen}
+				/>
 			</div>
-			<VideoControl
-				duration={duration}
-				currentTime={currentTime}
-				setCurrentTime={handleTimelineClick}
-				isPlaying={isPlaying}
-				handlePlayPauseButton={handlePlayPauseButton}
-				handleVolumeChange={handleVolumeChange}
-			/>
 		</>
 	);
 }

@@ -15,6 +15,7 @@ function VideoControl({
 	setCurrentTime,
 	handlePlayPauseButton,
 	isPlaying,
+	handleFullscreen,
 	handleVolumeChange: handleVolume,
 }) {
 	const progressBar = useRef(null);
@@ -77,7 +78,7 @@ function VideoControl({
 	);
 
 	return (
-		<>
+		<div>
 			<div
 				className={styles.range}
 				ref={progressBar}
@@ -99,6 +100,7 @@ function VideoControl({
 					<MdFullscreen
 						className={cx(styles.fullscreenIcon, styles.button)}
 						size="1rem"
+						onClick={handleFullscreen}
 					/>
 				</div>
 			</div>
@@ -120,7 +122,7 @@ function VideoControl({
 					/>
 				</PopoverBody>
 			</Popover>
-		</>
+		</div>
 	);
 }
 

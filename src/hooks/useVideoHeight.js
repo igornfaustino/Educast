@@ -50,7 +50,6 @@ export function useVideoHeigth(maxWidth, maxHeight, size1, size2) {
 				videoWidht++;
 				h1 = getNewHeight(_size1, videoWidht);
 				h2 = getNewHeight(_size2, maxWidth - videoWidht);
-				console.log({ h1, h2 });
 			}
 			if (inverse) {
 				setWidth1(maxWidth - videoWidht);
