@@ -1,11 +1,22 @@
 @import '../variables.scss';
 
+.fullscreenArea {
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
 .wrapper {
 	height: 30vh;
 	display: flex;
 	background-color: $video-bg;
 	justify-content: center;
 	padding: 8px;
+}
+
+.inverse-video {
+	flex-direction: row-reverse;
 }
 
 .videoPlayer {
@@ -15,4 +26,41 @@
 
 .space {
 	margin: 4px;
+	position: relative;
+}
+
+.swap {
+	position: absolute;
+	z-index: 1;
+	background-color: $dark-gray;
+	color: $text-light;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	padding: 2px;
+	cursor: pointer;
+	transition: filter 0.2s;
+
+	&:hover {
+		filter: brightness(80%);
+	}
+}
+
+.iconLeft {
+	position: absolute;
+	z-index: 1;
+	background-color: $dark-gray;
+	color: $text-light;
+	bottom: 16px;
+	left: 16px;
+	padding: 8px;
+}
+
+.iconRight {
+	position: absolute;
+	z-index: 1;
+	background-color: $dark-gray;
+	color: $text-light;
+	bottom: 16px;
+	right: 16px;
+	padding: 8px;
 }

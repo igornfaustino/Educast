@@ -5,6 +5,8 @@ import React, {
 	useState,
 	useMemo,
 } from 'react';
+import { MdSwapHoriz } from 'react-icons/md';
+import cx from 'classnames';
 
 import VideoContainerHeader from './VideoContainerHeader';
 import VideoControl from './VideoControl';
@@ -14,6 +16,7 @@ import styles from './VideoContainer.module.scss';
 import { useVideo } from '../hooks/useVideo';
 import { useWindowSize } from '../hooks/useWindowSize';
 import { useVideoHeigth } from '../hooks/useVideoHeight';
+import IndicatorIcon from './IndicatorIcon';
 
 const videoJSOptions = {
 	controls: false,
@@ -50,7 +53,6 @@ const videoJSOptionsApresentacao = {
 // 	],
 // };
 
-// TODO: handle fullscreen
 function VideoContainer() {
 	const video1Ref = useRef(null);
 	const video2Ref = useRef(null);
@@ -59,6 +61,7 @@ function VideoContainer() {
 	const [maxWidth, setMaxWidth] = useState(0);
 	const [maxHeight, setMaxHeight] = useState(0);
 	const [isFullscreen, setIsFullscreen] = useState(false);
+	const [isVideoInverted, setIsVideoInverted] = useState(false);
 	const windowSize = useWindowSize();
 	const {
 		isPlaying,
@@ -135,6 +138,24 @@ function VideoContainer() {
 		}
 	}, [isPlayer1Waiting, isPlayer2Waiting, pausePlayer1, pausePlayer2]);
 
+	const handleFullscreen = useCallback(() => {
+		if (!isFullscreen) {
+			fullscreenArea.current.requestFullscreen();
+			setIsFullscreen(true);
+			const maxHeight = parseInt(windowSize[1]);
+			const maxWidth = parseInt(windowSize[0]);
+			setMaxWidth(maxWidth - 8);
+			setMaxHeight(maxHeight);
+		} else {
+			document.exitFullscreen();
+			setIsFullscreen(false);
+		}
+	}, [isFullscreen, windowSize]);
+
+	const handleSwap = useCallback(() => setIsVideoInverted(!isVideoInverted), [
+		isVideoInverted,
+	]);
+
 	useEffect(() => {
 		if (isPlayer1Seeking || isPlayer2Seeking) {
 			handleSeeking();
@@ -175,26 +196,30 @@ function VideoContainer() {
 	}, [heigth]);
 
 	const video1Style = useMemo(() => {
-		return { height: '100%', width: width1 || undefined };
+		return { position: 'relative', height: '100%', width: width1 || undefined };
 	}, [width1]);
 
 	const video2Style = useMemo(() => {
-		return { height: '100%', width: width2 || undefined };
+		return { position: 'relative', height: '100%', width: width2 || undefined };
 	}, [width2]);
 
-	const handleFullscreen = useCallback(() => {
-		if (!isFullscreen) {
-			fullscreenArea.current.requestFullscreen();
-			setIsFullscreen(true);
-			const maxHeight = parseInt(windowSize[1]);
-			const maxWidth = parseInt(windowSize[0]);
-			setMaxWidth(maxWidth - 8);
-			setMaxHeight(maxHeight);
-		} else {
-			document.exitFullscreen();
-			setIsFullscreen(false);
-		}
-	}, [isFullscreen, windowSize]);
+	const wrapperClassname = useMemo(
+		() =>
+			isVideoInverted
+				? cx(styles.wrapper, styles['inverse-video'])
+				: styles.wrapper,
+		[isVideoInverted]
+	);
+
+	const presenterIconClassName = useMemo(
+		() => (isVideoInverted ? styles.iconRight : styles.iconLeft),
+		[isVideoInverted]
+	);
+
+	const presentationIconClassName = useMemo(
+		() => (isVideoInverted ? styles.iconLeft : styles.iconRight),
+		[isVideoInverted]
+	);
 
 	return (
 		<>
@@ -202,22 +227,28 @@ function VideoContainer() {
 				title="Titulo de video teste 1"
 				date="19 de abril de 2018"
 			/>
-			<div
-				ref={fullscreenArea}
-				style={{
-					height: '100%',
-					display: 'flex',
-					flexDirection: 'column',
-					justifyContent: 'center',
-				}}
-			>
-				<div className={styles.wrapper} ref={wrapperRef} style={wrapperStyle}>
+			<div ref={fullscreenArea} className={styles.fullscreenArea}>
+				<div className={wrapperClassname} ref={wrapperRef} style={wrapperStyle}>
 					<div data-vjs-player style={video1Style}>
 						<video ref={video1Ref} className="video-js"></video>
+						<IndicatorIcon
+							type="presenter"
+							className={presenterIconClassName}
+						/>
 					</div>
-					<div className={styles.space} />
+					<div className={styles.space}>
+						<MdSwapHoriz
+							className={styles.swap}
+							onClick={handleSwap}
+							size="3rem"
+						/>
+					</div>
 					<div data-vjs-player style={video2Style}>
 						<video ref={video2Ref} className="video-js"></video>
+						<IndicatorIcon
+							type="presentation"
+							className={presentationIconClassName}
+						/>
 					</div>
 				</div>
 
