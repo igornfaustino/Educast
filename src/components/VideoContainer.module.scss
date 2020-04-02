@@ -31,7 +31,7 @@
 
 .swap {
 	position: absolute;
-	z-index: 1;
+	z-index: 2;
 	background-color: $dark-gray;
 	color: $text-light;
 	top: 50%;
@@ -47,7 +47,7 @@
 
 .iconLeft {
 	position: absolute;
-	z-index: 1;
+	z-index: 2;
 	background-color: $dark-gray;
 	color: $text-light;
 	bottom: 1rem;
@@ -57,7 +57,7 @@
 
 .iconRight {
 	position: absolute;
-	z-index: 1;
+	z-index: 2;
 	background-color: $dark-gray;
 	color: $text-light;
 	bottom: 1rem;
