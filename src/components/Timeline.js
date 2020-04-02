@@ -28,7 +28,41 @@ const Timeline = ({
   const [selectedScenes, setSelectedScenes] = useState([]);
   const [selectedChapters, setSelectedChapters] = useState([]);
 
+  const [disableVideoButton, setDisableVideoButton] = useState(false);
+  const [isSelectedScenesEmpty, setIsSelectedScenesEmpty] = useState(true);
+
   const [markInChapters, setMarkInChapters] = useState([]);
+
+  useEffect(() => {
+    createScene();
+  }, []);
+
+  useEffect(() => {
+    setIsSelectedScenesEmpty(() => {
+      return selectedScenes.length > 0 ? false : true;
+    });
+  }, [selectedScenes]);
+
+  useEffect(() => {
+    if (isMarkerInScene()) {
+      setDisableVideoButton(() => {
+        return true;
+      });
+    } else {
+      setDisableVideoButton(() => {
+        return false;
+      });
+    }
+  }, [deltaPosition, scenes]);
+
+  const handleDrag = (e, ui) => {
+    const { x, y } = deltaPosition;
+
+    setDeltaPosition({
+      x: x + ui.deltaX,
+      y: y + ui.deltaY
+    });
+  };
 
   const deleteScene = () => {
     dispatchScene({ type: "delete", deleteIdx: selectedScenes });
@@ -47,23 +81,58 @@ const Timeline = ({
     setSelectedChapters([]);
   };
 
+  // check if the main marker is in a scene
+  const isMarkerInScene = () => {
+    if (
+      scenes.some(scene => {
+        return (
+          deltaPosition.x >= scene.start.x && deltaPosition.x <= scene.end.x
+        );
+      })
+    ) {
+      return true;
+    }
+
+    return false;
+  };
+
+  const getSticksEndPosition = () => {
+    // get the next scene after the marker
+    const possibleScenes = scenes.filter(scene => {
+      return scene.start.x > deltaPosition.x;
+    });
+
+    if (possibleScenes.length > 0) {
+      return (
+        possibleScenes.sort((a, b) => a.start.x - b.start.x)[0].start.x - 10
+      );
+    } else {
+      return videoLength * 10;
+    }
+  };
+
   const createScene = () => {
+    // extra verification (just in case)
+    if (isMarkerInScene()) {
+      alert("Já existe uma cena aqui!");
+      return;
+    }
+
+    // get the stick's end position
+    const endPosition = getSticksEndPosition();
+    console.log("end position: ", endPosition);
     // create two objects to hold stick's position
     const scene = {
       start: { x: deltaPosition.x, y: 0 },
-      end: { x: deltaPosition.x + 20, y: 0 }
+      end: { x: endPosition, y: 0 }
     };
 
     dispatchScene({ sceneIdx: -1, scene });
+    setDisableVideoButton(() => true);
   };
 
   const createChapterNew = () => {
-    // Verify if the main marker is in a scene
-    if (
-      !scenes.some(el => {
-        return deltaPosition.x >= el.start.x && deltaPosition.x <= el.end.x;
-      })
-    ) {
+    if (!isMarkerInScene()) {
       alert("É necessário criar o capítulo em uma cena");
       return;
     }
@@ -145,7 +214,7 @@ const Timeline = ({
               });
             }}
           >
-            Capítulo {idx + 1}
+            {/* Capítulo {idx + 1} */}
           </div>
         );
 
@@ -159,15 +228,6 @@ const Timeline = ({
       }),
     [markInChapters, scenes, selectedChapters]
   );
-
-  const handleDrag = (e, ui) => {
-    const { x, y } = deltaPosition;
-
-    setDeltaPosition({
-      x: x + ui.deltaX,
-      y: y + ui.deltaY
-    });
-  };
 
   const renderScene = useMemo(
     () =>
@@ -279,12 +339,20 @@ const Timeline = ({
 
           <div className={styles["btnContainer__right"]}>
             <FaPlusSquare
-              className={styles["btnContainer__button"]}
-              onClick={createScene}
+              className={
+                disableVideoButton
+                  ? cx(styles["btnContainer__button-disabled"])
+                  : cx(styles["btnContainer__button"])
+              }
+              onClick={disableVideoButton ? null : createScene}
             />
             <FaMinusSquare
-              className={styles["btnContainer__button"]}
-              onClick={deleteScene}
+              className={
+                isSelectedScenesEmpty
+                  ? styles["btnContainer__button-disabled"]
+                  : styles["btnContainer__button"]
+              }
+              onClick={isSelectedScenesEmpty ? null : deleteScene}
             />
           </div>
         </div>

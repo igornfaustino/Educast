@@ -73,8 +73,8 @@ const VideoEditor = () => {
   const timerDivWidth = useState(videoLength * 10)[0];
 
   return (
-    <div>
-      <h1 style={{ marginTop: "0px" }}>x: {deltaPosition.x}</h1>
+    <div style={{ marginTop: "5rem" }}>
+      {/* <h1 style={{ marginTop: "0px" }}>x: {deltaPosition.x}</h1> */}
 
       <Timeline
         videoBoxRef={videoBoxRef}
