@@ -4,14 +4,16 @@ import CustomCard from './CustomCard'
 import 'react-multi-carousel/lib/styles.css';
 import './CustomSlider.module.css';
 
-const CustomSlider = ({ chapters, deleteChapterFunction, updateTitleFunction}) => {
+const CustomSlider = ({ chapters, deleteChapterFunction, updateTitleFunction, selectThumbnailFunction }) => {
   const cardsToShow = () => {
     return (
       chapters.map(chapter => 
         <CustomCard key={chapter.id}
                     chapter={chapter} 
                     deleteChapterFunction={() => deleteChapterFunction(chapter.id)}
-                    updateTitleFunction={updateTitleFunction}>
+                    updateTitleFunction={updateTitleFunction}
+                    selectThumbnailFunction={selectThumbnailFunction}
+        >
         </CustomCard>
       )
     )
