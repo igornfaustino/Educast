@@ -50,9 +50,9 @@
 	z-index: 1;
 	background-color: $dark-gray;
 	color: $text-light;
-	bottom: 16px;
-	left: 16px;
-	padding: 8px;
+	bottom: 1rem;
+	left: 1rem;
+	padding: 0.5rem;
 }
 
 .iconRight {
@@ -60,7 +60,18 @@
 	z-index: 1;
 	background-color: $dark-gray;
 	color: $text-light;
-	bottom: 16px;
-	right: 16px;
-	padding: 8px;
+	bottom: 1rem;
+	right: 1rem;
+	padding: 0.5rem;
+}
+
+.hideLayer {
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5);
+	position: absolute;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 1;
 }

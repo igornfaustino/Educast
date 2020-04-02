@@ -6,6 +6,7 @@ import React, {
 	useMemo,
 } from 'react';
 import { MdSwapHoriz } from 'react-icons/md';
+import { FaEyeSlash } from 'react-icons/fa';
 import cx from 'classnames';
 
 import VideoContainerHeader from './VideoContainerHeader';
@@ -62,6 +63,8 @@ function VideoContainer() {
 	const [maxHeight, setMaxHeight] = useState(0);
 	const [isFullscreen, setIsFullscreen] = useState(false);
 	const [isVideoInverted, setIsVideoInverted] = useState(false);
+	const [isVideo1Visible, setIsVideo1Visible] = useState(true);
+	const [isVideo2Visible, setIsVideo2Visible] = useState(true);
 	const windowSize = useWindowSize();
 	const {
 		isPlaying,
@@ -156,6 +159,16 @@ function VideoContainer() {
 		isVideoInverted,
 	]);
 
+	const handleHideVideo1 = useCallback(
+		() => setIsVideo1Visible(!isVideo1Visible),
+		[isVideo1Visible]
+	);
+
+	const handleHideVideo2 = useCallback(
+		() => setIsVideo2Visible(!isVideo2Visible),
+		[isVideo2Visible]
+	);
+
 	useEffect(() => {
 		if (isPlayer1Seeking || isPlayer2Seeking) {
 			handleSeeking();
@@ -221,6 +234,28 @@ function VideoContainer() {
 		[isVideoInverted]
 	);
 
+	const video1HideLayer = useMemo(
+		() =>
+			!isVideo1Visible && (
+				<div className={styles.hideLayer}>
+					<FaEyeSlash size="3rem" />
+				</div>
+			),
+		[isVideo1Visible]
+	);
+
+	const video2HideLayer = useMemo(
+		() =>
+			!isVideo2Visible && (
+				<div className={styles.hideLayer}>
+					<FaEyeSlash size="3rem" />
+				</div>
+			),
+		[isVideo2Visible]
+	);
+
+	console.log({ isVideo1Visible });
+
 	return (
 		<>
 			<VideoContainerHeader
@@ -230,24 +265,30 @@ function VideoContainer() {
 			<div ref={fullscreenArea} className={styles.fullscreenArea}>
 				<div className={wrapperClassname} ref={wrapperRef} style={wrapperStyle}>
 					<div data-vjs-player style={video1Style}>
+						{video1HideLayer}
 						<video ref={video1Ref} className="video-js"></video>
 						<IndicatorIcon
 							type="presenter"
 							className={presenterIconClassName}
+							onClick={handleHideVideo1}
+							visible={isVideo1Visible}
 						/>
 					</div>
 					<div className={styles.space}>
 						<MdSwapHoriz
 							className={styles.swap}
 							onClick={handleSwap}
-							size="3rem"
+							size="2rem"
 						/>
 					</div>
 					<div data-vjs-player style={video2Style}>
+						{video2HideLayer}
 						<video ref={video2Ref} className="video-js"></video>
 						<IndicatorIcon
 							type="presentation"
 							className={presentationIconClassName}
+							onClick={handleHideVideo2}
+							visible={isVideo2Visible}
 						/>
 					</div>
 				</div>
