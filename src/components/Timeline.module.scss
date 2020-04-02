@@ -55,16 +55,27 @@ $chapter-limiter-size: 0.35rem;
   background-color: rgb(53, 52, 52);
 }
 
-.btnContainer__button {
-  fill: rgb(0, 174, 255);
+@mixin btn-style {
   height: 1.2rem;
   width: 1.2rem;
-  cursor: pointer;
-  transition: all 0.2s;
 }
 
-.btnContainer__button:hover {
-  transform: scale(1.5);
+.btnContainer__button {
+  @include btn-style;
+
+  fill: rgb(0, 174, 255);
+
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+}
+
+.btnContainer__button-disabled {
+  @include btn-style;
+  fill: rgb(95, 95, 95);
 }
 
 .btnContainer__left {
