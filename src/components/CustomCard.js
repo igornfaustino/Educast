@@ -86,7 +86,7 @@ const CustomCard = ({
 	const [thumbnailImage, setThumbnailImage] = useState('');
 	const [fileSelector, setFileSelector] = useState('');
 	const classes = useStyles();
-	const [video, setVideo] = useState('');
+	// const [video, setVideo] = useState('');
 	const imageFileInputRef = React.createRef();
 
 	// const video = document.querySelector("video");
