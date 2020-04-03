@@ -254,8 +254,6 @@ function VideoContainer() {
 		[isVideo2Visible]
 	);
 
-	console.log({ isVideo1Visible });
-
 	return (
 		<>
 			<VideoContainerHeader

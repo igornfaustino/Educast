@@ -15,7 +15,7 @@ function VideoControl({
 	setCurrentTime,
 	handlePlayPauseButton,
 	isPlaying,
-	handleFullscreen,
+	handleFullscreen: externalHandleFullscreen,
 	handleVolumeChange: handleVolume,
 }) {
 	const progressBar = useRef(null);
@@ -48,6 +48,11 @@ function VideoControl({
 
 	const toggle = useCallback(() => setPopoverOpen(!popoverOpen), [popoverOpen]);
 
+	const handleFullscreen = useCallback(() => {
+		setPopoverOpen(false);
+		externalHandleFullscreen();
+	}, [externalHandleFullscreen]);
+
 	const handleVolumeChange = useCallback(
 		(e) => {
 			const volume = e.target.value;
@@ -78,7 +83,7 @@ function VideoControl({
 	);
 
 	return (
-		<div>
+		<div id="video-control">
 			<div
 				className={styles.range}
 				ref={progressBar}
@@ -109,6 +114,7 @@ function VideoControl({
 				isOpen={popoverOpen}
 				target="volume-popover"
 				toggle={toggle}
+				container="video-control"
 			>
 				<PopoverBody>
 					<input
