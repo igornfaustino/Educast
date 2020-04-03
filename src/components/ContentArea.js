@@ -1,6 +1,6 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
-import Chapters from './Chapters'
+import Chapters from './Chapters';
 
 function RouteContentArea() {
 	return (

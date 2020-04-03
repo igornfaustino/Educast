@@ -10,10 +10,8 @@ import './ImageUpload.module.css';
 //     this.fileInputRef = React.createRef();
 
 const ImageUpload = ({ handleFilesAddition }) => {
-  const openFileDialog = () => {
-    
-  }
-}
+	const openFileDialog = () => {};
+};
 
 export default ImageUpload;
 
