@@ -1,58 +1,9 @@
 import React, { useState, useReducer } from "react";
 import Timeline from "./Timeline";
 import TimelineControl from "./TimelineControl";
+import { act } from "react-dom/test-utils";
 
 const videoLength = 200;
-
-// handle scenes changes
-const sceneReducer = (state, action) => {
-  let updatedState = [...state];
-
-  // delete scene
-  if (action.type === "delete") {
-    const updatedState = state.filter((val, idx) => {
-      return !action.deleteIdx.includes(idx);
-    });
-    return [...updatedState];
-  }
-
-  // create stick
-  if (action.sceneIdx === -1) {
-    return [...state, action.scene];
-  }
-
-  // if the moved stick exceeded his brother's position in the wrong side
-  if (
-    action.scene.start.x >= action.scene.end.x ||
-    action.scene.end.x <= action.scene.start.x
-  ) {
-    return [...state];
-  }
-  if (
-    state.some((stick, idx) => {
-      if (action.sceneIdx !== idx) {
-        return (
-          (stick.start.x <= action.scene.end.x && // if the moved stick is between another scene
-            stick.end.x >= action.scene.end.x) ||
-          (stick.end.x >= action.scene.start.x &&
-            stick.start.x <= action.scene.start.x) ||
-          (action.scene.end.x >= stick.end.x && // if the moved stick exceeded another scene
-            action.scene.start.x <= stick.start.x) ||
-          (action.scene.start.x <= stick.start.x &&
-            action.scene.end.x >= stick.end.x)
-        );
-      }
-      return false;
-    })
-  ) {
-    // return the previous state
-    return [...state];
-  }
-
-  // just update
-  updatedState[action.sceneIdx] = action.scene; // {start: {x,y }, end: {x,y}}
-  return [...updatedState];
-};
 
 const VideoEditor = () => {
   const videoBoxRef = useState(React.createRef())[0];
@@ -67,6 +18,71 @@ const VideoEditor = () => {
   );
 
   const [deltaPosition, setDeltaPosition] = useState({ x: 0, y: 0 });
+
+  const [chapters, setChapters] = useState([]);
+
+  // handle scenes changes
+  const sceneReducer = (state, action) => {
+    let updatedState = [...state];
+
+    // delete scene
+    if (action.type === "delete") {
+      const updatedState = state.filter((val, idx) => {
+        return !action.deleteIdx.includes(idx);
+      });
+      return [...updatedState];
+    }
+
+    // create stick
+    if (action.sceneIdx === -1) {
+      return [...state, action.scene];
+    }
+
+    // if the moved stick exceeded his brother's position in the wrong side
+    if (
+      action.scene.start.x >= action.scene.end.x ||
+      action.scene.end.x <= action.scene.start.x
+    ) {
+      return [...state];
+    }
+    if (
+      state.some((stick, idx) => {
+        if (action.sceneIdx !== idx) {
+          return (
+            (stick.start.x <= action.scene.end.x && // if the moved stick is between another scene
+              stick.end.x >= action.scene.end.x) ||
+            (stick.end.x >= action.scene.start.x &&
+              stick.start.x <= action.scene.start.x) ||
+            (action.scene.end.x >= stick.end.x && // if the moved stick exceeded another scene
+              action.scene.start.x <= stick.start.x) ||
+            (action.scene.start.x <= stick.start.x &&
+              action.scene.end.x >= stick.end.x)
+          );
+        }
+        return false;
+      })
+    ) {
+      // return the previous state
+      return [...state];
+    }
+
+    // verify if there is a chapter that is not inside a scene
+    if (
+      chapters.filter(chap => {
+        return !(action.scene.start.x <= chap && action.scene.end.x >= chap);
+      }).length > 0
+    ) {
+      const chapter = chapters.filter(chap => {
+        return !(action.scene.start.x <= chap && action.scene.end.x >= chap);
+      })[0];
+      // drag the chapter too
+      chapters[chapters.indexOf(chapter)] = action.scene.start.x;
+    }
+
+    // just update
+    updatedState[action.sceneIdx] = action.scene; // {start: {x,y }, end: {x,y}}
+    return [...updatedState];
+  };
 
   const [scenes, dispatchScene] = useReducer(sceneReducer, []);
 
@@ -87,6 +103,8 @@ const VideoEditor = () => {
         videoLength={videoLength}
         scenes={scenes}
         dispatchScene={dispatchScene}
+        chapters={chapters}
+        setChapters={setChapters}
       />
       <TimelineControl
         chapterTimelineRef={chapterTimelineRef}
