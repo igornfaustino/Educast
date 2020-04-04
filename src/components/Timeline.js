@@ -23,15 +23,18 @@ const Timeline = ({
   videoLength,
   timelineIndicatorRef,
   scenes,
-  dispatchScene
+  dispatchScene,
+  chapters,
+  setChapters
 }) => {
   const [selectedScenes, setSelectedScenes] = useState([]);
   const [selectedChapters, setSelectedChapters] = useState([]);
 
   const [disableVideoButton, setDisableVideoButton] = useState(false);
-  const [isSelectedScenesEmpty, setIsSelectedScenesEmpty] = useState(true);
+  const [disableChapterButton, setDisableChapterButton] = useState(false);
 
-  const [markInChapters, setMarkInChapters] = useState([]);
+  const [isSelectedScenesEmpty, setIsSelectedScenesEmpty] = useState(true);
+  const [isSelectedChaptersEmpty, setIsSelectedChaptersEmpty] = useState(true);
 
   useEffect(() => {
     createScene();
@@ -44,13 +47,25 @@ const Timeline = ({
   }, [selectedScenes]);
 
   useEffect(() => {
+    setIsSelectedChaptersEmpty(() => {
+      return selectedChapters.length > 0 ? false : true;
+    });
+  }, [selectedChapters]);
+
+  useEffect(() => {
     if (isMarkerInScene()) {
       setDisableVideoButton(() => {
         return true;
       });
+      setDisableChapterButton(() => {
+        return false;
+      });
     } else {
       setDisableVideoButton(() => {
         return false;
+      });
+      setDisableChapterButton(() => {
+        return true;
       });
     }
   }, [deltaPosition, scenes]);
@@ -71,7 +86,7 @@ const Timeline = ({
 
   const deleteChapter = () => {
     // dispatchChapter({ type: "delete", deleteIdx: selectedChapters });
-    setMarkInChapters(prevState => {
+    setChapters(prevState => {
       const tmp = prevState.filter((val, idx) => {
         return !selectedChapters.includes(idx);
       });
@@ -132,12 +147,13 @@ const Timeline = ({
   };
 
   const createChapterNew = () => {
+    //  extra verification (just in case)
     if (!isMarkerInScene()) {
       alert("É necessário criar o capítulo em uma cena");
       return;
     }
 
-    setMarkInChapters(prevState => {
+    setChapters(prevState => {
       let tmpMarkInChapter = [...prevState];
 
       tmpMarkInChapter.push(deltaPosition.x);
@@ -149,17 +165,17 @@ const Timeline = ({
 
   const renderChapterNew = useMemo(
     () =>
-      markInChapters.map((markIn, idx) => {
+      chapters.map((markIn, idx) => {
         // check if it is between chapters
-        if (markInChapters[idx - 1] && markInChapters[idx + 1]) {
+        if (chapters[idx - 1] && chapters[idx + 1]) {
         }
 
         // check if it is the first chapter
-        if (!markInChapters[idx - 1] && !markInChapters[idx + 1]) {
+        if (!chapters[idx - 1] && !chapters[idx + 1]) {
         }
 
         // check if it is the last chapter
-        if (!markInChapters[idx + 1]) {
+        if (!chapters[idx + 1]) {
         }
 
         const endSceneX = Math.max.apply(
@@ -167,17 +183,6 @@ const Timeline = ({
           scenes.map(function(scene) {
             return scene.end.x;
           })
-        );
-
-        const endTag = (
-          <div
-            className={styles["chapter-limiter"]}
-            style={{
-              marginLeft: markInChapters[idx + 1]
-                ? markInChapters[idx + 1]
-                : endSceneX
-            }}
-          ></div>
         );
 
         const startTag = (
@@ -192,8 +197,8 @@ const Timeline = ({
             className={styles["scene-content"]}
             style={{
               marginLeft: markIn + 4 + "px", // 4 is the scene-limiter width
-              width: markInChapters[idx + 1]
-                ? markInChapters[idx + 1] - markIn + "px"
+              width: chapters[idx + 1]
+                ? chapters[idx + 1] - markIn + "px"
                 : endSceneX - markIn + "px",
               backgroundColor: selectedChapters.includes(idx)
                 ? "#80b9e7"
@@ -222,11 +227,10 @@ const Timeline = ({
           <>
             {startTag}
             {chapterContent}
-            {endTag}
           </>
         );
       }),
-    [markInChapters, scenes, selectedChapters]
+    [chapters, scenes, selectedChapters]
   );
 
   const renderScene = useMemo(
@@ -367,12 +371,20 @@ const Timeline = ({
 
           <div className={styles["btnContainer__right"]}>
             <FaPlusSquare
-              className={styles["btnContainer__button"]}
-              onClick={createChapterNew}
+              className={
+                disableChapterButton
+                  ? styles["btnContainer__button-disabled"]
+                  : styles["btnContainer__button"]
+              }
+              onClick={disableChapterButton ? null : createChapterNew}
             />
             <FaMinusSquare
-              className={styles["btnContainer__button"]}
-              onClick={deleteChapter}
+              className={
+                isSelectedChaptersEmpty
+                  ? styles["btnContainer__button-disabled"]
+                  : styles["btnContainer__button"]
+              }
+              onClick={isSelectedChaptersEmpty ? null : deleteChapter}
             />
           </div>
         </div>
