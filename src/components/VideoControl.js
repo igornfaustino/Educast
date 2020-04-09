@@ -1,11 +1,10 @@
 import React, { useMemo, useCallback, useRef, useState } from 'react';
 
 import cx from 'classnames';
-import { Popover, PopoverBody } from 'reactstrap';
 import { IoMdPlay, IoMdPause } from 'react-icons/io';
-import { FaVolumeUp } from 'react-icons/fa';
 import { MdFullscreen } from 'react-icons/md';
 import moment from 'moment';
+import VolumeButton from './VolumeButton';
 
 import styles from './VideoControl.module.scss';
 
@@ -20,8 +19,8 @@ function VideoControl({
 }) {
 	const progressBar = useRef(null);
 
-	const [popoverOpen, setPopoverOpen] = useState(false);
 	const [volume, setVolume] = useState(1);
+	const [previousVolume, setPreviousVolume] = useState(1);
 
 	const onProgressClickHandle = useCallback(
 		(e) => {
@@ -46,10 +45,18 @@ function VideoControl({
 		[getWidth]
 	);
 
-	const toggle = useCallback(() => setPopoverOpen(!popoverOpen), [popoverOpen]);
+	const handleVolumeClick = useCallback(() => {
+		if (volume > 0) {
+			setPreviousVolume(volume);
+			setVolume(0);
+			handleVolume(0);
+		} else {
+			setVolume(previousVolume);
+			handleVolume(previousVolume);
+		}
+	}, [handleVolume, previousVolume, volume]);
 
 	const handleFullscreen = useCallback(() => {
-		setPopoverOpen(false);
 		externalHandleFullscreen();
 	}, [externalHandleFullscreen]);
 
@@ -62,14 +69,14 @@ function VideoControl({
 		[handleVolume]
 	);
 
-	const currentTimeFormated = useMemo(() => {
-		const currentTimeInMilis = currentTime * 1000;
-		return moment.utc(currentTimeInMilis).format('HH:mm:ss');
+	const currentTimeFormatted = useMemo(() => {
+		const currentTimeInMs = currentTime * 1000;
+		return moment.utc(currentTimeInMs).format('HH:mm:ss');
 	}, [currentTime]);
 
-	const durationFormated = useMemo(() => {
-		const durationInMilis = duration * 1000;
-		return moment.utc(durationInMilis).format('HH:mm:ss');
+	const durationFormatted = useMemo(() => {
+		const durationInMs = duration * 1000;
+		return moment.utc(durationInMs).format('HH:mm:ss');
 	}, [duration]);
 
 	const playOrPauseIcon = useMemo(
@@ -93,29 +100,28 @@ function VideoControl({
 			</div>
 			<div className={styles.control}>
 				<div>
-					{currentTimeFormated} / {durationFormated}
+					{currentTimeFormatted} / {durationFormatted}
 				</div>
 				<div onClick={handlePlayPauseButton}>{playOrPauseIcon}</div>
 				<div>
 					<span className={styles.volumeWrapper}>
 						<div className={styles.volumeArea}>
-							<div>
-								<input
-									type="range"
-									min={0}
-									max={1}
-									step={0.1}
-									value={volume}
-									className={styles.slider}
-									onChange={handleVolumeChange}
-									orient="vertical"
-								/>
-							</div>
+							<input
+								type="range"
+								min={0}
+								max={1}
+								step={0.1}
+								value={volume}
+								className={styles.slider}
+								onChange={handleVolumeChange}
+								orient="vertical"
+							/>
 						</div>
-						<FaVolumeUp
-							id="volume-popover"
+						<VolumeButton
+							volume={volume}
 							size="1.25rem"
 							className={styles.button}
+							onClick={handleVolumeClick}
 						/>
 					</span>
 					<MdFullscreen
