@@ -48,21 +48,36 @@
 .iconLeft {
 	position: absolute;
 	z-index: 2;
-	background-color: $dark-gray;
-	color: $text-light;
+
 	bottom: 1rem;
 	left: 1rem;
-	padding: 0.5rem;
+
+	div {
+		background-color: $dark-gray;
+		color: $text-light;
+		padding: 0.5rem;
+
+		&:not(:last-child) {
+			margin-bottom: 8px;
+		}
+	}
 }
 
 .iconRight {
 	position: absolute;
 	z-index: 2;
-	background-color: $dark-gray;
-	color: $text-light;
 	bottom: 1rem;
 	right: 1rem;
-	padding: 0.5rem;
+
+	div {
+		background-color: $dark-gray;
+		color: $text-light;
+		padding: 0.5rem;
+
+		&:not(:last-child) {
+			margin-bottom: 8px;
+		}
+	}
 }
 
 .hideLayer {

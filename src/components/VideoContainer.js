@@ -224,6 +224,16 @@ function VideoContainer() {
 		[isVideoInverted]
 	);
 
+	const video1VisibleIconType = useMemo(
+		() => (isVideo1Visible ? 'visible' : 'invisible'),
+		[isVideo1Visible]
+	);
+
+	const video2VisibleIconType = useMemo(
+		() => (isVideo2Visible ? 'visible' : 'invisible'),
+		[isVideo2Visible]
+	);
+
 	const presenterIconClassName = useMemo(
 		() => (isVideoInverted ? styles.iconRight : styles.iconLeft),
 		[isVideoInverted]
@@ -265,12 +275,13 @@ function VideoContainer() {
 					<div data-vjs-player style={video1Style}>
 						{video1HideLayer}
 						<video ref={video1Ref} className="video-js"></video>
-						<IndicatorIcon
-							type="presenter"
-							className={presenterIconClassName}
-							onClick={handleHideVideo1}
-							visible={isVideo1Visible}
-						/>
+						<div className={presenterIconClassName}>
+							<IndicatorIcon
+								type={video1VisibleIconType}
+								onClick={handleHideVideo1}
+							/>
+							<IndicatorIcon type="presenter" />
+						</div>
 					</div>
 					<div className={styles.space}>
 						<MdSwapHoriz
@@ -282,12 +293,13 @@ function VideoContainer() {
 					<div data-vjs-player style={video2Style}>
 						{video2HideLayer}
 						<video ref={video2Ref} className="video-js"></video>
-						<IndicatorIcon
-							type="presentation"
-							className={presentationIconClassName}
-							onClick={handleHideVideo2}
-							visible={isVideo2Visible}
-						/>
+						<div className={presentationIconClassName}>
+							<IndicatorIcon
+								type={video2VisibleIconType}
+								onClick={handleHideVideo2}
+							/>
+							<IndicatorIcon type="presentation" />
+						</div>
 					</div>
 				</div>
 

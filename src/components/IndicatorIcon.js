@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback } from 'react';
+import React, { useMemo } from 'react';
 import cx from 'classnames';
 import {
 	FaImages,
@@ -11,37 +11,23 @@ import styles from './IndicatorIcon.module.scss';
 const ICONS = {
 	presentation: <FaImages size="1.5rem" />,
 	presenter: <FaChalkboardTeacher size="1.5rem" />,
+	visible: <FaEyeSlash size="1.5rem" />,
+	invisible: <FaEye size="1.5rem" />,
 };
 
-const IndicatorIcon = ({ className, type, onClick, visible = true }) => {
-	const [isHover, setIsHover] = useState(false);
-
+const IndicatorIcon = ({ className, type, onClick }) => {
 	const iconClass = useMemo(
-		() => (isHover ? cx(className, styles.action) : className),
-		[className, isHover]
+		() =>
+			type === 'visible' || type === 'invisible'
+				? cx(className, styles.action)
+				: className,
+		[className, type]
 	);
 
-	const visibleIcon = useMemo(
-		() => (visible ? <FaEyeSlash size="1.5rem" /> : <FaEye size="1.5rem" />),
-		[visible]
-	);
-
-	const renderIcon = useMemo(() => (isHover ? visibleIcon : ICONS[type]), [
-		isHover,
-		type,
-		visibleIcon,
-	]);
-
-	const handleMouseLeave = useCallback(() => setIsHover(false), []);
-	const handleMouseEnter = useCallback(() => setIsHover(true), []);
+	const renderIcon = useMemo(() => ICONS[type], [type]);
 
 	return (
-		<div
-			className={iconClass}
-			onMouseLeave={handleMouseLeave}
-			onMouseEnter={handleMouseEnter}
-			onClick={onClick}
-		>
+		<div className={iconClass} onClick={onClick}>
 			{renderIcon}
 		</div>
 	);
