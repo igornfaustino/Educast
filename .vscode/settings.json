@@ -1,4 +1,20 @@
 {
     "editor.tabSize": 2,
-    "editor.insertSpaces": false
+    "editor.insertSpaces": false,
+    "cSpell.words": [
+        "Apresentacao",
+        "Capítulos",
+        "Documentos",
+        "EDUCAST",
+        "Edição",
+        "Legendas",
+        "Metadados",
+        "Passo",
+        "Publicar",
+        "Salvar",
+        "Titulo",
+        "abril",
+        "teste",
+        "videojs"
+    ]
 }

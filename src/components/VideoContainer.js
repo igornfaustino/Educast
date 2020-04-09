@@ -16,7 +16,7 @@ import styles from './VideoContainer.module.scss';
 
 import { useVideo } from '../hooks/useVideo';
 import { useWindowSize } from '../hooks/useWindowSize';
-import { useVideoHeigth } from '../hooks/useVideoHeight';
+import { useVideoHeight } from '../hooks/useVideoHeight';
 import IndicatorIcon from './IndicatorIcon';
 
 const videoJSOptions = {
@@ -89,7 +89,7 @@ function VideoContainer() {
 		handlePlayPauseButton: handlePlayPauseButtonVideo2,
 		handleVolumeChange: handleVolumeChangeVideo2,
 	} = useVideo(video2Ref, videoJSOptionsApresentacao);
-	const { heigth, width1, width2 } = useVideoHeigth(
+	const { height, width1, width2 } = useVideoHeight(
 		maxWidth,
 		maxHeight,
 		sizeVideo1,
@@ -205,8 +205,8 @@ function VideoContainer() {
 	}, [isFullscreen, windowSize]);
 
 	const wrapperStyle = useMemo(() => {
-		return { height: heigth + 16 };
-	}, [heigth]);
+		return { height: height + 16 };
+	}, [height]);
 
 	const video1Style = useMemo(() => {
 		return { position: 'relative', height: '100%', width: width1 || undefined };
@@ -216,7 +216,7 @@ function VideoContainer() {
 		return { position: 'relative', height: '100%', width: width2 || undefined };
 	}, [width2]);
 
-	const wrapperClassname = useMemo(
+	const wrapperClassName = useMemo(
 		() =>
 			isVideoInverted
 				? cx(styles.wrapper, styles['inverse-video'])
@@ -261,7 +261,7 @@ function VideoContainer() {
 				date="19 de abril de 2018"
 			/>
 			<div ref={fullscreenArea} className={styles.fullscreenArea}>
-				<div className={wrapperClassname} ref={wrapperRef} style={wrapperStyle}>
+				<div className={wrapperClassName} ref={wrapperRef} style={wrapperStyle}>
 					<div data-vjs-player style={video1Style}>
 						{video1HideLayer}
 						<video ref={video1Ref} className="video-js"></video>

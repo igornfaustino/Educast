@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 
-export function useVideoHeigth(maxWidth, maxHeight, size1, size2) {
-	const [heigth, setHeigth] = useState(0);
+export function useVideoHeight(maxWidth, maxHeight, size1, size2) {
+	const [height, setHeight] = useState(0);
 	const [width1, setWidth1] = useState(maxWidth / 2);
 	const [width2, setWidth2] = useState(maxWidth / 2);
 
@@ -21,7 +21,7 @@ export function useVideoHeigth(maxWidth, maxHeight, size1, size2) {
 			if (totalWidth >= maxWidth) {
 				return false;
 			}
-			setHeigth(maxHeight);
+			setHeight(maxHeight);
 			setWidth1(w1);
 			setWidth2(w2);
 			return true;
@@ -31,9 +31,9 @@ export function useVideoHeigth(maxWidth, maxHeight, size1, size2) {
 
 	const fitVideoHeightAsPossible = useCallback(
 		(maxWidth, size1, size2) => {
-			let videoWidht = parseInt(maxWidth / 2);
-			let h1 = getNewHeight(size1, videoWidht);
-			let h2 = getNewHeight(size2, videoWidht);
+			let videoWidth = parseInt(maxWidth / 2);
+			let h1 = getNewHeight(size1, videoWidth);
+			let h2 = getNewHeight(size2, videoWidth);
 			let _size1 = size1;
 			let _size2 = size2;
 			let inverse = false;
@@ -47,18 +47,18 @@ export function useVideoHeigth(maxWidth, maxHeight, size1, size2) {
 			}
 
 			while (h1 < h2) {
-				videoWidht++;
-				h1 = getNewHeight(_size1, videoWidht);
-				h2 = getNewHeight(_size2, maxWidth - videoWidht);
+				videoWidth++;
+				h1 = getNewHeight(_size1, videoWidth);
+				h2 = getNewHeight(_size2, maxWidth - videoWidth);
 			}
 			if (inverse) {
-				setWidth1(maxWidth - videoWidht);
-				setWidth2(videoWidht);
+				setWidth1(maxWidth - videoWidth);
+				setWidth2(videoWidth);
 			} else {
-				setWidth1(videoWidht);
-				setWidth2(maxWidth - videoWidht);
+				setWidth1(videoWidth);
+				setWidth2(maxWidth - videoWidth);
 			}
-			setHeigth(Math.max(h1, h2));
+			setHeight(Math.max(h1, h2));
 		},
 		[getNewHeight]
 	);
@@ -82,5 +82,5 @@ export function useVideoHeigth(maxWidth, maxHeight, size1, size2) {
 		tryToFitVideosInMaxHeight,
 	]);
 
-	return { heigth, width1, width2 };
+	return { height, width1, width2 };
 }

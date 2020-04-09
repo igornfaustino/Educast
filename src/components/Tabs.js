@@ -70,6 +70,7 @@ function Tabs({ step, setStep }) {
 	useEffect(() => {
 		const path = window.location.pathname;
 		updateActiveButton(path);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []); // must not put the dependencies here to avoid infinite loop
 
 	const onButtonClick = useCallback(
