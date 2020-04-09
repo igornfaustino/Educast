@@ -5,6 +5,7 @@ import { IoMdPlay, IoMdPause } from 'react-icons/io';
 import { MdFullscreen } from 'react-icons/md';
 import moment from 'moment';
 import VolumeButton from './VolumeButton';
+import { useHotkeys } from 'react-hotkeys-hook';
 
 import styles from './VideoControl.module.scss';
 
@@ -17,6 +18,8 @@ function VideoControl({
 	handleFullscreen: externalHandleFullscreen,
 	handleVolumeChange: handleVolume,
 }) {
+	useHotkeys('space', handlePlayPauseButton, {}, [handlePlayPauseButton]);
+
 	const progressBar = useRef(null);
 
 	const [volume, setVolume] = useState(1);
