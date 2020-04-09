@@ -198,7 +198,7 @@ function VideoContainer() {
 		const paddingWidth = 16;
 		const dividerSize = 8;
 
-		const maxHeight = parseInt(windowSize[1] * 0.4);
+		const maxHeight = parseInt(windowSize[1] * 0.35);
 
 		setMaxHeight(maxHeight);
 		setMaxWidth(totalWidth - paddingWidth - dividerSize);

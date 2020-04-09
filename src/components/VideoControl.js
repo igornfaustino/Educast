@@ -75,9 +75,9 @@ function VideoControl({
 	const playOrPauseIcon = useMemo(
 		() =>
 			isPlaying ? (
-				<IoMdPause size="1rem" className={styles.button} />
+				<IoMdPause size="1.5rem" className={styles.button} />
 			) : (
-				<IoMdPlay size="1rem" className={styles.button} />
+				<IoMdPlay size="1.5rem" className={styles.button} />
 			),
 		[isPlaying]
 	);
@@ -97,37 +97,34 @@ function VideoControl({
 				</div>
 				<div onClick={handlePlayPauseButton}>{playOrPauseIcon}</div>
 				<div>
-					<FaVolumeUp
-						id="volume-popover"
-						size="1rem"
-						className={styles.button}
-					/>
+					<span className={styles.volumeWrapper}>
+						<div className={styles.volumeArea}>
+							<div>
+								<input
+									type="range"
+									min={0}
+									max={1}
+									step={0.1}
+									value={volume}
+									className={styles.slider}
+									onChange={handleVolumeChange}
+									orient="vertical"
+								/>
+							</div>
+						</div>
+						<FaVolumeUp
+							id="volume-popover"
+							size="1.25rem"
+							className={styles.button}
+						/>
+					</span>
 					<MdFullscreen
 						className={cx(styles.fullscreenIcon, styles.button)}
-						size="1rem"
+						size="1.25rem"
 						onClick={handleFullscreen}
 					/>
 				</div>
 			</div>
-			<Popover
-				placement="top"
-				isOpen={popoverOpen}
-				target="volume-popover"
-				toggle={toggle}
-				container="video-control"
-			>
-				<PopoverBody>
-					<input
-						type="range"
-						min={0}
-						max={1}
-						step={0.1}
-						value={volume}
-						className={styles.slider}
-						onChange={handleVolumeChange}
-					/>
-				</PopoverBody>
-			</Popover>
 		</div>
 	);
 }

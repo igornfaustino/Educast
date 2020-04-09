@@ -15,7 +15,7 @@ function App() {
 			<div className="video-div">
 				<VideoContainer />
 			</div>
-			<Container fluid className="edition-div">
+			<div className="edition-div">
 				<div className="edition-div-container">
 					<BrowserRouter>
 						<Tabs step={step} setStep={setStep} />
@@ -36,7 +36,7 @@ function App() {
 						</Button>
 					</div>
 				</div>
-			</Container>
+			</div>
 		</Container>
 	);
 }

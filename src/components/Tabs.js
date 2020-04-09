@@ -13,37 +13,37 @@ function Tabs({ step, setStep }) {
 	const [buttons, setButtons] = useState([
 		{
 			title: 'Metadados',
-			icon: <FaTags className="icon-btn" size="1rem" />,
+			icon: <FaTags className="icon-btn" size="1.25rem" />,
 			active: true,
 			path: '/',
 		},
 		{
 			title: 'Edição',
-			icon: <FiScissors className="icon-btn" size="1rem" />,
+			icon: <FiScissors className="icon-btn" size="1.25rem" />,
 			active: false,
 			path: '/editor',
 		},
 		{
 			title: 'Capítulos',
-			icon: <FaBuffer className="icon-btn" size="1rem" />,
+			icon: <FaBuffer className="icon-btn" size="1.25rem" />,
 			active: false,
 			path: '/chapters',
 		},
 		{
 			title: 'Documentos',
-			icon: <IoIosFolderOpen className="icon-btn" size="1rem" />,
+			icon: <IoIosFolderOpen className="icon-btn" size="1.25rem" />,
 			active: false,
 			path: '/documents',
 		},
 		{
 			title: 'Branding',
-			icon: <FaImage className="icon-btn" size="1rem" />,
+			icon: <FaImage className="icon-btn" size="1.25rem" />,
 			active: false,
 			path: '/branding',
 		},
 		{
 			title: 'Legendas',
-			icon: <MdChat className="icon-btn" size="1rem" />,
+			icon: <MdChat className="icon-btn" size="1.25rem" />,
 			active: false,
 			path: '/subtitles',
 		},
