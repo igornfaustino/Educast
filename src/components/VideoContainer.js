@@ -4,6 +4,8 @@ import React, {
 	useEffect,
 	useState,
 	useMemo,
+	forwardRef,
+	useImperativeHandle,
 } from 'react';
 import { MdSwapHoriz } from 'react-icons/md';
 import { FaEyeSlash } from 'react-icons/fa';
@@ -19,6 +21,7 @@ import { useWindowSize } from '../hooks/useWindowSize';
 import { useVideoHeight } from '../hooks/useVideoHeight';
 import IndicatorIcon from './IndicatorIcon';
 import { tryToEnterFullscreen } from '../utils/fullscreen';
+import { getSnapshot } from '../utils/snapshot';
 
 const videoJSOptions = {
 	controls: false,
@@ -55,7 +58,7 @@ const videoJSOptionsApresentacao = {
 // 	],
 // };
 
-function VideoContainer() {
+function VideoContainer(props, ref) {
 	const video1Ref = useRef(null);
 	const video2Ref = useRef(null);
 	const wrapperRef = useRef(null);
@@ -268,6 +271,15 @@ function VideoContainer() {
 		[isVideo2Visible]
 	);
 
+	useImperativeHandle(ref, () => ({
+		getPresenterScreenShot() {
+			return getSnapshot(video1Ref.current);
+		},
+		getPresentationScreenShot() {
+			return getSnapshot(video2Ref.current);
+		},
+	}));
+
 	return (
 		<>
 			<VideoContainerHeader
@@ -321,4 +333,4 @@ function VideoContainer() {
 	);
 }
 
-export default VideoContainer;
+export default forwardRef(VideoContainer);

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import './App.scss';
 
 import VideoContainer from './components/VideoContainer';
@@ -7,13 +7,32 @@ import { BrowserRouter } from 'react-router-dom';
 import { Container, Button } from 'reactstrap';
 import StepperComponent from './components/Stepper';
 import { FaSave, FaShare } from 'react-icons/fa';
+import { useCallback } from 'react';
 
 function App() {
 	const [step, setStep] = useState(0);
+	const videoComponentRef = useRef(null);
+
+	/**
+	 * @returns `string` DataURI
+	 */
+	const getPresenterScreenShot = useCallback(
+		() => videoComponentRef.current.getPresenterScreenShot(),
+		[]
+	);
+
+	/**
+	 * @returns `string` DataURI
+	 */
+	const getPresentationScreenShot = useCallback(
+		() => videoComponentRef.current.getPresentationScreenShot(),
+		[]
+	);
+
 	return (
 		<Container fluid className="app">
 			<div className="video-div">
-				<VideoContainer />
+				<VideoContainer ref={videoComponentRef} />
 			</div>
 			<div className="edition-div">
 				<div className="edition-div-container">
