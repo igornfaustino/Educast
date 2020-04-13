@@ -18,6 +18,7 @@ import { useVideo } from '../hooks/useVideo';
 import { useWindowSize } from '../hooks/useWindowSize';
 import { useVideoHeight } from '../hooks/useVideoHeight';
 import IndicatorIcon from './IndicatorIcon';
+import { tryToEnterFullscreen } from '../utils/fullscreen';
 
 const videoJSOptions = {
 	controls: false,
@@ -142,8 +143,11 @@ function VideoContainer() {
 	}, [isPlayer1Waiting, isPlayer2Waiting, pausePlayer1, pausePlayer2]);
 
 	const handleFullscreen = useCallback(() => {
+		const elem = fullscreenArea.current;
 		if (!isFullscreen) {
-			fullscreenArea.current.requestFullscreen();
+			const isFullscreen = tryToEnterFullscreen(elem);
+			if (!isFullscreen) return;
+
 			setIsFullscreen(true);
 			const maxHeight = parseInt(windowSize[1]);
 			const maxWidth = parseInt(windowSize[0]);

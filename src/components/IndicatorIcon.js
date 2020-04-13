@@ -11,8 +11,8 @@ import styles from './IndicatorIcon.module.scss';
 const ICONS = {
 	presentation: <FaImages size="1.5rem" />,
 	presenter: <FaChalkboardTeacher size="1.5rem" />,
-	visible: <FaEyeSlash size="1.5rem" />,
-	invisible: <FaEye size="1.5rem" />,
+	invisible: <FaEyeSlash size="1.5rem" />,
+	visible: <FaEye size="1.5rem" />,
 };
 
 const IndicatorIcon = ({ className, type, onClick }) => {
