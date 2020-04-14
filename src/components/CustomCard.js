@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -10,11 +10,11 @@ import {
 	FaImages,
 	FaTimes,
 	FaChalkboardTeacher,
-	FaImage,
 } from 'react-icons/fa';
 import Box from '@material-ui/core/Box';
 import EditableTextField from './EditableTextField';
 import styles from './CustomCard.module.css';
+import { useDropzone } from 'react-dropzone';
 
 const useStyles = makeStyles({
 	root: {
@@ -35,7 +35,6 @@ const useStyles = makeStyles({
 		maxHeight: '18px',
 		minWidth: '18px',
 		minHeight: '18px',
-		// verticalAlign: 'middle',
 		color: '#12AADA',
 		background: 'white',
 		'&:hover': {
@@ -49,8 +48,6 @@ const useStyles = makeStyles({
 		maxHeight: '30px',
 		minWidth: '30px',
 		minHeight: '30px',
-		// paddingRight: '4px',
-		// paddingLeft: '15px',
 		color: '#12AADA',
 		background: 'white',
 		'&:hover': {
@@ -69,15 +66,14 @@ const useStyles = makeStyles({
 	},
 	deleteIcon: {
 		position: 'absolute',
-		top:'2px',
+		top: '2px',
 		left: '2px',
 	},
 	thumbnailIcons: {
 		position: 'absolute',
-		top:'5px',
+		top: '5px',
 		left: '4px',
-		// verticalAlign: 'center',
-	}
+	},
 });
 
 // Temporary functions
@@ -94,34 +90,11 @@ const CustomCard = ({
 	updateTitleFunction,
 	selectThumbnailFunction,
 }) => {
-	const [imageFileUpload, setImageFileUpload] = useState('');
 	const [thumbnailImage, setThumbnailImage] = useState('');
-	const [fileSelector, setFileSelector] = useState('');
 	const classes = useStyles();
-	// const [video, setVideo] = useState('');
-	const imageFileInputRef = React.createRef();
-
-	// const video = document.querySelector("video");
-	// const canvas = document.querySelector("canvas");
-	// const context = canvas.getContext("2d");
-	// var w, h, ratio;
-	// //add loadedmetadata which will helps to identify video attributes......
-	// video.addEventListener(
-	//   "loadedmetadata",
-	//   function() {
-	//     ratio = video.videoWidth / video.videoHeight;
-	//     w = video.videoWidth - 100;
-	//     h = parseInt(w / ratio, 10);
-	//     canvas.width = w;
-	//     canvas.height = h;
-	//     console.log(w);
-	//   },
-	//   false
-	// );
 
 	useEffect(() => {
 		setThumbnailImage(images[0]); //select presentation snapshot by default
-		setFileSelector(buildFileSelector());
 	}, []);
 
 	const handleThumbnailSelection = (path) => {
@@ -139,40 +112,41 @@ const CustomCard = ({
 		}
 	};
 
-	const buildFileSelector = () => {
-		const fileSelector = document.createElement('input');
-		fileSelector.setAttribute('type', 'file');
-		fileSelector.setAttribute('ref', imageFileInputRef);
-		fileSelector.setAttribute('multiple', 'multiple');
-		return fileSelector;
-	};
+	// const onDrop = useCallback((acceptedFiles) => {
+	// 	acceptedFiles.forEach((file) => {
+	// 		const reader = new FileReader();
+	// 		reader.onabort = () => console.log('file reading was aborted');
+	// 		reader.onerror = () => console.log('file reading has failed');
+	// 		reader.onload = () => {
+	// 			const binaryStr = reader.result;
+	// 			console.log(binaryStr);
+	// 			setThumbnailImage(reader.result);
+	// 		};
+	// 		reader.readAsArrayBuffer(file);
+	// 	});
+	// }, []);
 
-	const handleImageChange = (e) => {
-		console.log('hey');
-		e.preventDefault();
-		let reader = new FileReader();
-		let file = e.target.files[0];
-		console.log(file);
-		reader.onloadend = () => {
-			setImageFileUpload(file);
-			console.log(reader.result);
-			// this.setState({
-			// 	file: file,
-			// 	imagePreviewUrl: reader.result,
-			// });
-		};
-		reader.readAsDataURL(file);
-	};
-
-	const handleImageUpload = (event) => {
-		event.preventDefault();
-		fileSelector.click();
-		// console.log(imageFileInputRef.current.files[0].name);
-	};
-
-	const extractVideoSnapshot = () => {
-		console.log('snapshotted');
-	};
+	const {
+		getRootProps,
+		getInputProps,
+		// isDragActive,
+		// isDragAccept,
+		// isDragReject,
+		// acceptedFiles,
+		open,
+	} = useDropzone({
+		accept: 'image/*',
+		noClick: true,
+		noKeyboard: true,
+		onDrop: (acceptedFiles) => {
+			const acceptedFile = acceptedFiles[0];
+			const image = Object.assign(acceptedFile, {
+				preview: URL.createObjectURL(acceptedFile),
+			});
+			setThumbnailImage(image.preview)
+			selectThumbnailFunction(chapter.id, image.preview);
+		},
+	});
 
 	return (
 		<Card className={classes.root} square={true}>
@@ -184,14 +158,12 @@ const CustomCard = ({
 					</Typography>
 				}
 				action={
-					<Box position="absolute" top="17%" left="80%">
 					<Button
 						key={chapter.id}
 						className={classes.deleteButton}
-						startIcon={<FaTimes className={classes.deleteIcon} size='14px'/>}
+						startIcon={<FaTimes className={classes.deleteIcon} size="14px" />}
 						onClick={deleteChapterFunction}
 					/>
-					</Box>
 				}
 			/>
 			<CardMedia
@@ -202,35 +174,30 @@ const CustomCard = ({
 				<Box position="absolute" top="10%" left="81%">
 					<Button
 						className={classes.thumbnailButton}
-						startIcon={<FaImages className={classes.thumbnailIcons}/>}
+						startIcon={<FaImages className={classes.thumbnailIcons} />}
 						onClick={() => handleThumbnailSelection('primary')}
 					/>
 				</Box>
 				<Box position="absolute" top="37%" left="81%">
 					<Button
 						className={classes.thumbnailButton}
-						startIcon={<FaChalkboardTeacher className={classes.thumbnailIcons}/>}
+						startIcon={
+							<FaChalkboardTeacher className={classes.thumbnailIcons} />
+						}
 						onClick={() => handleThumbnailSelection('secondary')}
 					/>
 				</Box>
 				<Box position="absolute" top="64%" left="81%">
-					<Button
-						key={chapter.id}
-						onClick={handleImageUpload}
-						className={classes.thumbnailButton}
-						startIcon={<FaUpload className={classes.thumbnailIcons}/>}
-						// onClick={() => handleThumbnailSelection('upload')}
-						// onClick={() => handleVideoUpload()}
-					/>
+					<div {...getRootProps()}>
+						<input {...getInputProps()} />
+						<Button
+							key={chapter.id}
+							className={classes.thumbnailButton}
+							onClick={open}
+							startIcon={<FaUpload className={classes.thumbnailIcons} />}
+						/>
+					</div>
 				</Box>
-				{/* <Box position="absolute" top="80%" left="85%">
-			<Button
-			key={chapter.id}
-			className={classes.thumbnailButton}
-			startIcon={<FaImage />}
-			onClick={() => extractVideoSnapshot()}
-			/>
-		</Box> */}
 			</CardMedia>
 			<div className={classes.cardActions}>
 				<div className={styles['CustomCard__TimeLabel']}>
