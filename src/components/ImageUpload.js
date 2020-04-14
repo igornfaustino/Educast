@@ -1,98 +1,28 @@
-// import React, { Component } from "react";
-// import styles from "./ImageUpload.module.css";
-import React, { useState } from 'react';
-import './ImageUpload.module.css';
+import React, {useCallback} from 'react'
+import {useDropzone} from 'react-dropzone'
 
-// class ImageUpload extends Component {
-//   constructor(props) {
-//     super(props);
-//     this.state = { hightlight: false };
-//     this.fileInputRef = React.createRef();
+function MyDropzone() {
+  const onDrop = useCallback((acceptedFiles) => {
+    acceptedFiles.forEach((file) => {
+      const reader = new FileReader()
 
-const ImageUpload = ({ handleFilesAddition }) => {
-  const openFileDialog = () => {
+      reader.onabort = () => console.log('file reading was aborted')
+      reader.onerror = () => console.log('file reading has failed')
+      reader.onload = () => {
+      // Do whatever you want with the file contents
+        const binaryStr = reader.result
+        console.log(binaryStr)
+      }
+      reader.readAsArrayBuffer(file)
+    })
     
-  }
+  }, [])
+  const {getRootProps, getInputProps} = useDropzone({onDrop})
+
+  return (
+    <div {...getRootProps()}>
+      <input {...getInputProps()} />
+      <p>Drag 'n' drop some files here, or click to select files</p>
+    </div>
+  )
 }
-
-export default ImageUpload;
-
-//     this.openFileDialog = this.openFileDialog.bind(this);
-//     this.onFilesAdded = this.onFilesAdded.bind(this);
-//     this.onDragOver = this.onDragOver.bind(this);
-//     this.onDragLeave = this.onDragLeave.bind(this);
-//     this.onDrop = this.onDrop.bind(this);
-//   }
-
-//   openFileDialog() {
-//     if (this.props.disabled) return;
-//     this.fileInputRef.current.click();
-//   }
-
-//   onFilesAdded(evt) {
-//     if (this.props.disabled) return;
-//     const files = evt.target.files;
-//     if (this.props.onFilesAdded) {
-//       const array = this.fileListToArray(files);
-//       this.props.onFilesAdded(array);
-//     }
-//   }
-
-//   onDragOver(event) {
-//     event.preventDefault();
-//     if (this.props.disabed) return;
-//     this.setState({ hightlight: true });
-//   }
-
-//   onDragLeave(event) {
-//     this.setState({ hightlight: false });
-//   }
-
-//   onDrop(event) {
-//     event.preventDefault();
-//     if (this.props.disabed) return;
-//     const files = event.dataTransfer.files;
-//     if (this.props.onFilesAdded) {
-//       const array = this.fileListToArray(files);
-//       this.props.onFilesAdded(array);
-//     }
-//     this.setState({ hightlight: false });
-//   }
-
-//   fileListToArray(list) {
-//     const array = [];
-//     for (var i = 0; i < list.length; i++) {
-//       array.push(list.item(i));
-//     }
-//     return array;
-//   }
-
-//   render() {
-//     return (
-//       <div
-//         className={`Dropzone ${this.state.hightlight ? "Highlight" : ""}`}
-//         onDragOver={this.onDragOver}
-//         onDragLeave={this.onDragLeave}
-//         onDrop={this.onDrop}
-//         onClick={this.openFileDialog}
-//         style={{ cursor: this.props.disabled ? "default" : "pointer" }}
-//       >
-//         <input
-//           ref={this.fileInputRef}
-//           className={styles["FileInput"]}
-//           type="file"
-//           multiple
-//           onChange={this.onFilesAdded}
-//         />
-//         <img
-//           alt="upload"
-//           className="Icon"
-//           src="baseline-cloud_upload-24px.svg"
-//         />
-//         <span>Upload Files</span>
-//       </div>
-//     );
-//   }
-// }
-
-// export default ImageUpload;
