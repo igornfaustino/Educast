@@ -15,10 +15,10 @@ import {
 import Box from '@material-ui/core/Box';
 import EditableTextField from './EditableTextField';
 import styles from './CustomCard.module.css';
-import videojs from 'video.js';
 
 const useStyles = makeStyles({
 	root: {
+		marginTop: '40px',
 		maxWidth: '210px',
 	},
 	media: {
@@ -30,13 +30,12 @@ const useStyles = makeStyles({
 		fontSize: 17,
 	},
 	deleteButton: {
-		float: 'center',
-		maxWidth: '25px',
-		maxHeight: '25px',
-		minWidth: '25px',
-		minHeight: '25px',
-		paddingRight: '4px',
-		paddingTop: '3px',
+		borderRadius: '1px',
+		maxWidth: '18px',
+		maxHeight: '18px',
+		minWidth: '18px',
+		minHeight: '18px',
+		// verticalAlign: 'middle',
 		color: '#12AADA',
 		background: 'white',
 		'&:hover': {
@@ -45,12 +44,13 @@ const useStyles = makeStyles({
 		},
 	},
 	thumbnailButton: {
+		borderRadius: '1px',
 		maxWidth: '30px',
 		maxHeight: '30px',
 		minWidth: '30px',
 		minHeight: '30px',
-		paddingRight: '4px',
-		paddingLeft: '15px',
+		// paddingRight: '4px',
+		// paddingLeft: '15px',
 		color: '#12AADA',
 		background: 'white',
 		'&:hover': {
@@ -62,10 +62,22 @@ const useStyles = makeStyles({
 		background: '#12AADA',
 		color: 'white',
 		padding: '12px',
+		maxHeight: '35px',
 	},
 	cardActions: {
 		background: '#F3E9FC',
 	},
+	deleteIcon: {
+		position: 'absolute',
+		top:'2px',
+		left: '2px',
+	},
+	thumbnailIcons: {
+		position: 'absolute',
+		top:'5px',
+		left: '4px',
+		// verticalAlign: 'center',
+	}
 });
 
 // Temporary functions
@@ -112,7 +124,7 @@ const CustomCard = ({
 		setFileSelector(buildFileSelector());
 	}, []);
 
-	const handleThumbnailSelection = path => {
+	const handleThumbnailSelection = (path) => {
 		selectThumbnailFunction(chapter.id, path);
 		if (path === 'primary') {
 			chapter.thumbnail = 'primary'; //take screenshot and replace this line
@@ -131,19 +143,19 @@ const CustomCard = ({
 		const fileSelector = document.createElement('input');
 		fileSelector.setAttribute('type', 'file');
 		fileSelector.setAttribute('ref', imageFileInputRef);
-    fileSelector.setAttribute('multiple', 'multiple');
+		fileSelector.setAttribute('multiple', 'multiple');
 		return fileSelector;
 	};
 
-	const handleImageChange = e => {
-    console.log('hey')
+	const handleImageChange = (e) => {
+		console.log('hey');
 		e.preventDefault();
 		let reader = new FileReader();
-    let file = e.target.files[0];
-    console.log(file)
+		let file = e.target.files[0];
+		console.log(file);
 		reader.onloadend = () => {
-      setImageFileUpload(file);
-      console.log(reader.result);
+			setImageFileUpload(file);
+			console.log(reader.result);
 			// this.setState({
 			// 	file: file,
 			// 	imagePreviewUrl: reader.result,
@@ -152,7 +164,7 @@ const CustomCard = ({
 		reader.readAsDataURL(file);
 	};
 
-	const handleImageUpload = event => {
+	const handleImageUpload = (event) => {
 		event.preventDefault();
 		fileSelector.click();
 		// console.log(imageFileInputRef.current.files[0].name);
@@ -172,14 +184,14 @@ const CustomCard = ({
 					</Typography>
 				}
 				action={
+					<Box position="absolute" top="17%" left="80%">
 					<Button
 						key={chapter.id}
-						variant="contained"
-						color="secondary"
 						className={classes.deleteButton}
-						startIcon={<FaTimes />}
+						startIcon={<FaTimes className={classes.deleteIcon} size='14px'/>}
 						onClick={deleteChapterFunction}
 					/>
+					</Box>
 				}
 			/>
 			<CardMedia
@@ -187,38 +199,38 @@ const CustomCard = ({
 				image={thumbnailImage}
 				title={'burger'}
 			>
-				<Box position="absolute" top="5%" left="85%">
+				<Box position="absolute" top="10%" left="81%">
 					<Button
 						className={classes.thumbnailButton}
-						startIcon={<FaImages />}
+						startIcon={<FaImages className={classes.thumbnailIcons}/>}
 						onClick={() => handleThumbnailSelection('primary')}
 					/>
 				</Box>
-				<Box position="absolute" top="30%" left="85%">
+				<Box position="absolute" top="37%" left="81%">
 					<Button
 						className={classes.thumbnailButton}
-						startIcon={<FaChalkboardTeacher />}
+						startIcon={<FaChalkboardTeacher className={classes.thumbnailIcons}/>}
 						onClick={() => handleThumbnailSelection('secondary')}
 					/>
 				</Box>
-				<Box position="absolute" top="55%" left="85%">
+				<Box position="absolute" top="64%" left="81%">
 					<Button
 						key={chapter.id}
 						onClick={handleImageUpload}
 						className={classes.thumbnailButton}
-						startIcon={<FaUpload />}
+						startIcon={<FaUpload className={classes.thumbnailIcons}/>}
 						// onClick={() => handleThumbnailSelection('upload')}
 						// onClick={() => handleVideoUpload()}
 					/>
 				</Box>
-				<Box position="absolute" top="80%" left="85%">
-					<Button
-						key={chapter.id}
-						className={classes.thumbnailButton}
-						startIcon={<FaImage />}
-						onClick={() => extractVideoSnapshot()}
-					/>
-				</Box>
+				{/* <Box position="absolute" top="80%" left="85%">
+			<Button
+			key={chapter.id}
+			className={classes.thumbnailButton}
+			startIcon={<FaImage />}
+			onClick={() => extractVideoSnapshot()}
+			/>
+		</Box> */}
 			</CardMedia>
 			<div className={classes.cardActions}>
 				<div className={styles['CustomCard__TimeLabel']}>
