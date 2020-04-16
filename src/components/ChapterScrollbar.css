@@ -29,8 +29,8 @@ input[type='range']:focus::-webkit-slider-runnable-track {
 }
 
 .carousel-container-with-scrollbar {
-	padding-left: 100px;
-	width: 90%;
+	/* padding-left: 100px; */
+	width: 100%;
 	/* padding-right: 400px; */
 	padding-bottom: 30px;
 	/* overflow: visible !important; */
@@ -47,3 +47,6 @@ input[type='range']:focus::-webkit-slider-runnable-track {
 	width: 100%;
 }
 
+.custom-left-arrow {
+	
+}
