@@ -1,0 +1,92 @@
+@import '../variables.scss';
+
+.fullscreenArea {
+	// height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+.wrapper {
+	height: 30vh;
+	display: flex;
+	background-color: $video-bg;
+	justify-content: center;
+	padding: 8px;
+}
+
+.inverse-video {
+	flex-direction: row-reverse;
+}
+
+.videoPlayer {
+	height: 100% !important;
+	width: 100% !important;
+}
+
+.space {
+	margin: 4px;
+	position: relative;
+}
+
+.swap {
+	position: absolute;
+	z-index: 2;
+	background-color: $dark-gray;
+	color: $text-light;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	padding: 2px;
+	cursor: pointer;
+	transition: filter 0.2s;
+
+	&:hover {
+		filter: brightness(80%);
+	}
+}
+
+.iconLeft {
+	position: absolute;
+	z-index: 2;
+
+	bottom: 1rem;
+	left: 1rem;
+
+	div {
+		background-color: $dark-gray;
+		color: $text-light;
+		padding: 0.5rem;
+
+		&:not(:last-child) {
+			margin-bottom: 8px;
+		}
+	}
+}
+
+.iconRight {
+	position: absolute;
+	z-index: 2;
+	bottom: 1rem;
+	right: 1rem;
+
+	div {
+		background-color: $dark-gray;
+		color: $text-light;
+		padding: 0.5rem;
+
+		&:not(:last-child) {
+			margin-bottom: 8px;
+		}
+	}
+}
+
+.hideLayer {
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5);
+	position: absolute;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 1;
+}

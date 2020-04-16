@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import './App.scss';
+
+import VideoContainer from './components/VideoContainer';
 import Tabs from './components/Tabs';
 import { BrowserRouter } from 'react-router-dom';
 import { Container, Button } from 'reactstrap';
@@ -11,19 +13,9 @@ function App() {
 	return (
 		<Container fluid className="app">
 			<div className="video-div">
-				<div
-					style={{
-						width: '100%',
-						height: '100%',
-						justifyContent: 'center',
-						alignItems: 'center',
-						display: 'flex',
-					}}
-				>
-					<span style={{ fontSize: 50 }}>VIDEO HERE</span>
-				</div>
+				<VideoContainer />
 			</div>
-			<Container fluid className="edition-div">
+			<div className="edition-div">
 				<div className="edition-div-container">
 					<BrowserRouter>
 						<Tabs step={step} setStep={setStep} />
@@ -44,7 +36,7 @@ function App() {
 						</Button>
 					</div>
 				</div>
-			</Container>
+			</div>
 		</Container>
 	);
 }

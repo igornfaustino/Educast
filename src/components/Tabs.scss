@@ -1,5 +1,8 @@
 .btn-tab {
 	background-color: #333333 !important;
+	max-width: 150px;
+	max-height: 35;
+	text-align: left !important;
 	@media (max-width: 615px) {
 		span {
 			display: none;
@@ -22,7 +25,7 @@
 	background-color: white;
 	height: 100%;
 	width: 100% !important;
-	margin: 3px !important;
+	// margin: 3px !important;
 	margin-top: 0 !important;
 }
 
