@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 import CustomSlider from './CustomSlider';
-import ImageUpload from './ImageUpload';
 
 const Chapters = ({ props }) => {
 	const [chapters, setChapters] = useState([]);
-	// const [files, setFiles] = useState([]);
 
 	const initialChapters = [
 		{
@@ -94,10 +92,6 @@ const Chapters = ({ props }) => {
 		});
 	};
 
-	// const handleFilesAddition = (file) => {
-	//   setFiles(files.concat(file));
-	// }
-
 	return (
 		<div>
 			<CustomSlider
@@ -106,10 +100,6 @@ const Chapters = ({ props }) => {
 				updateTitleFunction={updateTitleFunction}
 				selectThumbnailFunction={selectThumbnailFunction}
 			/>
-			{/* <ImageUpload
-        // onFilesAdded={handleFilesAddition}
-        // disabled={this.state.uploading || this.state.successfullUploaded}
-      /> */}
 		</div>
 	);
 };
