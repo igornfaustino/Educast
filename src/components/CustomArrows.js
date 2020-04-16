@@ -1,13 +1,10 @@
 import * as React from 'react';
 import styles from './CustomArrows.module.css';
 import {
-	FaUpload,
-	FaImages,
-	FaTimes,
 	FaChalkboardTeacher,
 } from 'react-icons/fa';
 
-const CustomLeftArrow = ({ onClick }) => {
+const CustomLeftArrow = ({ carouselState }) => {
 	return (
 		<div className={styles['left-arrow']}>
 			<i>

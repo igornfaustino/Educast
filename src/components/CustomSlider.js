@@ -3,7 +3,7 @@ import Carousel from 'react-multi-carousel';
 import CustomCard from './CustomCard';
 import 'react-multi-carousel/lib/styles.css';
 import './CustomSlider.module.css';
-import { CustomLeftArrow, CustomRightArrow } from './CustomArrows';
+import { CustomRightArrow } from './CustomArrows';
 import './ChapterScrollbar.css';
 
 const CustomSlider = ({
@@ -13,7 +13,8 @@ const CustomSlider = ({
 	selectThumbnailFunction,
 }) => {
 	const [carousel, setCarousel] = useState('');
-	const [additionalTransfrom, setAdditionalTransform] = useState(0);
+	const [additionalTransform, setAdditionalTransform] = useState(0);
+	const [sliderEnabled, setSliderEnabled] = useState(true)
 
 	const cardsToShow = () => {
 		return chapters.map((chapter) => (
@@ -25,6 +26,29 @@ const CustomSlider = ({
 				selectThumbnailFunction={selectThumbnailFunction}
 			></CustomCard>
 		));
+	};
+
+	const CustomLeftArrow = ({ carouselState }) => {
+		let value = 0;
+		let carouselItemWidth = 0;
+		if (carousel) {
+			carouselItemWidth = carousel.state.itemWidth;
+			const maxTranslateX = Math.round(
+				// so that we don't over-slide
+				carouselItemWidth *
+					(carousel.state.totalItems - carousel.state.slidesToShow) +
+					150
+			);
+			value = maxTranslateX / 100; // calculate the unit of transform for the slider
+				// value = ;
+		}
+
+		return (
+			<div className='custom-left-arrow'>
+
+				{/* <i onClick={() => onClick()} className="custom-left-arrow" /> */}
+			</div>
+		);
 	};
 
 	const ChapterScrollbar = ({ carouselState }) => {
@@ -39,6 +63,7 @@ const CustomSlider = ({
 					150
 			);
 			value = maxTranslateX / 100; // calculate the unit of transform for the slider
+				// value = ;
 		}
 		const { transform } = carouselState;
 		return (
@@ -46,20 +71,22 @@ const CustomSlider = ({
 				<input
 					type="range"
 					value={Math.round(Math.abs(transform) / value)}
-					defaultValue={0}
+					// defaultValue={0}
 					max={
 						(carouselItemWidth *
 							(carouselState.totalItems - carouselState.slidesToShow) +
-							(additionalTransfrom === 150 ? 0 : 150)) /
+							(additionalTransform === 150 ? 0 : 150)) /
 						value
 					}
 					onChange={(e) => {
 						if (carousel.isAnimationAllowed) {
 							carousel.isAnimationAllowed = false;
 						}
+						console.log(carouselState.totalItems)
 						const nextTransform = e.target.value * value;
+						console.log(e.target.value)
 						const nextSlide = Math.round(nextTransform / carouselItemWidth);
-						if (e.target.value === 0 && additionalTransfrom === 150) {
+						if (e.target.value === 0 && additionalTransform === 150) {
 							carousel.isAnimationAllowed = true;
 							setAdditionalTransform(0);
 						}
@@ -80,12 +107,12 @@ const CustomSlider = ({
 				max: 3000,
 				min: 1024,
 			},
-			items: 4,
+			items: 5,
 			partialVisibilityGutter: 40,
 		},
 		mobile: {
 			breakpoint: {
-				max: 464,
+				max: 800,
 				min: 0,
 			},
 			items: 2,
@@ -93,10 +120,10 @@ const CustomSlider = ({
 		},
 		tablet: {
 			breakpoint: {
-				max: 1024,
-				min: 464,
+				max: 1200,
+				min: 800,
 			},
-			items: 4,
+			items: 3,
 			partialVisibilityGutter: 30,
 		},
 	};
@@ -106,14 +133,14 @@ const CustomSlider = ({
 		<div className="container-fluid">
 			<Carousel
 				className='custom-carousel'
-				additionalTransfrom={additionalTransfrom}
+				additionalTransform={additionalTransform}
 				ssr={false}
 				ref={(el) => setCarousel(el)}
 				// arrows
 				partialVisbile={false}
 				// centerMode={true}
 				// className=""
-				// customLeftArrow={<CustomLeftArrow />}
+				customLeftArrow={<CustomLeftArrow />}
 				// customRightArrow={<CustomRightArrow />}
 				customButtonGroup={<ChapterScrollbar />}
 				infinite={false}
@@ -126,10 +153,10 @@ const CustomSlider = ({
 				// sliderClass=""
 				// slidesToSlide={1}
 				beforeChange={(nextSlide) => {
-					if (nextSlide !== 0 && additionalTransfrom !== 150) {
+					if (nextSlide !== 0 && additionalTransform !== 150) {
 						setAdditionalTransform(150);
 					}
-					if (nextSlide === 0 && additionalTransfrom === 150) {
+					if (nextSlide === 0 && additionalTransform === 150) {
 						setAdditionalTransform(0);
 					}
 				}}
