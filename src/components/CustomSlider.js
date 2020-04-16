@@ -1,10 +1,22 @@
 import React, { useState } from 'react';
 import Carousel from 'react-multi-carousel';
+import { makeStyles } from '@material-ui/core/styles';
 import CustomCard from './CustomCard';
 import 'react-multi-carousel/lib/styles.css';
 import './CustomSlider.module.css';
 import { CustomRightArrow } from './CustomArrows';
+import Button from '@material-ui/core/Button';
 import './ChapterScrollbar.css';
+import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+//todo: if arrows disappear update scrollbar to 100 or 0
+
+const useStyles = makeStyles({
+	leftArrow: {
+		position: 'absolute',
+		left: '-1px',
+		maxWidth: '210px',
+	},
+});
 
 const CustomSlider = ({
 	chapters,
@@ -14,7 +26,8 @@ const CustomSlider = ({
 }) => {
 	const [carousel, setCarousel] = useState('');
 	const [additionalTransform, setAdditionalTransform] = useState(0);
-	const [sliderEnabled, setSliderEnabled] = useState(true)
+	const [sliderEnabled, setSliderEnabled] = useState(true);
+	const classes = useStyles();
 
 	const cardsToShow = () => {
 		return chapters.map((chapter) => (
@@ -32,6 +45,7 @@ const CustomSlider = ({
 		let value = 0;
 		let carouselItemWidth = 0;
 		if (carousel) {
+			console.log('app its workinging')
 			carouselItemWidth = carousel.state.itemWidth;
 			const maxTranslateX = Math.round(
 				// so that we don't over-slide
@@ -40,14 +54,17 @@ const CustomSlider = ({
 					150
 			);
 			value = maxTranslateX / 100; // calculate the unit of transform for the slider
-				// value = ;
+			// value = ;
 		}
 
 		return (
-			<div className='custom-left-arrow'>
-
-				{/* <i onClick={() => onClick()} className="custom-left-arrow" /> */}
-			</div>
+			// <div className='custom-left-arrow'>
+			<Button
+				className={classes.leftArrow}
+				startIcon={<FaChevronLeft className='left-arrow-icon' />}
+				// onClick={() => handleThumbnailSelection('primary')}
+			/>
+			/* <i onClick={() => onClick()} className="custom-left-arrow" /> */
 		);
 	};
 
@@ -55,6 +72,7 @@ const CustomSlider = ({
 		let value = 0;
 		let carouselItemWidth = 0;
 		if (carousel) {
+			console.log(carousel.state);
 			carouselItemWidth = carousel.state.itemWidth;
 			const maxTranslateX = Math.round(
 				// so that we don't over-slide
@@ -63,9 +81,9 @@ const CustomSlider = ({
 					150
 			);
 			value = maxTranslateX / 100; // calculate the unit of transform for the slider
-				// value = ;
 		}
 		const { transform } = carouselState;
+		console.log(transform);
 		return (
 			<div className="custom-slider">
 				<input
@@ -82,9 +100,9 @@ const CustomSlider = ({
 						if (carousel.isAnimationAllowed) {
 							carousel.isAnimationAllowed = false;
 						}
-						console.log(carouselState.totalItems)
+						// console.log(carouselState.totalItems)
 						const nextTransform = e.target.value * value;
-						console.log(e.target.value)
+						// console.log(e.target.value)
 						const nextSlide = Math.round(nextTransform / carouselItemWidth);
 						if (e.target.value === 0 && additionalTransform === 150) {
 							carousel.isAnimationAllowed = true;
@@ -131,15 +149,15 @@ const CustomSlider = ({
 	return (
 		// <div style={{"width: 100%"}}></div>
 		<div className="container-fluid">
+			<CustomLeftArrow />
 			<Carousel
-				className='custom-carousel'
+				className="custom-carousel"
 				additionalTransform={additionalTransform}
 				ssr={false}
 				ref={(el) => setCarousel(el)}
 				// arrows
 				partialVisbile={false}
 				// centerMode={true}
-				// className=""
 				customLeftArrow={<CustomLeftArrow />}
 				// customRightArrow={<CustomRightArrow />}
 				customButtonGroup={<ChapterScrollbar />}
