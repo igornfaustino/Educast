@@ -3,7 +3,7 @@ import React, {
   useEffect,
   useMemo,
   useReducer,
-  useCallback
+  useCallback,
 } from "react";
 import { GiFilmStrip, GiStack } from "react-icons/gi";
 import { FaPlusSquare, FaMinusSquare } from "react-icons/fa";
@@ -25,7 +25,7 @@ const Timeline = ({
   scenes,
   dispatchScene,
   chapters,
-  setChapters
+  setChapters,
 }) => {
   const [selectedScenes, setSelectedScenes] = useState([]);
   const [selectedChapters, setSelectedChapters] = useState([]);
@@ -75,7 +75,7 @@ const Timeline = ({
 
     setDeltaPosition({
       x: x + ui.deltaX,
-      y: y + ui.deltaY
+      y: y + ui.deltaY,
     });
   };
 
@@ -86,7 +86,7 @@ const Timeline = ({
 
   const deleteChapter = () => {
     // dispatchChapter({ type: "delete", deleteIdx: selectedChapters });
-    setChapters(prevState => {
+    setChapters((prevState) => {
       const tmp = prevState.filter((val, idx) => {
         return !selectedChapters.includes(idx);
       });
@@ -99,7 +99,7 @@ const Timeline = ({
   // check if the main marker is in a scene
   const isMarkerInScene = () => {
     if (
-      scenes.some(scene => {
+      scenes.some((scene) => {
         return (
           deltaPosition.x >= scene.start.x && deltaPosition.x <= scene.end.x
         );
@@ -113,7 +113,7 @@ const Timeline = ({
 
   const getSticksEndPosition = () => {
     // get the next scene after the marker
-    const possibleScenes = scenes.filter(scene => {
+    const possibleScenes = scenes.filter((scene) => {
       return scene.start.x > deltaPosition.x;
     });
 
@@ -139,7 +139,7 @@ const Timeline = ({
     // create two objects to hold stick's position
     const scene = {
       start: { x: deltaPosition.x, y: 0 },
-      end: { x: endPosition, y: 0 }
+      end: { x: endPosition, y: 0 },
     };
 
     dispatchScene({ sceneIdx: -1, scene });
@@ -153,7 +153,7 @@ const Timeline = ({
       return;
     }
 
-    setChapters(prevState => {
+    setChapters((prevState) => {
       let tmpMarkInChapter = [...prevState];
 
       tmpMarkInChapter.push(deltaPosition.x);
@@ -180,14 +180,19 @@ const Timeline = ({
 
         const endSceneX = Math.max.apply(
           Math,
-          scenes.map(function(scene) {
+          scenes.map(function (scene) {
             return scene.end.x;
           })
         );
 
         const startTag = (
           <div
-            className={styles["chapter-limiter"]}
+            className={cx(
+              styles["chapter-tag"],
+              selectedChapters.includes(idx)
+                ? styles["chapter-tag--blue"]
+                : styles["chapter-tag--gray"]
+            )}
             style={{ marginLeft: markIn }}
           ></div>
         );
@@ -202,10 +207,10 @@ const Timeline = ({
                 : endSceneX - markIn + "px",
               backgroundColor: selectedChapters.includes(idx)
                 ? "#80b9e7"
-                : "#cfcdcd"
+                : "#cfcdcd",
             }}
             onClick={() => {
-              setSelectedChapters(prevState => {
+              setSelectedChapters((prevState) => {
                 const tmpSelectedChapters = [...prevState];
                 if (tmpSelectedChapters.indexOf(idx) !== -1) {
                   tmpSelectedChapters.splice(
@@ -248,9 +253,9 @@ const Timeline = ({
               // ve qual pauzinho tu tá usando
               const scene = {
                 start: { x: ui.x, y: 0 },
-                end: scenes[idx].end
+                end: scenes[idx].end,
               };
-              dispatchScene({ sceneIdx: idx, scene });
+              dispatchScene({ sceneIdx: idx, scene, isStart: true });
             }}
           >
             <div
@@ -274,9 +279,9 @@ const Timeline = ({
               // ve qual pauzinho tu tá usando
               const scene = {
                 start: scenes[idx].start,
-                end: { x: ui.x, y: 0 }
+                end: { x: ui.x, y: 0 },
               };
-              dispatchScene({ sceneIdx: idx, scene });
+              dispatchScene({ sceneIdx: idx, scene, isStart: false });
             }}
           >
             <div
@@ -301,10 +306,10 @@ const Timeline = ({
                 "px",
               backgroundColor: selectedScenes.includes(idx)
                 ? "#80b9e7"
-                : "#cfcdcd"
+                : "#cfcdcd",
             }}
             onClick={() => {
-              setSelectedScenes(prevState => {
+              setSelectedScenes((prevState) => {
                 const tmpSelectedScenes = [...prevState];
                 if (tmpSelectedScenes.indexOf(idx) !== -1) {
                   tmpSelectedScenes.splice(tmpSelectedScenes.indexOf(idx), 1);
@@ -393,7 +398,7 @@ const Timeline = ({
       <div className={styles["timeline"]} ref={videoTimelineRef}>
         <div
           style={{
-            width: timerDivWidth + 34 + "px"
+            width: timerDivWidth + 34 + "px",
           }}
           className={styles["timeline__video-invisible"]}
         >
