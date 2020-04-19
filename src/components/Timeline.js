@@ -166,18 +166,6 @@ const Timeline = ({
   const renderChapterNew = useMemo(
     () =>
       chapters.map((markIn, idx) => {
-        // check if it is between chapters
-        if (chapters[idx - 1] && chapters[idx + 1]) {
-        }
-
-        // check if it is the first chapter
-        if (!chapters[idx - 1] && !chapters[idx + 1]) {
-        }
-
-        // check if it is the last chapter
-        if (!chapters[idx + 1]) {
-        }
-
         const endSceneX = Math.max.apply(
           Math,
           scenes.map(function (scene) {
