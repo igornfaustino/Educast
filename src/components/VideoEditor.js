@@ -27,6 +27,24 @@ const VideoEditor = () => {
 
     // delete scene
     if (action.type === "delete") {
+      // delete chapters that are inside a deleted scene
+      const deletedScenes = state.filter((val, idx) => {
+        return action.deleteIdx.includes(idx);
+      });
+
+      deletedScenes.forEach((scene) => {
+        // chapters that are in a scene
+        const chaptersToDelete = chapters.filter((chap) => {
+          return scene.start.x <= chap && scene.end.x >= chap;
+        });
+        if (chaptersToDelete.length > 0) {
+          chaptersToDelete.forEach((element) => {
+            chapters.splice(chapters.indexOf(element), 1);
+          });
+        }
+      });
+
+      // update the scenes correctly
       const updatedState = state.filter((val, idx) => {
         return !action.deleteIdx.includes(idx);
       });
@@ -66,21 +84,37 @@ const VideoEditor = () => {
       return [...state];
     }
 
-    // verify if there is a chapter that is not inside a scene
+    // check if there was a chapter between the moved scene
     if (
-      chapters.filter(chap => {
-        return !(action.scene.start.x <= chap && action.scene.end.x >= chap);
-      }).length > 0
+      chapters.some((chap) => {
+        return (
+          (action.scene.start.x - 10 <= chap && action.scene.end.x >= chap) ||
+          (action.scene.start.x <= chap && action.scene.end.x + 10 >= chap)
+        );
+      })
     ) {
-      const chapter = chapters.filter(chap => {
-        return !(action.scene.start.x <= chap && action.scene.end.x >= chap);
+      const chap = chapters.filter((chap) => {
+        return (
+          (action.scene.start.x - 10 <= chap && action.scene.end.x >= chap) ||
+          (action.scene.start.x <= chap && action.scene.end.x + 10 >= chap)
+        );
       })[0];
-      // drag the chapter too
-      chapters[chapters.indexOf(chapter)] = action.scene.start.x;
+      if (action.isStart) {
+        if (action.scene.start.x > chap) {
+          // drag the chapter too
+          chapters[chapters.indexOf(chap)] = action.scene.start.x;
+        }
+      } else {
+        if (action.scene.end.x < chap) {
+          // delete the chapter
+          chapters.splice(chapters.indexOf(chap), 1);
+        }
+      }
     }
 
     // just update
     updatedState[action.sceneIdx] = action.scene; // {start: {x,y }, end: {x,y}}
+
     return [...updatedState];
   };
 

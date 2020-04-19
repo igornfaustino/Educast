@@ -154,42 +154,55 @@ $chapter-limiter-size: 0.35rem;
 
 // CHAPTER STYLES
 
-.chapter-limiter {
+.chapter-tag {
   height: 10%;
   width: $scene-limiter-width;
-  // background-color: $scene-limiter-color;
   position: absolute;
   top: 0.99rem;
   z-index: 300;
   left: -2px;
-  // cursor: col-resize;
 
-  border-top: $chapter-limiter-size solid gray;
   border-bottom: $chapter-limiter-size solid transparent;
   border-left: $chapter-limiter-size solid transparent;
   border-right: $chapter-limiter-size solid transparent;
+
+  &:before {
+    content: "";
+    position: absolute;
+    top: -1.45rem;
+    right: -$chapter-limiter-size;
+  }
+
+  &:after {
+    content: "";
+    position: absolute;
+    top: -0.5375rem;
+    left: -0.0725rem;
+    background-color: white;
+    height: 0.1875rem;
+    width: 0.1875rem;
+    border-radius: 50%;
+  }
 }
 
-.chapter-limiter::before {
-  content: "";
-  position: absolute;
-  top: -1.45rem;
-  right: -$chapter-limiter-size;
-
-  border-top: 0.55rem solid gray;
-  border-bottom: 0.55rem solid gray;
-  border-left: $chapter-limiter-size solid gray;
-  border-right: $chapter-limiter-size solid gray;
+.chapter-tag--gray {
+  border-top: $chapter-limiter-size solid gray;
+  &:before {
+    border-top: 0.55rem solid gray;
+    border-bottom: 0.55rem solid gray;
+    border-left: $chapter-limiter-size solid gray;
+    border-right: $chapter-limiter-size solid gray;
+  }
 }
-.chapter-limiter::after {
-  content: "";
-  position: absolute;
-  top: -0.5375rem;
-  left: -0.0725rem;
-  background-color: white;
-  height: 0.1875rem;
-  width: 0.1875rem;
-  border-radius: 50%;
+
+.chapter-tag--blue {
+  border-top: $chapter-limiter-size solid #80b9e7;
+  &:before {
+    border-top: 0.55rem solid #80b9e7;
+    border-bottom: 0.55rem solid #80b9e7;
+    border-left: $chapter-limiter-size solid #80b9e7;
+    border-right: $chapter-limiter-size solid #80b9e7;
+  }
 }
 
 // SCENE STYLES
