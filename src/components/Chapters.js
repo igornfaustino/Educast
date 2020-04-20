@@ -41,6 +41,27 @@ const Chapters = ({ props }) => {
 			title: 'Chapter 5',
 			thumbnail: 'primaryScreen',
 		},
+		{
+			id: 6,
+			initTime: 6,
+			finalTime: 7,
+			title: 'Chapter 6',
+			thumbnail: 'primaryScreen',
+		},
+		{
+			id: 7,
+			initTime: 7,
+			finalTime: 8,
+			title: 'Chapter 7',
+			thumbnail: 'primaryScreen',
+		},
+		{
+			id: 8,
+			initTime: 8,
+			finalTime: 9,
+			title: 'Chapter 8',
+			thumbnail: 'primaryScreen',
+		},
 	];
 
 	useEffect(() => {
@@ -89,7 +110,9 @@ const Chapters = ({ props }) => {
 					})
 				);
 			}
+			return 1;
 		});
+		return 0;
 	};
 
 	return (
