@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import style from './MetaData.module.scss'
 import Labels from './Labels'
 import LabelComment from './LabelComment'
+import LabelChip from './LabelChip'
 
 
 const MetaData = () => {
@@ -12,7 +13,7 @@ const MetaData = () => {
         data: '13 Agosto',
         local: 'Laboratório Nacional de Engenharia Civil',
         descricao: 'Comentário Comentário Comentário Comentário Comentário Comentário Comentário Comentário Comentário',
-        tag: 'Aula de React x',
+        tag: ['Aula de React'],
     });
 
     return (
@@ -27,8 +28,8 @@ const MetaData = () => {
                         <Labels title="Local" type="text" value={data.local} />
                     </div>
                     <div className={style.container}>
-                        <LabelComment title="Descrição" type="text" value={data.descricao} style={style["textarea-comment"]} minRows={3} maxRows={5} />                      
-                        <LabelComment title="Tag" type="text" value={data.tag} style={style["textarea-tag"]} minRows={1} maxRows={5} />
+                        <LabelComment title="Descrição" type="text" value={data.descricao} style={style["textarea-comment"]} minRows={4} maxRows={7} />                      
+                        <LabelChip title="Tag" type="text" value={data.tag}  minRows={1} maxRows={5} />
                     </div>
 
                     <div className={style.group}></div>
