@@ -112,27 +112,9 @@ const CustomCard = ({
 		}
 	};
 
-	// const onDrop = useCallback((acceptedFiles) => {
-	// 	acceptedFiles.forEach((file) => {
-	// 		const reader = new FileReader();
-	// 		reader.onabort = () => console.log('file reading was aborted');
-	// 		reader.onerror = () => console.log('file reading has failed');
-	// 		reader.onload = () => {
-	// 			const binaryStr = reader.result;
-	// 			console.log(binaryStr);
-	// 			setThumbnailImage(reader.result);
-	// 		};
-	// 		reader.readAsArrayBuffer(file);
-	// 	});
-	// }, []);
-
 	const {
 		getRootProps,
 		getInputProps,
-		// isDragActive,
-		// isDragAccept,
-		// isDragReject,
-		// acceptedFiles,
 		open,
 	} = useDropzone({
 		accept: 'image/*',
