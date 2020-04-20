@@ -7,6 +7,8 @@ import TimeIndicator from './TimeIndicator';
 import cx from 'classnames';
 import styles from './Timeline.module.scss';
 
+const FINAL_SPACE = 34;
+
 const Timeline = ({
 	videoBoxRef,
 	timerDivWidth,
@@ -25,8 +27,6 @@ const Timeline = ({
 }) => {
 	const [selectedScenes, setSelectedScenes] = useState([]);
 	const [selectedChapters, setSelectedChapters] = useState([]);
-
-	const [backgroundImg, setBackgroundImg] = useState('');
 
 	const [disableVideoButton, setDisableVideoButton] = useState(false);
 	const [disableChapterButton, setDisableChapterButton] = useState(false);
@@ -70,10 +70,9 @@ const Timeline = ({
 
 	const handleDrag = (e, ui) => {
 		const { x, y } = deltaPosition;
-
+		console.log('asdkadkaskDSFASFSAFASFAS', ui);
 		setDeltaPosition({
-			x: x + ui.deltaX,
-			y: y + ui.deltaY,
+			x: x + ui.deltaX / timerDivWidth,
 		});
 	};
 
@@ -365,7 +364,7 @@ const Timeline = ({
 							marginLeft: scenes[idx].start.x + 4 + 'px',
 							backgroundColor: selectedScenes.includes(idx)
 								? 'rgba(63, 136, 191, 0.75)'
-								: 'rgba(0, 0, 0, 0)',
+								: 'rgba(84, 80, 79, 0.75)',
 							position: 'absolute',
 							height: '100%',
 							width:
@@ -402,6 +401,8 @@ const Timeline = ({
 			}),
 		[scenes, dispatchScene, selectedScenes]
 	);
+
+	console.log(timerDivWidth);
 
 	return (
 		<div className={styles['timeline__wrapper']}>
@@ -466,7 +467,7 @@ const Timeline = ({
 			<div className={styles['timeline']} ref={videoTimelineRef}>
 				<div
 					style={{
-						width: timerDivWidth + 34 + 'px',
+						width: timerDivWidth + FINAL_SPACE + 'px',
 					}}
 					className={styles['timeline__video-invisible']}
 				>
@@ -496,6 +497,7 @@ const Timeline = ({
 					axis="x"
 					handle=".handle"
 					onDrag={handleDrag}
+					position={{ x: deltaPosition.x * timerDivWidth, y: 0 }}
 					bounds=".timeline__video-invisible"
 					grid={[10, 0]}
 				>
