@@ -99,7 +99,12 @@ function App() {
 			<div className="edition-div">
 				<div className="edition-div-container">
 					<BrowserRouter>
-						<Tabs step={step} setStep={setStep} />
+						<Tabs
+							step={step}
+							setStep={setStep}
+							getPresenterScreenShot={getPresenterScreenShot}
+							getPresentationScreenShot={getPresentationScreenShot}
+						/>
 					</BrowserRouter>
 				</div>
 				<div className="stepper-buttons-container">

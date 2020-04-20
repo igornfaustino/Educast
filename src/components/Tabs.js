@@ -8,7 +8,12 @@ import { MdChat } from 'react-icons/md';
 import RouteContentArea from './ContentArea';
 import { useHistory } from 'react-router-dom';
 
-function Tabs({ step, setStep }) {
+function Tabs({
+	step,
+	setStep,
+	getPresenterScreenShot,
+	getPresentationScreenShot,
+}) {
 	let history = useHistory();
 	const [buttons, setButtons] = useState([
 		{
@@ -111,7 +116,10 @@ function Tabs({ step, setStep }) {
 			</ButtonGroup>
 			<ButtonGroup></ButtonGroup>
 			<Container fluid className="container-tabs-content">
-				<RouteContentArea />
+				<RouteContentArea
+					getPresenterScreenShot={getPresenterScreenShot}
+					getPresentationScreenShot={getPresentationScreenShot}
+				/>
 			</Container>
 		</div>
 	);
