@@ -1,9 +1,7 @@
-import React, { useState, useReducer } from 'react';
+import React, { useState, useReducer, useEffect } from 'react';
 import Timeline from './Timeline';
 import TimelineControl from './TimelineControl';
 import { act } from 'react-dom/test-utils';
-
-const videoLength = 200;
 
 const VideoEditor = ({ getPresenterScreenShot, getPresentationScreenShot }) => {
 	const videoBoxRef = useState(React.createRef())[0];
@@ -20,6 +18,8 @@ const VideoEditor = ({ getPresenterScreenShot, getPresentationScreenShot }) => {
 	const [deltaPosition, setDeltaPosition] = useState({ x: 0, y: 0 });
 
 	const [chapters, setChapters] = useState([]);
+
+	const [zoom, setZoom] = useState(2);
 
 	// handle scenes changes
 	const sceneReducer = (state, action) => {
@@ -124,7 +124,13 @@ const VideoEditor = ({ getPresenterScreenShot, getPresentationScreenShot }) => {
 
 	const [scenes, dispatchScene] = useReducer(sceneReducer, []);
 
-	const timerDivWidth = useState(videoLength * 10)[0];
+	const [videoLength, setVideoLength] = useState(200);
+	const [timerDivWidth, setTimerDivWidth] = useState(videoLength * 10);
+
+	useEffect(() => {
+		setVideoLength(200 * zoom);
+		setTimerDivWidth(200 * zoom * 10);
+	}, [zoom]);
 
 	return (
 		<div style={{}}>
@@ -145,14 +151,12 @@ const VideoEditor = ({ getPresenterScreenShot, getPresentationScreenShot }) => {
 				getPresentationScreenShot={getPresentationScreenShot}
 			/>
 			<TimelineControl
-				chapterTimelineRef={chapterTimelineRef}
 				mainScrollbarRef={mainScrollbarRef}
-				setChapterTimelineRef={setChapterTimelineRef}
-				setTimelineIndicatorRef={setTimelineIndicatorRef}
 				setVideoTimelineRef={setVideoTimelineRef}
-				timelineIndicatorRef={timelineIndicatorRef}
 				timerDivWidth={timerDivWidth}
 				videoTimelineRef={videoTimelineRef}
+				zoom={zoom}
+				setZoom={setZoom}
 			/>
 		</div>
 	);
