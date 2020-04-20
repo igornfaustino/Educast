@@ -28,7 +28,7 @@ const MetaData = () => {
                         <Labels title="Local" type="text" value={data.local} />
                     </div>
                     <div className={style.container}>
-                        <LabelComment title="Descrição" type="text" value={data.descricao} style={style["textarea-comment"]} minRows={4} maxRows={7} />                      
+                        <LabelComment title="Descrição" type="text" value={data.descricao} style={[style["textarea-comment"], style["contentarea-comment"]]} minRows={4} maxRows={7} />                      
                         <LabelChip title="Tag" type="text" value={data.tag}  minRows={1} maxRows={5} />
                     </div>
 
