@@ -8,22 +8,33 @@
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "bootstrap": "^4.4.1",
+<<<<<<< HEAD
     "classnames": "^2.2.6",
     "material-ui-chip-input": "^1.1.0",
     "moment": "^2.24.0",
+=======
+    "material-ui-chip-input": "^2.0.0-beta.2",
+>>>>>>> 1c433ff056756571acdcf089ce7ee5fc2a435da5
     "node-sass": "^4.13.1",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
     "react-hotkeys-hook": "^2.1.1",
     "react-icons": "^3.9.0",
+<<<<<<< HEAD
     "react-mde": "^8.3.0",
+=======
+>>>>>>> 1c433ff056756571acdcf089ce7ee5fc2a435da5
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.0",
     "react-stepper-horizontal": "^1.0.11",
     "react-textarea-autosize": "^7.1.2",
+<<<<<<< HEAD
     "reactstrap": "^8.4.1",
     "showdown": "^1.9.1",
     "video.js": "^7.6.6"
+=======
+    "reactstrap": "^8.4.1"
+>>>>>>> 1c433ff056756571acdcf089ce7ee5fc2a435da5
   },
   "scripts": {
     "start": "react-scripts start",
