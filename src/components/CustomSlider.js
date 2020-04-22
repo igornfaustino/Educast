@@ -10,17 +10,21 @@ import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 //	    solve funny scrollbar behavior that happens when deleting cards
 const useStyles = makeStyles({
 	leftArrow: {
-		position: 'absolute',
+    position: 'absolute',
 		color: '#0099ff',
-		top: '14rem',
-		left: '0px',
+    left: '2%',
+    bottom: '33%',
+		// top: '0',
+		// left: '0px',
 		fontSize: '4rem',
 	},
 	rightArrow: {
 		position: 'absolute',
-		color: '#0099ff',
-		top: '14rem',
-		right: '0px',
+    color: '#0099ff',
+    left: '94%',
+    bottom: '33%',
+		// top: '14rem',
+		// right: '0px',
 		fontSize: '4rem',
 	},
 });
@@ -204,7 +208,7 @@ const CustomSlider = ({
 				max: 3000,
 				min: 1024,
 			},
-			items: 5,
+			items: 7,
 			partialVisibilityGutter: 40,
 		},
 		mobile: {
@@ -226,7 +230,7 @@ const CustomSlider = ({
 	};
 
 	return (
-		<div className="container-fluid">
+		<div className="root-slider">
 			<CustomLeftArrow className="left-arrow-spacing" />
 			<Carousel
 				className="custom-carousel"
@@ -253,7 +257,7 @@ const CustomSlider = ({
 			>
 				{cardsToShow()}
 			</Carousel>
-			<CustomRightArrow />
+			<CustomRightArrow className="right-arrow-spacing" />
 		</div>
 	);
 };
