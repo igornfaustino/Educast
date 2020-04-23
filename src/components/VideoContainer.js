@@ -4,8 +4,6 @@ import React, {
 	useEffect,
 	useState,
 	useMemo,
-	forwardRef,
-	useImperativeHandle,
 } from 'react';
 import { MdSwapHoriz } from 'react-icons/md';
 import { FaEyeSlash } from 'react-icons/fa';
@@ -16,59 +14,30 @@ import VideoControl from './VideoControl';
 
 import styles from './VideoContainer.module.scss';
 
-import { useVideo } from '../hooks/useVideo';
 import { useWindowSize } from '../hooks/useWindowSize';
 import { useVideoHeight } from '../hooks/useVideoHeight';
 import IndicatorIcon from './IndicatorIcon';
 import { tryToEnterFullscreen } from '../utils/fullscreen';
-import { getSnapshot } from '../utils/snapshot';
 
-const videoJSOptions = {
-	controls: false,
-	fluid: false,
-	sources: [
-		{
-			src:
-				'https://livestream01.fccn.pt/EducastVod2/_definst_/mp4:clips/0228xx/Clip_022864/ProducedClips/mpeg4_standard_V1_presenter_46.mp4/playlist.m3u8',
-			type: 'application/x-mpegURL',
-		},
-	],
-};
-
-const videoJSOptionsApresentacao = {
-	controls: false,
-	fluid: false,
-	sources: [
-		{
-			src:
-				'https://livestream01.fccn.pt/EducastVod2/_definst_/mp4:clips/0228xx/Clip_022864/ProducedClips/mpeg4_standard_V1_screens_46.mp4/playlist.m3u8',
-			type: 'application/x-mpegURL',
-		},
-	],
-};
-// const videoJSOptionsApresentacao = {
-// 	controls: false,
-// 	fluid: false,
-// 	sources: [
-// 		{
-// 			src:
-// 				'https://sample-videos.com/abc/video708/mp4/240/big_buck_bunny_240p_20mb.mp4',
-// 			type: 'video/mp4',
-// 		},
-// 	],
-// };
-
-function VideoContainer(props, ref) {
-	const video1Ref = useRef(null);
-	const video2Ref = useRef(null);
+function VideoContainer({
+	video1Handle,
+	video2Handle,
+	presenterVideo,
+	presentationVideo,
+	handleTimelineClick,
+	isVideoInverted,
+	setIsVideoInverted,
+	isVideo1Visible,
+	isVideo2Visible,
+	setIsVideo1Visible,
+	setIsVideo2Visible,
+}) {
 	const wrapperRef = useRef(null);
 	const fullscreenArea = useRef(null);
 	const [maxWidth, setMaxWidth] = useState(0);
 	const [maxHeight, setMaxHeight] = useState(0);
 	const [isFullscreen, setIsFullscreen] = useState(false);
-	const [isVideoInverted, setIsVideoInverted] = useState(false);
-	const [isVideo1Visible, setIsVideo1Visible] = useState(true);
-	const [isVideo2Visible, setIsVideo2Visible] = useState(true);
+
 	const windowSize = useWindowSize();
 	const {
 		isPlaying,
@@ -79,33 +48,23 @@ function VideoContainer(props, ref) {
 		play: playPlayer1,
 		pause: pausePlayer1,
 		isWaiting: isPlayer1Waiting,
-		setClickedTime: setClickedTimeVideo1,
 		handlePlayPauseButton: handlePlayPauseButtonVideo1,
 		handleVolumeChange: handleVolumeChangeVideo1,
-	} = useVideo(video1Ref, videoJSOptions);
+	} = video1Handle;
 	const {
 		size: sizeVideo2,
 		play: playPlayer2,
 		pause: pausePlayer2,
 		isSeeking: isPlayer2Seeking,
 		isWaiting: isPlayer2Waiting,
-		setClickedTime: setClickedTimeVideo2,
 		handlePlayPauseButton: handlePlayPauseButtonVideo2,
 		handleVolumeChange: handleVolumeChangeVideo2,
-	} = useVideo(video2Ref, videoJSOptionsApresentacao);
+	} = video2Handle;
 	const { height, width1, width2 } = useVideoHeight(
 		maxWidth,
 		maxHeight,
 		sizeVideo1,
 		sizeVideo2
-	);
-
-	const handleTimelineClick = useCallback(
-		(time) => {
-			setClickedTimeVideo1(time);
-			setClickedTimeVideo2(time);
-		},
-		[setClickedTimeVideo1, setClickedTimeVideo2]
 	);
 
 	const handlePlayPauseButton = useCallback(() => {
@@ -164,16 +123,17 @@ function VideoContainer(props, ref) {
 
 	const handleSwap = useCallback(() => setIsVideoInverted(!isVideoInverted), [
 		isVideoInverted,
+		setIsVideoInverted,
 	]);
 
 	const handleHideVideo1 = useCallback(
 		() => setIsVideo1Visible(!isVideo1Visible),
-		[isVideo1Visible]
+		[isVideo1Visible, setIsVideo1Visible]
 	);
 
 	const handleHideVideo2 = useCallback(
 		() => setIsVideo2Visible(!isVideo2Visible),
-		[isVideo2Visible]
+		[isVideo2Visible, setIsVideo2Visible]
 	);
 
 	useEffect(() => {
@@ -271,15 +231,6 @@ function VideoContainer(props, ref) {
 		[isVideo2Visible]
 	);
 
-	useImperativeHandle(ref, () => ({
-		getPresenterScreenShot() {
-			return getSnapshot(video1Ref.current);
-		},
-		getPresentationScreenShot() {
-			return getSnapshot(video2Ref.current);
-		},
-	}));
-
 	return (
 		<>
 			<VideoContainerHeader
@@ -290,7 +241,7 @@ function VideoContainer(props, ref) {
 				<div className={wrapperClassName} ref={wrapperRef} style={wrapperStyle}>
 					<div data-vjs-player style={video1Style}>
 						{video1HideLayer}
-						<video ref={video1Ref} className="video-js"></video>
+						{presenterVideo}
 						<div className={presenterIconClassName}>
 							<IndicatorIcon
 								type={video1VisibleIconType}
@@ -308,7 +259,7 @@ function VideoContainer(props, ref) {
 					</div>
 					<div data-vjs-player style={video2Style}>
 						{video2HideLayer}
-						<video ref={video2Ref} className="video-js"></video>
+						{presentationVideo}
 						<div className={presentationIconClassName}>
 							<IndicatorIcon
 								type={video2VisibleIconType}
@@ -333,4 +284,4 @@ function VideoContainer(props, ref) {
 	);
 }
 
-export default forwardRef(VideoContainer);
+export default VideoContainer;
