@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { GiFilmStrip, GiStack } from 'react-icons/gi';
 import { FaPlusSquare, FaMinusSquare } from 'react-icons/fa';
 import Draggable from 'react-draggable';
 import TimeIndicator from './TimeIndicator';
+import { getPositionInPercent, getPositionInPx } from '../utils/convertions';
 
 import cx from 'classnames';
 import styles from './Timeline.module.scss';
@@ -14,8 +15,8 @@ const Timeline = ({
 	timerDivWidth,
 	chapterTimelineRef,
 	videoTimelineRef,
-	deltaPosition,
-	setDeltaPosition,
+	cursorPosition,
+	setCursorPosition,
 	videoLength,
 	timelineIndicatorRef,
 	scenes,
@@ -37,6 +38,14 @@ const Timeline = ({
 	useEffect(() => {
 		createScene();
 	}, []);
+
+	useEffect(() => {
+		const updatedSelectedChapters = selectedChapters.filter((selected) => {
+			return chapters.some((chapter) => chapter.id === selected);
+		});
+
+		setSelectedChapters(updatedSelectedChapters);
+	}, [chapters]);
 
 	useEffect(() => {
 		setIsSelectedScenesEmpty(() => {
@@ -66,13 +75,13 @@ const Timeline = ({
 				return true;
 			});
 		}
-	}, [deltaPosition, scenes]);
+	}, [cursorPosition, scenes]);
 
 	const handleDrag = (e, ui) => {
-		const { x, y } = deltaPosition;
-		console.log('asdkadkaskDSFASFSAFASFAS', ui);
-		setDeltaPosition({
-			x: x + ui.deltaX / timerDivWidth,
+		const { x: lastPosition } = cursorPosition;
+		const deltaXInPercent = getPositionInPercent(ui.deltaX, timerDivWidth);
+		setCursorPosition({
+			x: lastPosition + deltaXInPercent,
 		});
 	};
 
@@ -86,7 +95,6 @@ const Timeline = ({
 		deletedScenes.forEach((scene) => {
 			// chapters that are in a scene
 			const chaptersToDelete = chapters.filter((chap) => {
-				console.log(chap);
 				return scene.start.x <= chap.position && scene.end.x >= chap.position;
 			});
 			if (chaptersToDelete.length > 0) {
@@ -122,7 +130,7 @@ const Timeline = ({
 		if (
 			scenes.some((scene) => {
 				return (
-					deltaPosition.x >= scene.start.x && deltaPosition.x <= scene.end.x
+					cursorPosition.x >= scene.start.x && cursorPosition.x <= scene.end.x
 				);
 			})
 		) {
@@ -132,20 +140,21 @@ const Timeline = ({
 		return false;
 	};
 
-	const getSticksEndPosition = () => {
+	const getSticksEndPosition = useCallback(() => {
 		// get the next scene after the marker
 		const possibleScenes = scenes.filter((scene) => {
-			return scene.start.x > deltaPosition.x;
+			return scene.start.x > cursorPosition.x;
 		});
 
 		if (possibleScenes.length > 0) {
 			return (
-				possibleScenes.sort((a, b) => a.start.x - b.start.x)[0].start.x - 10
+				possibleScenes.sort((a, b) => a.start.x - b.start.x)[0].start.x -
+				getPositionInPercent(10, timerDivWidth)
 			);
 		} else {
-			return videoLength * 10;
+			return getPositionInPercent(timerDivWidth, timerDivWidth);
 		}
-	};
+	}, [cursorPosition.x, scenes, timerDivWidth]);
 
 	const createScene = () => {
 		// extra verification (just in case)
@@ -156,10 +165,9 @@ const Timeline = ({
 
 		// get the stick's end position
 		const endPosition = getSticksEndPosition();
-		console.log('end position: ', endPosition);
 		// create two objects to hold stick's position
 		const scene = {
-			start: { x: deltaPosition.x, y: 0 },
+			start: { x: cursorPosition.x, y: 0 },
 			end: { x: endPosition, y: 0 },
 			img: getPresenterScreenShot(),
 		};
@@ -182,7 +190,7 @@ const Timeline = ({
 			let tmpMarkInChapter = [...prevState];
 
 			tmpMarkInChapter.push({
-				position: deltaPosition.x,
+				position: cursorPosition.x,
 				id: Date.now(),
 				img: getPresentationScreenShot(),
 			});
@@ -210,7 +218,9 @@ const Timeline = ({
 								? styles['chapter-tag--blue']
 								: styles['chapter-tag--gray']
 						)}
-						style={{ marginLeft: chapter.position }}
+						style={{
+							marginLeft: getPositionInPx(chapter.position, timerDivWidth),
+						}}
 					></div>
 				);
 
@@ -218,10 +228,15 @@ const Timeline = ({
 					<div
 						className={styles['scene-content']}
 						style={{
-							marginLeft: chapter.position + 4 + 'px', // 4 is the scene-limiter width
+							marginLeft:
+								getPositionInPx(chapter.position, timerDivWidth) + 4 + 'px', // 4 is the scene-limiter width
 							width: chapters[idx + 1]
-								? chapters[idx + 1].position - chapter.position + 'px'
-								: endSceneX - chapter.position + 'px',
+								? getPositionInPx(
+										chapters[idx + 1].position - chapter.position,
+										timerDivWidth
+								  ) + 'px'
+								: getPositionInPx(endSceneX - chapter.position, timerDivWidth) +
+								  'px',
 							backgroundImage: `url(${chapter.img})`,
 							backgroundSize: 'auto 100%',
 						}}
@@ -234,15 +249,20 @@ const Timeline = ({
 					<div
 						className={styles['scene-content']}
 						style={{
-							marginLeft: chapter.position + 4 + 'px',
+							marginLeft:
+								getPositionInPx(chapter.position, timerDivWidth) + 4 + 'px',
 							backgroundColor: selectedChapters.includes(chapter.id)
 								? 'rgba(63, 136, 191, 0.75)'
 								: 'rgba(0, 0, 0, 0)',
 							position: 'absolute',
 							height: '100%',
 							width: chapters[idx + 1]
-								? chapters[idx + 1].position - chapter.position + 'px'
-								: endSceneX - chapter.position + 'px',
+								? getPositionInPx(
+										chapters[idx + 1].position - chapter.position,
+										timerDivWidth
+								  ) + 'px'
+								: getPositionInPx(endSceneX - chapter.position, timerDivWidth) +
+								  'px',
 							backgroundSize: 'auto 100%',
 						}}
 						onClick={() => {
@@ -270,27 +290,28 @@ const Timeline = ({
 					</>
 				);
 			}),
-		[chapters, scenes, selectedChapters]
+		[chapters, scenes, selectedChapters, timerDivWidth]
 	);
 
 	const renderScene = useMemo(
 		() =>
 			scenes.map((scene, idx) => {
-				console.log('asdkakda');
 				const sceneStartBar = (
 					<Draggable
 						axis="x"
 						handle=".handle"
 						bounds=".timeline__video-invisible"
 						grid={[10, 0]}
-						position={scenes[idx].start}
+						position={{
+							x: getPositionInPx(scene.start.x, timerDivWidth),
+							y: 0,
+						}}
 						onDrag={(e, ui) => {
-							// ve qual pauzinho tu tá usando
-							const scene = {
-								start: { x: ui.x, y: 0 },
-								end: scenes[idx].end,
+							const tmpScene = {
+								start: { x: getPositionInPercent(ui.x, timerDivWidth), y: 0 },
+								end: scene.end,
 							};
-							dispatchScene({ sceneIdx: idx, scene, isStart: true });
+							dispatchScene({ sceneIdx: idx, scene: tmpScene, isStart: true });
 						}}
 					>
 						<div
@@ -309,14 +330,18 @@ const Timeline = ({
 						handle=".handle"
 						bounds=".timeline__video-invisible"
 						grid={[10, 0]}
-						position={scenes[idx].end}
+						position={{ x: getPositionInPx(scene.end.x, timerDivWidth), y: 0 }}
 						onDrag={(e, ui) => {
 							// ve qual pauzinho tu tá usando
-							const scene = {
-								start: scenes[idx].start,
-								end: { x: ui.x, y: 0 },
+							const updatedScene = {
+								start: scene.start,
+								end: { x: getPositionInPercent(ui.x, timerDivWidth), y: 0 },
 							};
-							dispatchScene({ sceneIdx: idx, scene, isStart: false });
+							dispatchScene({
+								sceneIdx: idx,
+								scene: updatedScene,
+								isStart: false,
+							});
 						}}
 					>
 						<div
@@ -333,11 +358,10 @@ const Timeline = ({
 					<div
 						className={styles['scene-content']}
 						style={{
-							marginLeft: scenes[idx].start.x + 4 + 'px', // 7 is the scene-limiter width
+							marginLeft:
+								getPositionInPx(scene.start.x, timerDivWidth) + 4 + 'px', // 7 is the scene-limiter width
 							width:
-								scenes[idx].end.x -
-								scenes[idx].start.x +
-								// + 20 bcos of the second scene's default position
+								getPositionInPx(scene.end.x - scene.start.x, timerDivWidth) +
 								'px',
 
 							backgroundImage: `url(${scene.img})`,
@@ -361,15 +385,15 @@ const Timeline = ({
 					<div
 						className={styles['scene-content']}
 						style={{
-							marginLeft: scenes[idx].start.x + 4 + 'px',
+							marginLeft:
+								getPositionInPx(scene.start.x, timerDivWidth) + 4 + 'px',
 							backgroundColor: selectedScenes.includes(idx)
 								? 'rgba(63, 136, 191, 0.75)'
 								: 'rgba(84, 80, 79, 0.75)',
 							position: 'absolute',
 							height: '100%',
 							width:
-								scenes[idx].end.x -
-								scenes[idx].start.x +
+								getPositionInPx(scene.end.x - scene.start.x, timerDivWidth) +
 								// + 20 bcos of the second scene's default position
 								'px',
 							backgroundSize: 'auto 100%',
@@ -399,10 +423,8 @@ const Timeline = ({
 					</>
 				);
 			}),
-		[scenes, dispatchScene, selectedScenes]
+		[scenes, timerDivWidth, selectedScenes, dispatchScene]
 	);
-
-	console.log(timerDivWidth);
 
 	return (
 		<div className={styles['timeline__wrapper']}>
@@ -497,7 +519,7 @@ const Timeline = ({
 					axis="x"
 					handle=".handle"
 					onDrag={handleDrag}
-					position={{ x: deltaPosition.x * timerDivWidth, y: 0 }}
+					position={{ x: cursorPosition.x * timerDivWidth, y: 0 }}
 					bounds=".timeline__video-invisible"
 					grid={[10, 0]}
 				>
