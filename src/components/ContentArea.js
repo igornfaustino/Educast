@@ -6,7 +6,7 @@ function RouteContentArea() {
 	return (
 		<Switch>
 			<Route exact path="/editor" component={() => <div>editor</div>} />
-			<Route exact path="/chapters" component={Chapters} />
+			<Route exact path="/chapters" component={() => <Chapters />} />
 			<Route exact path="/documents" component={() => <div>Documentos</div>} />
 			<Route exact path="/branding" component={() => <div>Branding</div>} />
 			<Route exact path="/subtitles" component={() => <div>Legendas</div>} />

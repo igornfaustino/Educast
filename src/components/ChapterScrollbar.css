@@ -60,12 +60,13 @@ input[type='range']:focus::-webkit-slider-runnable-track {
 } */
 
 .custom-carousel {
-	position: absolute;
-	left: 6%;
+	/* position: relative; */
 }
 
 .root-slider {
-	display: flex;
 	flex-direction: row;
 	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }

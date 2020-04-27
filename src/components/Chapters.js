@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 import CustomSlider from './CustomSlider';
 
-const Chapters = ({ props }) => {
+const Chapters = ({ getPresenterSnapshot, getPresentationSnapshot }) => {
 	const [chapters, setChapters] = useState([]);
 
 	const initialChapters = [
@@ -69,7 +69,7 @@ const Chapters = ({ props }) => {
 	}, []);
 
 	const selectThumbnailFunction = (chapterId, path) => {
-		console.log(chapterId, ' different thumbnail selected');
+		console.log(chapterId, path);
 		setChapters(
 			chapters.filter(chapter => {
 				if (chapter.id === chapterId) {
@@ -92,9 +92,10 @@ const Chapters = ({ props }) => {
 		);
 	};
 
-	const deleteChapterFunction = id => {
+	const deleteChapterFunction = async id => {
 		const chapter = chapters.find(chapter => chapter.id === id);
-		Swal.fire({
+		let deleted = false;
+		await Swal.fire({
 			text: 'Excluir Capítulo: ' + chapter.title + '?',
 			icon: 'warning',
 			showCancelButton: true,
@@ -104,15 +105,15 @@ const Chapters = ({ props }) => {
 			cancelButtonText: 'Cancelar',
 		}).then(result => {
 			if (result.value) {
+				deleted = true;
 				setChapters(
 					chapters.filter(chapter => {
 						return chapter.id !== id;
 					})
 				);
 			}
-			return 1;
 		});
-		return 0;
+		return deleted;
 	};
 
 	return (
@@ -122,6 +123,8 @@ const Chapters = ({ props }) => {
 				deleteChapterFunction={deleteChapterFunction}
 				updateTitleFunction={updateTitleFunction}
 				selectThumbnailFunction={selectThumbnailFunction}
+				getPresenterSnapshot={getPresenterSnapshot}
+				getPresentationSnapshot={getPresentationSnapshot}
 			/>
 		</div>
 	);

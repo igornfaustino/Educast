@@ -4,6 +4,7 @@ import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
+import CardActionArea from '@material-ui/core/CardActionArea';
 import Typography from '@material-ui/core/Typography';
 import {
 	FaUpload,
@@ -112,11 +113,7 @@ const CustomCard = ({
 		}
 	};
 
-	const {
-		getRootProps,
-		getInputProps,
-		open,
-	} = useDropzone({
+	const { getRootProps, getInputProps, open } = useDropzone({
 		accept: 'image/*',
 		noClick: true,
 		noKeyboard: true,
@@ -125,7 +122,7 @@ const CustomCard = ({
 			const image = Object.assign(acceptedFile, {
 				preview: URL.createObjectURL(acceptedFile),
 			});
-			setThumbnailImage(image.preview)
+			setThumbnailImage(image.preview);
 			selectThumbnailFunction(chapter.id, image.preview);
 		},
 	});
@@ -148,39 +145,41 @@ const CustomCard = ({
 					/>
 				}
 			/>
-			<CardMedia
-				className={classes.media}
-				image={thumbnailImage}
-				title={'burger'}
-			>
-				<Box position="absolute" top="10%" left="81%">
-					<Button
-						className={classes.thumbnailButton}
-						startIcon={<FaImages className={classes.thumbnailIcons} />}
-						onClick={() => handleThumbnailSelection('primary')}
-					/>
-				</Box>
-				<Box position="absolute" top="37%" left="81%">
-					<Button
-						className={classes.thumbnailButton}
-						startIcon={
-							<FaChalkboardTeacher className={classes.thumbnailIcons} />
-						}
-						onClick={() => handleThumbnailSelection('secondary')}
-					/>
-				</Box>
-				<Box position="absolute" top="64%" left="81%">
-					<div {...getRootProps()}>
-						<input {...getInputProps()} />
+			{/* <CardActionArea> */}
+				<CardMedia
+					className={classes.media}
+					image={thumbnailImage}
+					title={'burger'}
+				>
+					<Box position="absolute" top="10%" left="81%">
 						<Button
-							key={chapter.id}
 							className={classes.thumbnailButton}
-							onClick={open}
-							startIcon={<FaUpload className={classes.thumbnailIcons} />}
+							startIcon={<FaImages className={classes.thumbnailIcons} />}
+							onClick={() => handleThumbnailSelection('primary')}
 						/>
-					</div>
-				</Box>
-			</CardMedia>
+					</Box>
+					<Box position="absolute" top="37%" left="81%">
+						<Button
+							className={classes.thumbnailButton}
+							startIcon={
+								<FaChalkboardTeacher className={classes.thumbnailIcons} />
+							}
+							onClick={() => handleThumbnailSelection('secondary')}
+						/>
+					</Box>
+					<Box position="absolute" top="64%" left="81%">
+						<div {...getRootProps()}>
+							<input {...getInputProps()} />
+							<Button
+								key={chapter.id}
+								className={classes.thumbnailButton}
+								onClick={open}
+								startIcon={<FaUpload className={classes.thumbnailIcons} />}
+							/>
+						</div>
+					</Box>
+				</CardMedia>
+			{/* </CardActionArea> */}
 			<div className={classes.cardActions}>
 				<div className={styles['CustomCard__TimeLabel']}>
 					In {chapter.initTime}::{chapter.finalTime}
