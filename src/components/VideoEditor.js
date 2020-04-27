@@ -3,6 +3,8 @@ import Timeline from './Timeline';
 import TimelineControl from './TimelineControl';
 import { act } from 'react-dom/test-utils';
 
+import { getPositionInPercent } from '../utils/convertions';
+
 const VideoEditor = ({ getPresenterScreenShot, getPresentationScreenShot }) => {
 	const videoBoxRef = useState(React.createRef())[0];
 
@@ -15,11 +17,14 @@ const VideoEditor = ({ getPresenterScreenShot, getPresentationScreenShot }) => {
 		React.createRef()
 	);
 
-	const [deltaPosition, setDeltaPosition] = useState({ x: 0, y: 0 });
+	const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
 
 	const [chapters, setChapters] = useState([]);
 
 	const [zoom, setZoom] = useState(2);
+
+	const [videoLength, setVideoLength] = useState(200);
+	const [timerDivWidth, setTimerDivWidth] = useState(videoLength * 10);
 
 	// handle scenes changes
 	const sceneReducer = (state, action) => {
@@ -83,53 +88,62 @@ const VideoEditor = ({ getPresenterScreenShot, getPresentationScreenShot }) => {
 		}
 
 		// check if there was a chapter between the moved scene
+		const valueInPercent = getPositionInPercent(10, timerDivWidth);
 		if (
 			chapters.some((chap) => {
 				return (
-					(action.scene.start.x - 10 <= chap.position &&
+					(action.scene.start.x - valueInPercent <= chap.position &&
 						action.scene.end.x >= chap.position) ||
 					(action.scene.start.x <= chap.position &&
-						action.scene.end.x + 10 >= chap.position)
+						action.scene.end.x + valueInPercent >= chap.position)
 				);
 			})
 		) {
 			const chap = chapters.filter((chapter) => {
 				return (
-					(action.scene.start.x - 10 <= chapter.position &&
+					(action.scene.start.x - valueInPercent <= chapter.position &&
 						action.scene.end.x >= chapter.position) ||
 					(action.scene.start.x <= chapter.position &&
-						action.scene.end.x + 10 >= chapter.position)
+						action.scene.end.x + valueInPercent >= chapter.position)
 				);
 			});
 			if (action.isStart) {
 				if (action.scene.start.x > chap[0].position) {
 					// drag the chapter too
-					console.log('index: ', chapters.indexOf(chap[0]));
-					console.log('act: ', action.scene.start.x);
-					chapters[chapters.indexOf(chap[0])].position = action.scene.start.x;
+
+					setChapters((prevState) => {
+						let tmpChapters = [...prevState];
+						tmpChapters[chapters.indexOf(chap[0])].position =
+							action.scene.start.x;
+						return [...tmpChapters];
+					});
 				}
 			} else {
 				if (action.scene.end.x < chap[chap.length - 1].position) {
 					// delete the chapter
-					chapters.splice(chapters.indexOf(chap[chap.length - 1]), 1);
+					setChapters((prevState) => {
+						let updatedChapters = [...prevState];
+						updatedChapters.splice(
+							updatedChapters.indexOf(chap[chap.length - 1]),
+							1
+						);
+						return [...updatedChapters];
+					});
 				}
 			}
 		}
 
 		// just update
 		updatedState[action.sceneIdx] = action.scene; // {start: {x,y }, end: {x,y}}
-		updatedState[action.sceneIdx].img = getPresenterScreenShot();
+		// updatedState[action.sceneIdx].img = getPresenterScreenShot();
 		return [...updatedState];
 	};
 
 	const [scenes, dispatchScene] = useReducer(sceneReducer, []);
 
-	const [videoLength, setVideoLength] = useState(200);
-	const [timerDivWidth, setTimerDivWidth] = useState(videoLength * 10);
-
 	useEffect(() => {
 		setVideoLength(200 * zoom);
-		setTimerDivWidth(200 * zoom * 10);
+		setTimerDivWidth(2000 * zoom);
 	}, [zoom]);
 
 	return (
@@ -138,8 +152,8 @@ const VideoEditor = ({ getPresenterScreenShot, getPresentationScreenShot }) => {
 				videoBoxRef={videoBoxRef}
 				timerDivWidth={timerDivWidth}
 				chapterTimelineRef={chapterTimelineRef}
-				deltaPosition={deltaPosition}
-				setDeltaPosition={setDeltaPosition}
+				cursorPosition={cursorPosition}
+				setCursorPosition={setCursorPosition}
 				videoTimelineRef={videoTimelineRef}
 				timelineIndicatorRef={timelineIndicatorRef}
 				videoLength={videoLength}
