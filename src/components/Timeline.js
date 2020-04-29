@@ -3,7 +3,7 @@ import { GiFilmStrip, GiStack } from 'react-icons/gi';
 import { FaPlusSquare, FaMinusSquare } from 'react-icons/fa';
 import Draggable from 'react-draggable';
 import TimeIndicator from './TimeIndicator';
-import { getPositionInPercent, getPositionInPx } from '../utils/convertions';
+import { getPositionInPercent, getPositionInPx } from '../utils/conversions';
 
 import cx from 'classnames';
 import styles from './Timeline.module.scss';
@@ -110,7 +110,7 @@ const Timeline = ({
 				});
 			}
 		});
-		dispatchScene({ type: 'delete', deleteIdx: selectedScenes });
+		dispatchScene({ type: 'delete', scenesIdx: selectedScenes });
 	};
 
 	const deleteChapter = () => {
@@ -172,7 +172,7 @@ const Timeline = ({
 			img: getPresenterScreenShot(),
 		};
 
-		dispatchScene({ sceneIdx: -1, scene });
+		dispatchScene({ type: 'create', scene });
 		setDisableVideoButton(() => true);
 
 		// const img = getPresenterScreenShot();
