@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { MdZoomIn, MdZoomOut } from 'react-icons/md';
 
 import styles from './TimelineControl.module.scss';
 
 const TimelineControl = ({
 	videoTimelineRef,
-	mainScrollbarRef,
 	setVideoTimelineRef,
 	timerDivWidth,
 	zoom,
 	setZoom,
 }) => {
+	const mainScrollbarRef = useRef(null);
 	const handleScroll = () => {
 		const tempReference = videoTimelineRef;
 
@@ -48,7 +48,7 @@ const TimelineControl = ({
 					<input
 						type="range"
 						min="1"
-						max="5"
+						max="10"
 						value={zoom}
 						onChange={(evt) => {
 							setZoom(evt.target.value);

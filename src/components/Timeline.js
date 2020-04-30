@@ -11,14 +11,12 @@ import styles from './Timeline.module.scss';
 const FINAL_SPACE = 34;
 
 const Timeline = ({
-	videoBoxRef,
+	zoomLevel,
 	timerDivWidth,
-	chapterTimelineRef,
 	videoTimelineRef,
 	cursorPosition,
 	setCursorPosition,
 	videoLength,
-	timelineIndicatorRef,
 	scenes,
 	dispatchScene,
 	chapters,
@@ -431,7 +429,7 @@ const Timeline = ({
 			<div className={styles['buttonsWrapper']}>
 				<div className={styles['blackbox']} />
 
-				<div className={styles['btnContainer']} ref={videoBoxRef}>
+				<div className={styles['btnContainer']}>
 					<div className={styles['btnContainer__left']}>
 						<GiFilmStrip className={styles['btnContainer__icon']} />
 						<span className={styles['btnContainer__text']}>Vídeo</span>
@@ -493,10 +491,7 @@ const Timeline = ({
 					}}
 					className={styles['timeline__video-invisible']}
 				>
-					<TimeIndicator
-						timelineIndicatorRef={timelineIndicatorRef}
-						videoLength={videoLength}
-					/>
+					<TimeIndicator videoLength={videoLength} zoomLevel={zoomLevel} />
 
 					<div
 						className={cx(
@@ -507,12 +502,7 @@ const Timeline = ({
 						{renderScene}
 					</div>
 
-					<div
-						className={cx(styles['timeline__content'])}
-						ref={chapterTimelineRef}
-					>
-						{renderChapter}
-					</div>
+					<div className={cx(styles['timeline__content'])}>{renderChapter}</div>
 				</div>
 
 				<Draggable
