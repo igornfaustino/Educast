@@ -109,34 +109,52 @@ export function useSceneChapters(timerDivWidth) {
 
 			// check if there was a chapter between the moved scene
 			// WTF??
-			const valueInPercent = getPositionInPercent(10, timerDivWidth);
+			const distanceBetweenTimeIndicators = getPositionInPercent(
+				10,
+				timerDivWidth
+			);
 			if (isChapterBetweenMovedScene(action.scene)) {
-				const chap = chapters.filter((chapter) => {
+				const chaptersBetweenSceneBeforeMoved = chapters.filter((chapter) => {
 					return (
-						(action.scene.start.x - valueInPercent <= chapter.position &&
+						(action.scene.start.x - distanceBetweenTimeIndicators <=
+							chapter.position &&
 							action.scene.end.x >= chapter.position) ||
 						(action.scene.start.x <= chapter.position &&
-							action.scene.end.x + valueInPercent >= chapter.position)
+							action.scene.end.x + distanceBetweenTimeIndicators >=
+								chapter.position)
 					);
 				});
+				// if
 				if (action.isStart) {
-					if (action.scene.start.x > chap[0].position) {
+					if (
+						action.scene.start.x > chaptersBetweenSceneBeforeMoved[0].position
+					) {
 						// drag the chapter too
 
 						setChapters((prevState) => {
 							let tmpChapters = [...prevState];
-							tmpChapters[chapters.indexOf(chap[0])].position =
-								action.scene.start.x;
+							tmpChapters[
+								chapters.indexOf(chaptersBetweenSceneBeforeMoved[0])
+							].position = action.scene.start.x;
 							return [...tmpChapters];
 						});
 					}
 				} else {
-					if (action.scene.end.x < chap[chap.length - 1].position) {
+					if (
+						action.scene.end.x <
+						chaptersBetweenSceneBeforeMoved[
+							chaptersBetweenSceneBeforeMoved.length - 1
+						].position
+					) {
 						// delete the chapter
 						setChapters((prevState) => {
 							let updatedChapters = [...prevState];
 							updatedChapters.splice(
-								updatedChapters.indexOf(chap[chap.length - 1]),
+								updatedChapters.indexOf(
+									chaptersBetweenSceneBeforeMoved[
+										chaptersBetweenSceneBeforeMoved.length - 1
+									]
+								),
 								1
 							);
 							return [...updatedChapters];

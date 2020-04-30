@@ -4,42 +4,37 @@ import Timeline from './Timeline';
 import TimelineControl from './TimelineControl';
 import { useSceneChapters } from '../hooks/useSceneChapters';
 
+const TAMANHO_VIDEO = 15;
+
 const VideoEditor = ({ getPresenterScreenShot, getPresentationScreenShot }) => {
-	// WTF???
-	const videoBoxRef = useState(React.createRef())[0];
-	const mainScrollbarRef = useState(React.createRef())[0];
-	const [chapterTimelineRef, setChapterTimelineRef] = useState(
-		React.createRef()
-	);
 	const [videoTimelineRef, setVideoTimelineRef] = useState(React.createRef());
-	const [timelineIndicatorRef, setTimelineIndicatorRef] = useState(
-		React.createRef()
-	);
 
 	const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
-	const [zoom, setZoom] = useState(2);
-	const [videoLength, setVideoLength] = useState(200);
-	const [timerDivWidth, setTimerDivWidth] = useState(videoLength * 10);
+	const [zoom, setZoom] = useState(1);
+	const [videoLength, setVideoLength] = useState(TAMANHO_VIDEO);
+	const [timerDivWidth, setTimerDivWidth] = useState(
+		7.6 * (zoom * 10 + zoom * 90)
+	);
+	const INITIAL_DIV_WIDTH = useState(7.6 * (zoom * 10 + zoom * 90))[0];
+	console.log('timerdivwidht:' + 7.6 * (zoom * 10 + zoom * 90));
 
 	const { scenes, setChapters, dispatchScene, chapters } = useSceneChapters(
 		timerDivWidth
 	);
 
 	useEffect(() => {
-		setVideoLength(200 * zoom);
-		setTimerDivWidth(2000 * zoom);
-	}, [zoom]);
+		setVideoLength(TAMANHO_VIDEO * zoom);
+		setTimerDivWidth(zoom * INITIAL_DIV_WIDTH);
+	}, [zoom, INITIAL_DIV_WIDTH]);
 
 	return (
 		<div style={{}}>
 			<Timeline
-				videoBoxRef={videoBoxRef}
+				zoomLevel={zoom}
 				timerDivWidth={timerDivWidth}
-				chapterTimelineRef={chapterTimelineRef}
 				cursorPosition={cursorPosition}
 				setCursorPosition={setCursorPosition}
 				videoTimelineRef={videoTimelineRef}
-				timelineIndicatorRef={timelineIndicatorRef}
 				videoLength={videoLength}
 				scenes={scenes}
 				dispatchScene={dispatchScene}
@@ -49,7 +44,6 @@ const VideoEditor = ({ getPresenterScreenShot, getPresentationScreenShot }) => {
 				getPresentationScreenShot={getPresentationScreenShot}
 			/>
 			<TimelineControl
-				mainScrollbarRef={mainScrollbarRef}
 				setVideoTimelineRef={setVideoTimelineRef}
 				timerDivWidth={timerDivWidth}
 				videoTimelineRef={videoTimelineRef}
