@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import Timeline from './Timeline';
 import TimelineControl from './TimelineControl';
 import { useSceneChapters } from '../hooks/useSceneChapters';
 
-const TAMANHO_VIDEO = 15;
+const TAMANHO_VIDEO = 3600;
 
 const VideoEditor = ({ getPresenterScreenShot, getPresentationScreenShot }) => {
-	const [videoTimelineRef, setVideoTimelineRef] = useState(React.createRef());
+	const videoTimelineRef = useRef(null);
 
 	const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
 	const [zoom, setZoom] = useState(1);
@@ -34,7 +34,7 @@ const VideoEditor = ({ getPresenterScreenShot, getPresentationScreenShot }) => {
 				timerDivWidth={timerDivWidth}
 				cursorPosition={cursorPosition}
 				setCursorPosition={setCursorPosition}
-				videoTimelineRef={videoTimelineRef}
+				ref={videoTimelineRef}
 				videoLength={videoLength}
 				scenes={scenes}
 				dispatchScene={dispatchScene}
@@ -44,9 +44,8 @@ const VideoEditor = ({ getPresenterScreenShot, getPresentationScreenShot }) => {
 				getPresentationScreenShot={getPresentationScreenShot}
 			/>
 			<TimelineControl
-				setVideoTimelineRef={setVideoTimelineRef}
 				timerDivWidth={timerDivWidth}
-				videoTimelineRef={videoTimelineRef}
+				ref={videoTimelineRef}
 				zoom={zoom}
 				setZoom={setZoom}
 			/>
