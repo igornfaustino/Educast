@@ -1,22 +1,17 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { forwardRef, useRef } from 'react';
 import { MdZoomIn, MdZoomOut } from 'react-icons/md';
 
 import styles from './TimelineControl.module.scss';
 
-const TimelineControl = ({
-	videoTimelineRef,
-	setVideoTimelineRef,
-	timerDivWidth,
-	zoom,
-	setZoom,
-}) => {
+const TimelineControl = (
+	{ timerDivWidth, zoom, setZoom },
+	videoTimelineRef
+) => {
 	const mainScrollbarRef = useRef(null);
+
 	const handleScroll = () => {
-		const tempReference = videoTimelineRef;
-
-		tempReference.current.scrollLeft = mainScrollbarRef.current.scrollLeft;
-
-		setVideoTimelineRef(tempReference);
+		if (!videoTimelineRef.current) return;
+		videoTimelineRef.current.scrollLeft = mainScrollbarRef.current.scrollLeft;
 	};
 
 	return (
@@ -64,4 +59,4 @@ const TimelineControl = ({
 	);
 };
 
-export default TimelineControl;
+export default forwardRef(TimelineControl);

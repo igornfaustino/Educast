@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, {
+	useState,
+	useEffect,
+	useMemo,
+	useCallback,
+	forwardRef,
+} from 'react';
 import { GiFilmStrip, GiStack } from 'react-icons/gi';
 import { FaPlusSquare, FaMinusSquare } from 'react-icons/fa';
 import Draggable from 'react-draggable';
@@ -10,20 +16,22 @@ import styles from './Timeline.module.scss';
 
 const FINAL_SPACE = 34;
 
-const Timeline = ({
-	zoomLevel,
-	timerDivWidth,
-	videoTimelineRef,
-	cursorPosition,
-	setCursorPosition,
-	videoLength,
-	scenes,
-	dispatchScene,
-	chapters,
-	setChapters,
-	getPresenterScreenShot,
-	getPresentationScreenShot,
-}) => {
+const Timeline = (
+	{
+		zoomLevel,
+		timerDivWidth,
+		cursorPosition,
+		setCursorPosition,
+		videoLength,
+		scenes,
+		dispatchScene,
+		chapters,
+		setChapters,
+		getPresenterScreenShot,
+		getPresentationScreenShot,
+	},
+	videoTimelineRef
+) => {
 	const [selectedScenes, setSelectedScenes] = useState([]);
 	const [selectedChapters, setSelectedChapters] = useState([]);
 
@@ -520,4 +528,4 @@ const Timeline = ({
 	);
 };
 
-export default Timeline;
+export default forwardRef(Timeline);
