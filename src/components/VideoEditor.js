@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Timeline from './Timeline';
 import TimelineControl from './TimelineControl';
 import { useSceneChapters } from '../hooks/useSceneChapters';
+import { getPositionInPercent } from '../utils/conversions';
 
 import { ZOOM_MAX } from '../utils/constants';
 

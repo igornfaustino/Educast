@@ -149,6 +149,10 @@ const Timeline = (
 	const handleDrag = (e, ui) => {
 		const { x: lastPosition } = cursorPosition;
 		const deltaXInPercent = getPositionInPercent(ui.deltaX, timerDivWidth);
+		// const deltaXInTime = deltaXInPercent * videoLength;
+		// const newTime = (lastPosition + deltaXInPercent) * videoLength;
+		// handleTimelineClick(newTime);
+		// console.log({ newTime });
 		setCursorPosition({
 			x: lastPosition + deltaXInPercent,
 		});
