@@ -65,6 +65,21 @@ const Timeline = (
 		});
 	}, [selectedChapters]);
 
+	// check if the main marker is in a scene
+	const isMarkerInScene = useCallback(() => {
+		if (
+			scenes.some((scene) => {
+				return (
+					cursorPosition.x >= scene.start.x && cursorPosition.x <= scene.end.x
+				);
+			})
+		) {
+			return true;
+		}
+
+		return false;
+	}, [cursorPosition.x, scenes]);
+
 	useEffect(() => {
 		if (isMarkerInScene()) {
 			setDisableVideoButton(() => {
@@ -81,7 +96,7 @@ const Timeline = (
 				return true;
 			});
 		}
-	}, [cursorPosition, scenes]);
+	}, [cursorPosition, isMarkerInScene, scenes]);
 
 	const handleDrag = (e, ui) => {
 		const { x: lastPosition } = cursorPosition;
@@ -129,21 +144,6 @@ const Timeline = (
 			return [...tmp];
 		});
 		setSelectedChapters([]);
-	};
-
-	// check if the main marker is in a scene
-	const isMarkerInScene = () => {
-		if (
-			scenes.some((scene) => {
-				return (
-					cursorPosition.x >= scene.start.x && cursorPosition.x <= scene.end.x
-				);
-			})
-		) {
-			return true;
-		}
-
-		return false;
 	};
 
 	const getSticksEndPosition = useCallback(() => {
@@ -312,13 +312,21 @@ const Timeline = (
 							x: getPositionInPx(scene.start.x, timerDivWidth),
 							y: 0,
 						}}
+						onStart={() =>
+							dispatchScene({ scene: scene, type: 'on_drag_start' })
+						}
 						onDrag={(e, ui) => {
 							const tmpScene = {
 								start: { x: getPositionInPercent(ui.x, timerDivWidth), y: 0 },
 								end: scene.end,
 							};
-							dispatchScene({ sceneIdx: idx, scene: tmpScene, isStart: true });
+							dispatchScene({
+								sceneIdx: idx,
+								scene: tmpScene,
+								type: 'drag_left',
+							});
 						}}
+						onStop={() => dispatchScene({ type: 'on_drag_end' })}
 					>
 						<div
 							className={cx(
@@ -337,6 +345,9 @@ const Timeline = (
 						bounds=".timeline__video-invisible"
 						grid={[10, 0]}
 						position={{ x: getPositionInPx(scene.end.x, timerDivWidth), y: 0 }}
+						onStart={() =>
+							dispatchScene({ scene: scene, type: 'on_drag_start' })
+						}
 						onDrag={(e, ui) => {
 							// ve qual pauzinho tu tá usando
 							const updatedScene = {
@@ -346,9 +357,10 @@ const Timeline = (
 							dispatchScene({
 								sceneIdx: idx,
 								scene: updatedScene,
-								isStart: false,
+								type: 'drag_right',
 							});
 						}}
+						onStop={() => dispatchScene({ type: 'on_drag_end' })}
 					>
 						<div
 							className={cx(

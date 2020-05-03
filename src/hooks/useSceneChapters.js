@@ -3,6 +3,9 @@ import { getPositionInPercent } from '../utils/conversions';
 
 export function useSceneChapters(timerDivWidth) {
 	const [chapters, setChapters] = useState([]);
+	const [chaptersInsideDraggedScene, setChaptersInsideDraggedScene] = useState(
+		[]
+	);
 
 	const isChapterInsideScene = useCallback(
 		(chapter, scene) =>
@@ -84,91 +87,100 @@ export function useSceneChapters(timerDivWidth) {
 		[isSceneInvadingOther]
 	);
 
-	const isChapterBetweenMovedScene = useCallback(
-		(scene) =>
-			chapters.some((chap) => {
-				const valueInPercent = getPositionInPercent(10, timerDivWidth);
-				return (
-					(scene.start.x - valueInPercent <= chap.position &&
-						scene.end.x >= chap.position) ||
-					(scene.start.x <= chap.position &&
-						scene.end.x + valueInPercent >= chap.position)
-				);
-			}),
+	const getIdOfChaptersInsideDraggedScene = useCallback(
+		(scene) => [
+			...chapters
+				.filter((chapter) => {
+					const valueInPercent = getPositionInPercent(7.6, timerDivWidth);
+					return (
+						(scene.start.x - valueInPercent <= chapter.position &&
+							scene.end.x >= chapter.position) ||
+						(scene.start.x <= chapter.position &&
+							scene.end.x + valueInPercent >= chapter.position)
+					);
+				})
+				.map((chapter) => chapter.id),
+		],
 		[chapters, timerDivWidth]
+	);
+
+	const getChaptersInsideDraggedScene = useCallback(
+		() =>
+			chapters.filter((chapter) =>
+				chaptersInsideDraggedScene.includes(chapter.id)
+			),
+		[chapters, chaptersInsideDraggedScene]
+	);
+
+	const dragChapterIfNecessary = useCallback(
+		(scene) => {
+			const chapters = getChaptersInsideDraggedScene();
+			if (!chapters.length) return;
+
+			const sceneStartPassChapterStart = scene.start.x > chapters[0].position;
+			if (!sceneStartPassChapterStart) return;
+
+			setChapters((prevState) => {
+				let tmpChapters = [...prevState];
+				tmpChapters[chapters.indexOf(chapters[0])].position = scene.start.x;
+				return [...tmpChapters];
+			});
+		},
+		[getChaptersInsideDraggedScene]
+	);
+
+	const removeChapterIfNecessary = useCallback(
+		(scene) => {
+			const chapters = getChaptersInsideDraggedScene();
+			if (!chapters.length) return;
+
+			const sceneEndPassChapterStart =
+				chapters[chapters.length - 1] &&
+				scene.end.x < chapters[chapters.length - 1].position;
+
+			if (!sceneEndPassChapterStart) return;
+
+			setChapters((prevState) => {
+				let updatedChapters = [...prevState];
+				updatedChapters.splice(
+					updatedChapters.indexOf(chapters[chapters.length - 1]),
+					1
+				);
+				return [...updatedChapters];
+			});
+		},
+		[getChaptersInsideDraggedScene]
+	);
+
+	const handleChapterBetweenScenes = useCallback(
+		(scene, type) => {
+			switch (type) {
+				case 'drag_left':
+					return dragChapterIfNecessary(scene);
+				case 'drag_right':
+					return removeChapterIfNecessary(scene);
+				default:
+					return;
+			}
+		},
+		[dragChapterIfNecessary, removeChapterIfNecessary]
 	);
 
 	const updateScene = useCallback(
 		(state, action) => {
 			const stateBeforeUpdate = [...state];
-			let updatedState = [...state];
 
 			if (!isSceneValid(action.scene, action.sceneIdx, state)) {
 				return stateBeforeUpdate;
 			}
 
-			// check if there was a chapter between the moved scene
-			// WTF??
-			const distanceBetweenTimeIndicators = getPositionInPercent(
-				10,
-				timerDivWidth
-			);
-			if (isChapterBetweenMovedScene(action.scene)) {
-				const chaptersBetweenSceneBeforeMoved = chapters.filter((chapter) => {
-					return (
-						(action.scene.start.x - distanceBetweenTimeIndicators <=
-							chapter.position &&
-							action.scene.end.x >= chapter.position) ||
-						(action.scene.start.x <= chapter.position &&
-							action.scene.end.x + distanceBetweenTimeIndicators >=
-								chapter.position)
-					);
-				});
-				// if
-				if (action.isStart) {
-					if (
-						action.scene.start.x > chaptersBetweenSceneBeforeMoved[0].position
-					) {
-						// drag the chapter too
+			handleChapterBetweenScenes(action.scene, action.type);
 
-						setChapters((prevState) => {
-							let tmpChapters = [...prevState];
-							tmpChapters[
-								chapters.indexOf(chaptersBetweenSceneBeforeMoved[0])
-							].position = action.scene.start.x;
-							return [...tmpChapters];
-						});
-					}
-				} else {
-					if (
-						action.scene.end.x <
-						chaptersBetweenSceneBeforeMoved[
-							chaptersBetweenSceneBeforeMoved.length - 1
-						].position
-					) {
-						// delete the chapter
-						setChapters((prevState) => {
-							let updatedChapters = [...prevState];
-							updatedChapters.splice(
-								updatedChapters.indexOf(
-									chaptersBetweenSceneBeforeMoved[
-										chaptersBetweenSceneBeforeMoved.length - 1
-									]
-								),
-								1
-							);
-							return [...updatedChapters];
-						});
-					}
-				}
-			}
-
-			// just update
-			updatedState[action.sceneIdx] = action.scene; // {start: {x,y }, end: {x,y}}
-			// updatedState[action.sceneIdx].img = getPresenterScreenShot();
+			const updatedState = [...state];
+			updatedState[action.sceneIdx] = action.scene;
 			return [...updatedState];
 		},
-		[chapters, isChapterBetweenMovedScene, isSceneValid, timerDivWidth]
+		[handleChapterBetweenScenes, isSceneValid]
 	);
 
 	const [scenes, dispatchScene] = useReducer((state, action) => {
@@ -177,8 +189,19 @@ export function useSceneChapters(timerDivWidth) {
 				return deleteScenesAndInsideChapters(state, action);
 			case 'create':
 				return [...state, action.scene];
-			default:
+			case 'on_drag_start':
+				setChaptersInsideDraggedScene(
+					getIdOfChaptersInsideDraggedScene(action.scene)
+				);
+				return state;
+			case 'on_drag_end':
+				setChaptersInsideDraggedScene([]);
+				return state;
+			case 'drag_left':
+			case 'drag_right':
 				return updateScene(state, action);
+			default:
+				return state;
 		}
 	}, []);
 
