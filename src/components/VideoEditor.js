@@ -13,10 +13,10 @@ const VideoEditor = ({ getPresenterScreenShot, getPresentationScreenShot }) => {
 	const [zoom, setZoom] = useState(1);
 	const [videoLength, setVideoLength] = useState(TAMANHO_VIDEO);
 	const [timerDivWidth, setTimerDivWidth] = useState(
-		7.6 * (zoom * 10 + zoom * 90)
+		10.5 * (zoom * 10 + zoom * 90)
 	);
-	const INITIAL_DIV_WIDTH = useState(7.6 * (zoom * 10 + zoom * 90))[0];
-	console.log('timerdivwidht:' + 7.6 * (zoom * 10 + zoom * 90));
+	const INITIAL_DIV_WIDTH = useState(10.5 * (zoom * 10 + zoom * 90))[0];
+	console.log('timerdivwidht:' + 10.5 * (zoom * 10 + zoom * 90));
 
 	const { scenes, setChapters, dispatchScene, chapters } = useSceneChapters(
 		timerDivWidth

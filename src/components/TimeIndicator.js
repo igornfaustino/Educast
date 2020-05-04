@@ -11,7 +11,7 @@ const TimeIndicator = ({ videoLength, zoomLevel }) => {
 					style={{
 						bottom: 20,
 						position: 'absolute',
-						marginLeft: pauzinhoNumber * 7.6 - 21 + 'px',
+						marginLeft: pauzinhoNumber * 10.5 - 21 + 'px',
 						zIndex: 50,
 					}}
 				>
@@ -23,7 +23,7 @@ const TimeIndicator = ({ videoLength, zoomLevel }) => {
 						styles['timer-vertical-whitebar']
 					)}
 					style={{
-						marginLeft: pauzinhoNumber * 7.6 + 'px',
+						marginLeft: pauzinhoNumber * 10.5 + 'px',
 					}}
 				></div>
 			</>
@@ -35,7 +35,7 @@ const TimeIndicator = ({ videoLength, zoomLevel }) => {
 			<div
 				className={styles['timer-vertical-whitebar']}
 				style={{
-					marginLeft: pauzinhoNumber * 7.6 + 'px',
+					marginLeft: pauzinhoNumber * 10.5 + 'px',
 				}}
 			></div>
 		);

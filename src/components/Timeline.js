@@ -531,7 +531,7 @@ const Timeline = (
 					onDrag={handleDrag}
 					position={{ x: cursorPosition.x * timerDivWidth, y: 0 }}
 					bounds=".timeline__video-invisible"
-					grid={[10, 0]}
+					grid={[10.5, 0]}
 				>
 					<div className={cx('handle', styles['stick'])}></div>
 				</Draggable>
