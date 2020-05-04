@@ -31,9 +31,10 @@ const LabelChip = props => {
 
 				<h5>
 					<ChipInput
-						variant="outlined"
+						variant="standard"
 						autoFocus={false}
 						name={profileState.title}
+						disableUnderline='false'
 						defaultValue={profileState.value}
 						classes={{
 							root: style['textarea-tag'],
@@ -41,6 +42,7 @@ const LabelChip = props => {
 							chip: style['chip'],
 							chipContainer: style['chip-container']
 						}}
+						maxRows="1"
 					/>
 				</h5>
 			</label>
