@@ -3,6 +3,8 @@ import styles from './TimeIndicator.module.scss';
 import cx from 'classnames';
 import moment from 'moment';
 
+import { ZOOM_MAX } from '../utils/constants';
+
 const TimeIndicator = ({ videoLength, zoomLevel }) => {
 	const createPauzinhoMaiorComTempoEmcima = (timeInterval, pauzinhoNumber) => {
 		return (
@@ -56,7 +58,7 @@ const TimeIndicator = ({ videoLength, zoomLevel }) => {
 	};
 
 	const pauzinhos = useMemo(() => {
-		const qttPauzinhosGrandes = zoomLevel * 10;
+		let qttPauzinhosGrandes = zoomLevel * 10;
 
 		const qttPauzinhosMenores = zoomLevel * 90;
 
@@ -64,21 +66,45 @@ const TimeIndicator = ({ videoLength, zoomLevel }) => {
 
 		let arrayOfWhiteBarsAndTimers = [];
 
-		console.log('limite for: ', qttPauzinhosGrandes + qttPauzinhosMenores);
-
-		for (let i = 0; i <= qttPauzinhosGrandes + qttPauzinhosMenores; i++) {
-			let tag;
-			if (i !== 0 && i % 10 === 0) {
-				console.log((timeInterval * i) / 10);
-				tag = createPauzinhoMaiorComTempoEmcima((timeInterval * i) / 10, i);
-			} else if (i === 0) {
-				tag = createPauzinhoMaiorSemTempo();
-			} else {
-				tag = createPauzinhoMenor(i);
+		if (Number(zoomLevel) === ZOOM_MAX) {
+			qttPauzinhosGrandes = videoLength / zoomLevel;
+			console.log('Qtt de pauzinhos de grandes: ' + qttPauzinhosGrandes);
+			console.log('-->', qttPauzinhosGrandes + qttPauzinhosGrandes * 24);
+			// console.log({ arrayOfWhiteBarsAndTimers });
+			for (
+				let i = 0;
+				i <= qttPauzinhosGrandes + qttPauzinhosGrandes * 24;
+				i++
+			) {
+				let tag;
+				if (i !== 0 && i % 25 === 0) {
+					tag = createPauzinhoMaiorComTempoEmcima(i / 25, i);
+				} else if (i === 0) {
+					tag = createPauzinhoMaiorSemTempo();
+				} else {
+					tag = createPauzinhoMenor(i);
+				}
+				arrayOfWhiteBarsAndTimers.push(tag);
 			}
-			arrayOfWhiteBarsAndTimers.push(tag);
+		} else {
+			for (let i = 0; i <= qttPauzinhosGrandes + qttPauzinhosMenores; i++) {
+				let tag;
+				const spaceBetweenBiggerIndicator = 10;
+				if (i !== 0 && i % spaceBetweenBiggerIndicator === 0) {
+					const intervalOffset = i / spaceBetweenBiggerIndicator;
+					tag = createPauzinhoMaiorComTempoEmcima(
+						timeInterval * intervalOffset,
+						i
+					);
+				} else if (i === 0) {
+					tag = createPauzinhoMaiorSemTempo();
+				} else {
+					tag = createPauzinhoMenor(i);
+				}
+				arrayOfWhiteBarsAndTimers.push(tag);
+			}
 		}
-
+		// console.log({ length: arrayOfWhiteBarsAndTimers.length });
 		return React.Children.toArray(arrayOfWhiteBarsAndTimers);
 	}, [videoLength, zoomLevel]);
 

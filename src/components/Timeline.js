@@ -225,7 +225,8 @@ const Timeline = (
 								: styles['chapter-tag--gray']
 						)}
 						style={{
-							marginLeft: getPositionInPx(chapter.position, timerDivWidth),
+							marginLeft:
+								getPositionInPx(chapter.position, timerDivWidth) + 1.5,
 						}}
 					></div>
 				);
@@ -245,6 +246,7 @@ const Timeline = (
 								  'px',
 							backgroundImage: `url(${chapter.img})`,
 							backgroundSize: 'auto 100%',
+							borderLeft: `2px solid #3f8ae0`,
 						}}
 					>
 						{/* Capítulo {idx + 1} */}
