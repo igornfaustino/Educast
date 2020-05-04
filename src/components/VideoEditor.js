@@ -4,7 +4,9 @@ import Timeline from './Timeline';
 import TimelineControl from './TimelineControl';
 import { useSceneChapters } from '../hooks/useSceneChapters';
 
-const TAMANHO_VIDEO = 3600;
+import { ZOOM_MAX } from '../utils/constants';
+
+const TAMANHO_VIDEO = 30;
 
 const VideoEditor = ({ getPresenterScreenShot, getPresentationScreenShot }) => {
 	const videoTimelineRef = useRef(null);
@@ -16,7 +18,10 @@ const VideoEditor = ({ getPresenterScreenShot, getPresentationScreenShot }) => {
 		10.5 * (zoom * 10 + zoom * 90)
 	);
 	const INITIAL_DIV_WIDTH = useState(10.5 * (zoom * 10 + zoom * 90))[0];
-	console.log('timerdivwidht:' + 10.5 * (zoom * 10 + zoom * 90));
+	const INITIAL_DIV_WIDTH2 = useState(
+		10.5 * (videoLength / zoom + (videoLength / zoom) * 24)
+	)[0];
+	// console.log('timerdivwidht:' + 10.5 * (zoom * 10 + zoom * 90));
 
 	const { scenes, setChapters, dispatchScene, chapters } = useSceneChapters(
 		timerDivWidth
@@ -24,7 +29,11 @@ const VideoEditor = ({ getPresenterScreenShot, getPresentationScreenShot }) => {
 
 	useEffect(() => {
 		setVideoLength(TAMANHO_VIDEO * zoom);
-		setTimerDivWidth(zoom * INITIAL_DIV_WIDTH);
+		if (Number(zoom) === ZOOM_MAX) {
+			setTimerDivWidth(INITIAL_DIV_WIDTH2);
+		} else {
+			setTimerDivWidth(zoom * INITIAL_DIV_WIDTH);
+		}
 	}, [zoom, INITIAL_DIV_WIDTH]);
 
 	return (

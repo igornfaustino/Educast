@@ -1,6 +1,8 @@
 import React, { forwardRef, useRef } from 'react';
 import { MdZoomIn, MdZoomOut } from 'react-icons/md';
 
+import { ZOOM_MAX } from '../utils/constants';
+
 import styles from './TimelineControl.module.scss';
 
 const TimelineControl = (
@@ -43,7 +45,7 @@ const TimelineControl = (
 					<input
 						type="range"
 						min="1"
-						max="10"
+						max={ZOOM_MAX}
 						value={zoom}
 						onChange={(evt) => {
 							setZoom(evt.target.value);

@@ -112,10 +112,29 @@ export function useSceneChapters(timerDivWidth) {
 		[chapters, chaptersInsideDraggedScene]
 	);
 
-	const dragChapterIfNecessary = useCallback(
+	const deleteChapterIfNecessary = useCallback((chapters) => {
+		if (chapters.length < 2) return false;
+
+		if (chapters[0].position >= chapters[1].position) {
+			setChapters((prevState) => {
+				let updatedChapters = [...prevState];
+				updatedChapters.splice(updatedChapters.indexOf(chapters[0]), 1);
+				return [...updatedChapters];
+			});
+
+			return true;
+		}
+
+		return false;
+	}, []);
+
+	const dragOrRemoveChapterIfNecessary = useCallback(
 		(scene) => {
 			const chapters = getChaptersInsideDraggedScene();
 			if (!chapters.length) return;
+
+			const hasChapterBeenDeleted = deleteChapterIfNecessary(chapters);
+			if (hasChapterBeenDeleted) return;
 
 			const sceneStartPassChapterStart = scene.start.x > chapters[0].position;
 			if (!sceneStartPassChapterStart) return;
@@ -126,7 +145,7 @@ export function useSceneChapters(timerDivWidth) {
 				return [...tmpChapters];
 			});
 		},
-		[getChaptersInsideDraggedScene]
+		[deleteChapterIfNecessary, getChaptersInsideDraggedScene]
 	);
 
 	const removeChapterIfNecessary = useCallback(
@@ -156,14 +175,14 @@ export function useSceneChapters(timerDivWidth) {
 		(scene, type) => {
 			switch (type) {
 				case 'drag_left':
-					return dragChapterIfNecessary(scene);
+					return dragOrRemoveChapterIfNecessary(scene);
 				case 'drag_right':
 					return removeChapterIfNecessary(scene);
 				default:
 					return;
 			}
 		},
-		[dragChapterIfNecessary, removeChapterIfNecessary]
+		[dragOrRemoveChapterIfNecessary, removeChapterIfNecessary]
 	);
 
 	const updateScene = useCallback(
