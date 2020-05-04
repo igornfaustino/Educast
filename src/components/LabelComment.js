@@ -3,11 +3,13 @@ import React, { useState } from 'react';
 import * as Showdown from "showdown";
 import ReactMde from "react-mde";
 
-import TextareaAutosize from 'react-textarea-autosize';
+// import TextareaAutosize from 'react-textarea-autosize';
 import style from './LabelComment.module.scss';
 import 'react-mde/lib/styles/css/react-mde-all.css';
 
 const LabelComment = props => {
+
+    
     const loadSuggestions = text => {
         return new Promise((accept, reject) => {
             setTimeout(() => {
@@ -42,6 +44,8 @@ const LabelComment = props => {
     });
 
     const [profileState] = useState(props);
+
+    
     const [value, setValue] = React.useState("**Hello world!!!**");
     const [selectedTab, setSelectedTab] = React.useState("write");
     return (
@@ -50,24 +54,30 @@ const LabelComment = props => {
                 <h4> {profileState.title} </h4>
 
                 <div className={profileState.style[1]}>
-                    <h5>
-                        {/* <ReactMde
-                            className={profileState.style[0]}
-                            value={value}
-                            onChange={setValue}
-                            selectedTab={selectedTab}
-                            onTabChange={setSelectedTab}
-                            generateMarkdownPreview={markdown =>
-                                Promise.resolve(converter.makeHtml(markdown))
+
+                    <ReactMde
+                        className={profileState.style[0]}
+                        value={value}
+                        onChange={setValue}
+                        selectedTab={selectedTab}
+                        minEditorHeight="100px"
+                        minPreviewHeight="100px"
+                        maxEditorHeight="200px"
+                        onTabChange={setSelectedTab}
+                        generateMarkdownPreview={markdown =>
+                            Promise.resolve(converter.makeHtml(markdown))
+                        }
+                        loadSuggestions={loadSuggestions}
+                        childProps={{
+                            writeButton: {
+                                tabIndex: -1
                             }
-                            loadSuggestions={loadSuggestions}
-                            childProps={{
-                                writeButton: {
-                                    tabIndex: -1
-                                }
-                            }}
-                        /> */}
-                        <div className={style["img"]}></div>
+                        }}
+                        classes={{
+                            textArea: style['text-area']
+                        }}
+                    />
+                    {/* <div className={style["img"]}></div>
                     < TextareaAutosize
                         type={profileState.type}
                         name={profileState.title}
@@ -75,8 +85,7 @@ const LabelComment = props => {
                         className={profileState.style[0]}
                         minRows={profileState.minRows}
                         maxRows={profileState.maxRows}
-                    />
-                    </h5>
+                    /> */}
                 </div>
 
             </label>
