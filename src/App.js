@@ -79,6 +79,15 @@ function App() {
 		[]
 	);
 
+	const timelineProps = useMemo(
+		() => ({
+			duration: video1Handle.duration,
+			getPresenterScreenShot: getPresenterScreenShot,
+			getPresentationScreenShot: getPresentationScreenShot,
+		}),
+		[getPresentationScreenShot, getPresenterScreenShot, video1Handle.duration]
+	);
+
 	return (
 		<Container fluid className="app">
 			<div className="video-div">
@@ -99,12 +108,7 @@ function App() {
 			<div className="edition-div">
 				<div className="edition-div-container">
 					<BrowserRouter>
-						<Tabs
-							step={step}
-							setStep={setStep}
-							getPresenterScreenShot={getPresenterScreenShot}
-							getPresentationScreenShot={getPresentationScreenShot}
-						/>
+						<Tabs step={step} setStep={setStep} timelineProps={timelineProps} />
 					</BrowserRouter>
 				</div>
 				<div className="stepper-buttons-container">
