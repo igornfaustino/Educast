@@ -207,7 +207,7 @@ export function useSceneChapters(timerDivWidth) {
 			case 'delete':
 				return deleteScenesAndInsideChapters(state, action);
 			case 'create':
-				return [...state, action.scene];
+				return [...state, action.scene].sort((a, b) => a.start.x - b.start.x);
 			case 'on_drag_start':
 				setChaptersInsideDraggedScene(
 					getIdOfChaptersInsideDraggedScene(action.scene)

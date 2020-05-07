@@ -34,69 +34,117 @@ const Timeline = (
 ) => {
 	const [selectedScenes, setSelectedScenes] = useState([]);
 	const [selectedChapters, setSelectedChapters] = useState([]);
-
 	const [disableVideoButton, setDisableVideoButton] = useState(false);
 	const [disableChapterButton, setDisableChapterButton] = useState(false);
-
 	const [isSelectedScenesEmpty, setIsSelectedScenesEmpty] = useState(true);
 	const [isSelectedChaptersEmpty, setIsSelectedChaptersEmpty] = useState(true);
+	const [lastSceneWithCursor, setLastSceneWithCursor] = useState(undefined);
+	const [lastGapWithCursor, setLastGapWithCursor] = useState(undefined);
 
-	useEffect(() => {
-		createScene();
+	const getPlayingScene = useCallback(
+		(cursorPosition) =>
+			scenes.find((scene) => {
+				return cursorPosition >= scene.start.x && cursorPosition <= scene.end.x;
+			}),
+		[scenes]
+	);
+
+	const getPlayingDrag = useCallback(
+		(cursorPosition) => {
+			let gap = undefined;
+			scenes.some((scene, idx) => {
+				const isFirstScene = idx === 0;
+				const isLastScene = idx === scenes.length - 1;
+
+				const cursorAfterLastScene =
+					cursorPosition > scenes[scenes.length - 1].end.x;
+
+				const cursorBeforeFirstScene = cursorPosition < scenes[0].start.x;
+
+				const cursorBetweenScenes =
+					!isLastScene &&
+					cursorPosition > scene.end.x &&
+					cursorPosition < scenes[idx + 1].start.x;
+
+				if (isFirstScene && cursorBeforeFirstScene) {
+					gap = { start: {}, end: {} };
+					gap.start.x = 0;
+					gap.end.x = scenes[0].start.x;
+					return true;
+				}
+				if (isLastScene && cursorAfterLastScene) {
+					gap = { start: {}, end: {} };
+					gap.start.x = scene.end.x;
+					gap.end.x = 1;
+					return true;
+				}
+				if (cursorBetweenScenes) {
+					gap = { start: {}, end: {} };
+					gap.start.x = scene.end.x;
+					gap.end.x = scenes[idx + 1].start.x;
+					return true;
+				}
+				return false;
+			});
+			return gap;
+		},
+		[scenes]
+	);
+
+	const isCursorInsideThis = useCallback((value, cursorPosition) => {
+		if (!value) return false;
+		if (value.start.x <= cursorPosition && cursorPosition <= value.end.x)
+			return true;
+		return false;
 	}, []);
 
-	useEffect(() => {
-		const updatedSelectedChapters = selectedChapters.filter((selected) => {
-			return chapters.some((chapter) => chapter.id === selected);
-		});
-
-		setSelectedChapters(updatedSelectedChapters);
-	}, [chapters]);
-
-	useEffect(() => {
-		setIsSelectedScenesEmpty(() => {
-			return selectedScenes.length > 0 ? false : true;
-		});
-	}, [selectedScenes]);
-
-	useEffect(() => {
-		setIsSelectedChaptersEmpty(() => {
-			return selectedChapters.length > 0 ? false : true;
-		});
-	}, [selectedChapters]);
-
-	// check if the main marker is in a scene
-	const isMarkerInScene = useCallback(() => {
-		if (
-			scenes.some((scene) => {
-				return (
-					cursorPosition.x >= scene.start.x && cursorPosition.x <= scene.end.x
-				);
-			})
-		) {
-			return true;
-		}
-
-		return false;
-	}, [cursorPosition.x, scenes]);
-
-	useEffect(() => {
-		if (isMarkerInScene()) {
-			setDisableVideoButton(() => {
+	const verifyCursorAndSetSceneOrGapInfo = useCallback(
+		(cursorPosition) => {
+			const playingScene = getPlayingScene(cursorPosition);
+			if (playingScene) {
+				setLastSceneWithCursor(playingScene);
+				setLastGapWithCursor(undefined);
 				return true;
-			});
-			setDisableChapterButton(() => {
+			}
+			const playingGap = getPlayingDrag(cursorPosition);
+			if (playingGap) {
+				setLastGapWithCursor(playingGap);
+				setLastSceneWithCursor(undefined);
 				return false;
-			});
-		} else {
-			setDisableVideoButton(() => {
-				return false;
-			});
-			setDisableChapterButton(() => {
+			}
+		},
+		[getPlayingDrag, getPlayingScene]
+	);
+
+	const isCursorInsideSomeScene = useCallback(
+		(cursorPosition) => {
+			if (
+				lastSceneWithCursor &&
+				isCursorInsideThis(lastSceneWithCursor, cursorPosition)
+			)
 				return true;
-			});
-		}
-	}, [cursorPosition, isMarkerInScene, scenes]);
+			if (
+				lastGapWithCursor &&
+				isCursorInsideThis(lastGapWithCursor, cursorPosition)
+			) {
+				return false;
+			}
+			return verifyCursorAndSetSceneOrGapInfo(cursorPosition);
+		},
+		[
+			isCursorInsideThis,
+			lastGapWithCursor,
+			lastSceneWithCursor,
+			verifyCursorAndSetSceneOrGapInfo,
+		]
+	);
+
+	const isCursorInScene = useCallback(() => {
+		if (!scenes.length) return false;
+		if (scenes.length === 1)
+			return isCursorInsideThis(scenes[0], cursorPosition.x);
+		return isCursorInsideSomeScene(cursorPosition.x);
+	}, [cursorPosition.x, isCursorInsideSomeScene, isCursorInsideThis, scenes]);
 
 	const handleDrag = (e, ui) => {
 		const { x: lastPosition } = cursorPosition;
@@ -106,7 +154,7 @@ const Timeline = (
 		});
 	};
 
-	const deleteScene = () => {
+	const deleteScene = useCallback(() => {
 		setSelectedScenes([]);
 
 		// remove the selected chapter from the array
@@ -132,9 +180,9 @@ const Timeline = (
 			}
 		});
 		dispatchScene({ type: 'delete', scenesIdx: selectedScenes });
-	};
+	}, [chapters, dispatchScene, scenes, selectedScenes]);
 
-	const deleteChapter = () => {
+	const deleteChapter = useCallback(() => {
 		// dispatchChapter({ type: "delete", deleteIdx: selectedChapters });
 		setChapters((prevState) => {
 			const tmp = prevState.filter((val) => {
@@ -144,7 +192,7 @@ const Timeline = (
 			return [...tmp];
 		});
 		setSelectedChapters([]);
-	};
+	}, [selectedChapters, setChapters]);
 
 	const getSticksEndPosition = useCallback(() => {
 		// get the next scene after the marker
@@ -162,9 +210,9 @@ const Timeline = (
 		}
 	}, [cursorPosition.x, scenes, timerDivWidth]);
 
-	const createScene = () => {
+	const createScene = useCallback(() => {
 		// extra verification (just in case)
-		if (isMarkerInScene()) {
+		if (isCursorInScene()) {
 			alert('Já existe uma cena aqui!');
 			return;
 		}
@@ -183,11 +231,17 @@ const Timeline = (
 
 		// const img = getPresenterScreenShot();
 		// setBackgroundImg(img);
-	};
+	}, [
+		cursorPosition.x,
+		dispatchScene,
+		getPresenterScreenShot,
+		getSticksEndPosition,
+		isCursorInScene,
+	]);
 
-	const createChapter = () => {
+	const createChapter = useCallback(() => {
 		//  extra verification (just in case)
-		if (!isMarkerInScene()) {
+		if (!isCursorInScene()) {
 			alert('É necessário criar o capítulo em uma cena');
 			return;
 		}
@@ -204,7 +258,12 @@ const Timeline = (
 
 			return [...tmpMarkInChapter];
 		});
-	};
+	}, [
+		cursorPosition.x,
+		getPresentationScreenShot,
+		isCursorInScene,
+		setChapters,
+	]);
 
 	const renderChapter = useMemo(
 		() =>
@@ -445,6 +504,53 @@ const Timeline = (
 			}),
 		[scenes, timerDivWidth, selectedScenes, dispatchScene]
 	);
+
+	useEffect(() => {
+		createScene();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
+	useEffect(() => {
+		setLastGapWithCursor(undefined);
+		setLastSceneWithCursor(undefined);
+	}, [scenes]);
+
+	useEffect(() => {
+		setSelectedChapters((selectedChapters) => {
+			const updatedSelectedChapters = selectedChapters.filter((selected) => {
+				return chapters.some((chapter) => chapter.id === selected);
+			});
+			return updatedSelectedChapters;
+		});
+	}, [chapters]);
+
+	useEffect(() => {
+		setIsSelectedScenesEmpty(selectedScenes.length > 0 ? false : true);
+	}, [selectedScenes]);
+
+	useEffect(() => {
+		setIsSelectedChaptersEmpty(() => {
+			return selectedChapters.length > 0 ? false : true;
+		});
+	}, [selectedChapters]);
+
+	useEffect(() => {
+		if (isCursorInScene()) {
+			setDisableVideoButton(() => {
+				return true;
+			});
+			setDisableChapterButton(() => {
+				return false;
+			});
+		} else {
+			setDisableVideoButton(() => {
+				return false;
+			});
+			setDisableChapterButton(() => {
+				return true;
+			});
+		}
+	}, [cursorPosition, isCursorInScene, scenes]);
 
 	return (
 		<div className={styles['timeline__wrapper']}>
