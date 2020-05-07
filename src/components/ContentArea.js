@@ -3,21 +3,13 @@ import { Switch, Route } from 'react-router-dom';
 import Documents from './Documents';
 import VideoEditor from './VideoEditor';
 
-function RouteContentArea({
-	getPresenterScreenShot,
-	getPresentationScreenShot,
-}) {
+function RouteContentArea({ timelineProps }) {
 	return (
 		<Switch>
 			<Route
 				exact
 				path="/editor"
-				component={() => (
-					<VideoEditor
-						getPresenterScreenShot={getPresenterScreenShot}
-						getPresentationScreenShot={getPresentationScreenShot}
-					/>
-				)}
+				component={() => <VideoEditor {...timelineProps} />}
 			/>
 			<Route exact path="/chapters" component={() => <div>Capitulos</div>} />
 			<Route exact path="/documents" component={Documents} />

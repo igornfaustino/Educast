@@ -6,14 +6,16 @@ import { useSceneChapters } from '../hooks/useSceneChapters';
 
 import { ZOOM_MAX } from '../utils/constants';
 
-const TAMANHO_VIDEO = 30;
-
-const VideoEditor = ({ getPresenterScreenShot, getPresentationScreenShot }) => {
+const VideoEditor = ({
+	getPresenterScreenShot,
+	getPresentationScreenShot,
+	duration,
+}) => {
 	const videoTimelineRef = useRef(null);
 
 	const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
 	const [zoom, setZoom] = useState(1);
-	const [videoLength, setVideoLength] = useState(TAMANHO_VIDEO);
+	const [videoLength, setVideoLength] = useState(duration);
 	const [timerDivWidth, setTimerDivWidth] = useState(
 		10.5 * (zoom * 10 + zoom * 90)
 	);
@@ -28,13 +30,13 @@ const VideoEditor = ({ getPresenterScreenShot, getPresentationScreenShot }) => {
 	);
 
 	useEffect(() => {
-		setVideoLength(TAMANHO_VIDEO * zoom);
+		setVideoLength(duration * zoom);
 		if (Number(zoom) === ZOOM_MAX) {
 			setTimerDivWidth(INITIAL_DIV_WIDTH2);
 		} else {
 			setTimerDivWidth(zoom * INITIAL_DIV_WIDTH);
 		}
-	}, [zoom, INITIAL_DIV_WIDTH]);
+	}, [zoom, INITIAL_DIV_WIDTH, duration, INITIAL_DIV_WIDTH2]);
 
 	return (
 		<div style={{}}>
