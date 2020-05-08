@@ -5,6 +5,8 @@ import React, {
 	useCallback,
 	forwardRef,
 } from 'react';
+
+import { useSelector } from 'react-redux';
 import { GiFilmStrip, GiStack } from 'react-icons/gi';
 import { FaPlusSquare, FaMinusSquare } from 'react-icons/fa';
 import Draggable from 'react-draggable';
@@ -16,22 +18,21 @@ import styles from './Timeline.module.scss';
 
 const FINAL_SPACE = 34;
 
-const Timeline = (
-	{
-		zoomLevel,
-		timerDivWidth,
-		cursorPosition,
-		setCursorPosition,
-		videoLength,
-		scenes,
-		dispatchScene,
-		chapters,
-		setChapters,
-		getPresenterScreenShot,
-		getPresentationScreenShot,
-	},
-	videoTimelineRef
-) => {
+const Timeline = ({
+	zoomLevel,
+	timerDivWidth,
+	videoTimelineRef,
+	scenes,
+	dispatchScene,
+	chapters,
+	setChapters,
+	getPresenterScreenShot,
+	getPresentationScreenShot,
+	videoLength,
+}) => {
+	const currentTime = useSelector((state) => state.video.currentTime);
+
+	const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
 	const [selectedScenes, setSelectedScenes] = useState([]);
 	const [selectedChapters, setSelectedChapters] = useState([]);
 	const [disableVideoButton, setDisableVideoButton] = useState(false);
@@ -145,6 +146,12 @@ const Timeline = (
 			return isCursorInsideThis(scenes[0], cursorPosition.x);
 		return isCursorInsideSomeScene(cursorPosition.x);
 	}, [cursorPosition.x, isCursorInsideSomeScene, isCursorInsideThis, scenes]);
+
+	useEffect(() => {
+		const timeInPercent = getPositionInPercent(currentTime, videoLength);
+		console.log(timeInPercent);
+		setCursorPosition({ x: timeInPercent });
+	}, [currentTime, videoLength]);
 
 	const handleDrag = (e, ui) => {
 		const { x: lastPosition } = cursorPosition;

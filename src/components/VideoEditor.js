@@ -1,22 +1,25 @@
 import React, { useState, useEffect, useRef } from 'react';
 
+import { useSelector } from 'react-redux';
+
 import Timeline from './Timeline';
 import TimelineControl from './TimelineControl';
 import { useSceneChapters } from '../hooks/useSceneChapters';
-import { getPositionInPercent } from '../utils/conversions';
 
 import { ZOOM_MAX } from '../utils/constants';
 
 const VideoEditor = ({
 	getPresenterScreenShot,
 	getPresentationScreenShot,
-	duration,
+	handleTimelineClick,
 }) => {
+	const duration = useSelector((state) => state.video.duration);
+
 	const videoTimelineRef = useRef(null);
 
+	const [videoLength, setVideoLength] = useState(duration);
 	const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
 	const [zoom, setZoom] = useState(1);
-	const [videoLength, setVideoLength] = useState(duration);
 	const [timerDivWidth, setTimerDivWidth] = useState(
 		10.5 * (zoom * 10 + zoom * 90)
 	);

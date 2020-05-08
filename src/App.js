@@ -1,5 +1,7 @@
-import React, { useState, useRef, useMemo } from 'react';
+import React, { useState, useRef, useMemo, useEffect } from 'react';
 import './App.scss';
+
+import { useDispatch } from 'react-redux';
 
 import VideoContainer from './components/VideoContainer';
 import Tabs from './components/Tabs';
@@ -36,6 +38,7 @@ const videoJSOptionsApresentacao = {
 };
 
 function App() {
+	const dispatch = useDispatch();
 	const video1Ref = useRef(null);
 	const video2Ref = useRef(null);
 	const [step, setStep] = useState(0);
