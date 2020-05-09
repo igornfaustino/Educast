@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import styles from './TimeIndicator.module.scss';
 import cx from 'classnames';
 import moment from 'moment';
