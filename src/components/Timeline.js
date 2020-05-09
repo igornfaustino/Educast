@@ -31,6 +31,7 @@ const Timeline = ({
 	videoLength,
 }) => {
 	const currentTime = useSelector((state) => state.video.currentTime);
+	const duration = useSelector((state) => state.video.duration);
 
 	const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
 	const [selectedScenes, setSelectedScenes] = useState([]);
@@ -148,10 +149,9 @@ const Timeline = ({
 	}, [cursorPosition.x, isCursorInsideSomeScene, isCursorInsideThis, scenes]);
 
 	useEffect(() => {
-		const timeInPercent = getPositionInPercent(currentTime, videoLength);
-		console.log(timeInPercent);
+		const timeInPercent = getPositionInPercent(currentTime, duration);
 		setCursorPosition({ x: timeInPercent });
-	}, [currentTime, videoLength]);
+	}, [currentTime, duration]);
 
 	const handleDrag = (e, ui) => {
 		const { x: lastPosition } = cursorPosition;
