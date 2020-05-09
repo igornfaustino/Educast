@@ -506,11 +506,6 @@ const Timeline = (
 	);
 
 	useEffect(() => {
-		createScene();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
-
-	useEffect(() => {
 		setLastGapWithCursor(undefined);
 		setLastSceneWithCursor(undefined);
 	}, [scenes]);

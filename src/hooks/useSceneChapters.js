@@ -202,27 +202,30 @@ export function useSceneChapters(timerDivWidth) {
 		[handleChapterBetweenScenes, isSceneValid]
 	);
 
-	const [scenes, dispatchScene] = useReducer((state, action) => {
-		switch (action.type) {
-			case 'delete':
-				return deleteScenesAndInsideChapters(state, action);
-			case 'create':
-				return [...state, action.scene].sort((a, b) => a.start.x - b.start.x);
-			case 'on_drag_start':
-				setChaptersInsideDraggedScene(
-					getIdOfChaptersInsideDraggedScene(action.scene)
-				);
-				return state;
-			case 'on_drag_end':
-				setChaptersInsideDraggedScene([]);
-				return state;
-			case 'drag_left':
-			case 'drag_right':
-				return updateScene(state, action);
-			default:
-				return state;
-		}
-	}, []);
+	const [scenes, dispatchScene] = useReducer(
+		(state, action) => {
+			switch (action.type) {
+				case 'delete':
+					return deleteScenesAndInsideChapters(state, action);
+				case 'create':
+					return [...state, action.scene].sort((a, b) => a.start.x - b.start.x);
+				case 'on_drag_start':
+					setChaptersInsideDraggedScene(
+						getIdOfChaptersInsideDraggedScene(action.scene)
+					);
+					return state;
+				case 'on_drag_end':
+					setChaptersInsideDraggedScene([]);
+					return state;
+				case 'drag_left':
+				case 'drag_right':
+					return updateScene(state, action);
+				default:
+					return state;
+			}
+		},
+		[{ start: { x: 0, y: 0 }, end: { x: 1, y: 0 } }]
+	);
 
 	return {
 		scenes,
