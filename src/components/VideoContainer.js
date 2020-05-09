@@ -4,6 +4,8 @@ import React, {
 	useEffect,
 	useState,
 	useMemo,
+	forwardRef,
+	useImperativeHandle,
 } from 'react';
 import { MdSwapHoriz } from 'react-icons/md';
 import { FaEyeSlash } from 'react-icons/fa';
@@ -11,32 +13,66 @@ import cx from 'classnames';
 
 import VideoContainerHeader from './VideoContainerHeader';
 import VideoControl from './VideoControl';
+import { useDispatch } from 'react-redux';
 
 import styles from './VideoContainer.module.scss';
 
+import { useVideo } from '../hooks/useVideo';
 import { useWindowSize } from '../hooks/useWindowSize';
 import { useVideoHeight } from '../hooks/useVideoHeight';
 import IndicatorIcon from './IndicatorIcon';
 import { tryToEnterFullscreen } from '../utils/fullscreen';
+import { getSnapshot } from '../utils/snapshot';
 
-function VideoContainer({
-	video1Handle,
-	video2Handle,
-	presenterVideo,
-	presentationVideo,
-	handleTimelineClick,
-	isVideoInverted,
-	setIsVideoInverted,
-	isVideo1Visible,
-	isVideo2Visible,
-	setIsVideo1Visible,
-	setIsVideo2Visible,
-}) {
+const videoJSOptions = {
+	controls: false,
+	fluid: false,
+	sources: [
+		{
+			src:
+				'https://livestream01.fccn.pt/EducastVod2/_definst_/mp4:clips/0228xx/Clip_022864/ProducedClips/mpeg4_standard_V1_presenter_46.mp4/playlist.m3u8',
+			type: 'application/x-mpegURL',
+		},
+	],
+};
+
+const videoJSOptionsApresentacao = {
+	controls: false,
+	fluid: false,
+	sources: [
+		{
+			src:
+				'https://livestream01.fccn.pt/EducastVod2/_definst_/mp4:clips/0228xx/Clip_022864/ProducedClips/mpeg4_standard_V1_screens_46.mp4/playlist.m3u8',
+			type: 'application/x-mpegURL',
+		},
+	],
+};
+// const videoJSOptionsApresentacao = {
+// 	controls: false,
+// 	fluid: false,
+// 	sources: [
+// 		{
+// 			src:
+// 				'https://sample-videos.com/abc/video708/mp4/240/big_buck_bunny_240p_20mb.mp4',
+// 			type: 'video/mp4',
+// 		},
+// 	],
+// };
+
+function VideoContainer(props, ref) {
+	const video1Ref = useRef(null);
+	const video2Ref = useRef(null);
 	const wrapperRef = useRef(null);
 	const fullscreenArea = useRef(null);
+
+	const dispatch = useDispatch();
+
 	const [maxWidth, setMaxWidth] = useState(0);
 	const [maxHeight, setMaxHeight] = useState(0);
 	const [isFullscreen, setIsFullscreen] = useState(false);
+	const [isVideoInverted, setIsVideoInverted] = useState(false);
+	const [isVideo1Visible, setIsVideo1Visible] = useState(true);
+	const [isVideo2Visible, setIsVideo2Visible] = useState(true);
 
 	const windowSize = useWindowSize();
 	const {
@@ -48,23 +84,33 @@ function VideoContainer({
 		play: playPlayer1,
 		pause: pausePlayer1,
 		isWaiting: isPlayer1Waiting,
+		setClickedTime: setClickedTimeVideo1,
 		handlePlayPauseButton: handlePlayPauseButtonVideo1,
 		handleVolumeChange: handleVolumeChangeVideo1,
-	} = video1Handle;
+	} = useVideo(video1Ref, videoJSOptions);
 	const {
 		size: sizeVideo2,
 		play: playPlayer2,
 		pause: pausePlayer2,
 		isSeeking: isPlayer2Seeking,
 		isWaiting: isPlayer2Waiting,
+		setClickedTime: setClickedTimeVideo2,
 		handlePlayPauseButton: handlePlayPauseButtonVideo2,
 		handleVolumeChange: handleVolumeChangeVideo2,
-	} = video2Handle;
+	} = useVideo(video2Ref, videoJSOptionsApresentacao);
 	const { height, width1, width2 } = useVideoHeight(
 		maxWidth,
 		maxHeight,
 		sizeVideo1,
 		sizeVideo2
+	);
+
+	const handleTimelineClick = useCallback(
+		(time) => {
+			setClickedTimeVideo1(time);
+			setClickedTimeVideo2(time);
+		},
+		[setClickedTimeVideo1, setClickedTimeVideo2]
 	);
 
 	const handlePlayPauseButton = useCallback(() => {
@@ -123,53 +169,17 @@ function VideoContainer({
 
 	const handleSwap = useCallback(() => setIsVideoInverted(!isVideoInverted), [
 		isVideoInverted,
-		setIsVideoInverted,
 	]);
 
 	const handleHideVideo1 = useCallback(
 		() => setIsVideo1Visible(!isVideo1Visible),
-		[isVideo1Visible, setIsVideo1Visible]
+		[isVideo1Visible]
 	);
 
 	const handleHideVideo2 = useCallback(
 		() => setIsVideo2Visible(!isVideo2Visible),
-		[isVideo2Visible, setIsVideo2Visible]
+		[isVideo2Visible]
 	);
-
-	useEffect(() => {
-		if (isPlayer1Seeking || isPlayer2Seeking) {
-			handleSeeking();
-		} else if (isPlayer1Waiting || isPlayer2Waiting) {
-			handleWaiting();
-		} else if (isPlaying) {
-			playPlayer1();
-			playPlayer2();
-		}
-	}, [
-		handleSeeking,
-		handleWaiting,
-		isPlayer1Seeking,
-		isPlayer1Waiting,
-		isPlayer2Seeking,
-		isPlayer2Waiting,
-		isPlaying,
-		pausePlayer1,
-		pausePlayer2,
-		playPlayer1,
-		playPlayer2,
-	]);
-
-	useEffect(() => {
-		if (isFullscreen) return;
-		const totalWidth = wrapperRef.current.offsetWidth;
-		const paddingWidth = 16;
-		const dividerSize = 8;
-
-		const maxHeight = parseInt(windowSize[1] * 0.35);
-
-		setMaxHeight(maxHeight);
-		setMaxWidth(totalWidth - paddingWidth - dividerSize);
-	}, [isFullscreen, windowSize]);
 
 	const wrapperStyle = useMemo(() => {
 		return { height: height + 16 };
@@ -231,6 +241,58 @@ function VideoContainer({
 		[isVideo2Visible]
 	);
 
+	useImperativeHandle(ref, () => ({
+		getPresenterScreenShot() {
+			return getSnapshot(video1Ref.current);
+		},
+		getPresentationScreenShot() {
+			return getSnapshot(video2Ref.current);
+		},
+	}));
+
+	useEffect(() => {
+		if (isPlayer1Seeking || isPlayer2Seeking) {
+			handleSeeking();
+		} else if (isPlayer1Waiting || isPlayer2Waiting) {
+			handleWaiting();
+		} else if (isPlaying) {
+			playPlayer1();
+			playPlayer2();
+		}
+	}, [
+		handleSeeking,
+		handleWaiting,
+		isPlayer1Seeking,
+		isPlayer1Waiting,
+		isPlayer2Seeking,
+		isPlayer2Waiting,
+		isPlaying,
+		pausePlayer1,
+		pausePlayer2,
+		playPlayer1,
+		playPlayer2,
+	]);
+
+	useEffect(() => {
+		if (isFullscreen) return;
+		const totalWidth = wrapperRef.current.offsetWidth;
+		const paddingWidth = 16;
+		const dividerSize = 8;
+
+		const maxHeight = parseInt(windowSize[1] * 0.35);
+
+		setMaxHeight(maxHeight);
+		setMaxWidth(totalWidth - paddingWidth - dividerSize);
+	}, [isFullscreen, windowSize]);
+
+	useEffect(() => {
+		dispatch({ type: 'SET_DURATION', duration });
+	}, [dispatch, duration]);
+
+	useEffect(() => {
+		dispatch({ type: 'SET_CURRENT_TIME', currentTime });
+	}, [dispatch, currentTime]);
+
 	return (
 		<>
 			<VideoContainerHeader
@@ -241,7 +303,7 @@ function VideoContainer({
 				<div className={wrapperClassName} ref={wrapperRef} style={wrapperStyle}>
 					<div data-vjs-player style={video1Style}>
 						{video1HideLayer}
-						{presenterVideo}
+						<video ref={video1Ref} className="video-js"></video>
 						<div className={presenterIconClassName}>
 							<IndicatorIcon
 								type={video1VisibleIconType}
@@ -259,7 +321,7 @@ function VideoContainer({
 					</div>
 					<div data-vjs-player style={video2Style}>
 						{video2HideLayer}
-						{presentationVideo}
+						<video ref={video2Ref} className="video-js"></video>
 						<div className={presentationIconClassName}>
 							<IndicatorIcon
 								type={video2VisibleIconType}
@@ -284,4 +346,4 @@ function VideoContainer({
 	);
 }
 
-export default VideoContainer;
+export default forwardRef(VideoContainer);
