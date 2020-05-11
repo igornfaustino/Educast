@@ -18,18 +18,21 @@ import styles from './Timeline.module.scss';
 
 const FINAL_SPACE = 34;
 
-const Timeline = ({
-	zoomLevel,
-	timerDivWidth,
-	videoTimelineRef,
-	scenes,
-	dispatchScene,
-	chapters,
-	setChapters,
-	getPresenterScreenShot,
-	getPresentationScreenShot,
-	videoLength,
-}) => {
+const Timeline = (
+	{
+		zoomLevel,
+		timerDivWidth,
+		scenes,
+		dispatchScene,
+		chapters,
+		setChapters,
+		getPresenterScreenShot,
+		getPresentationScreenShot,
+		videoLength,
+		calculatedMargin,
+	},
+	videoTimelineRef
+) => {
 	const currentTime = useSelector((state) => state.video.currentTime);
 	const duration = useSelector((state) => state.video.duration);
 
@@ -42,6 +45,10 @@ const Timeline = ({
 	const [isSelectedChaptersEmpty, setIsSelectedChaptersEmpty] = useState(true);
 	const [lastSceneWithCursor, setLastSceneWithCursor] = useState(undefined);
 	const [lastGapWithCursor, setLastGapWithCursor] = useState(undefined);
+
+	useEffect(() => {
+		console.log('timerdivwidth ', timerDivWidth);
+	}, [timerDivWidth]);
 
 	const getPlayingScene = useCallback(
 		(cursorPosition) =>
@@ -625,7 +632,11 @@ const Timeline = ({
 					}}
 					className={styles['timeline__video-invisible']}
 				>
-					<TimeIndicator videoLength={videoLength} zoomLevel={zoomLevel} />
+					<TimeIndicator
+						videoLength={videoLength}
+						zoomLevel={zoomLevel}
+						calculatedMargin={calculatedMargin}
+					/>
 
 					<div
 						className={cx(
