@@ -1,47 +1,53 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import styles from './TimeIndicator.module.scss';
 import cx from 'classnames';
 import moment from 'moment';
 
 import { ZOOM_MAX } from '../utils/constants';
 
-const TimeIndicator = ({ videoLength, zoomLevel }) => {
-	const createPauzinhoMaiorComTempoEmcima = (timeInterval, pauzinhoNumber) => {
-		return (
-			<>
-				<span
-					style={{
-						bottom: 20,
-						position: 'absolute',
-						marginLeft: pauzinhoNumber * 10.5 - 21 + 'px',
-						zIndex: 50,
-					}}
-				>
-					{moment.utc(timeInterval * 1000).format('HH:mm:ss')}
-				</span>
+const TimeIndicator = ({ videoLength, zoomLevel, calculatedMargin }) => {
+	const createPauzinhoMaiorComTempoEmcima = useCallback(
+		(timeInterval, pauzinhoNumber) => {
+			return (
+				<>
+					<span
+						style={{
+							bottom: 20,
+							position: 'absolute',
+							marginLeft: pauzinhoNumber * calculatedMargin - 21 + 'px',
+							zIndex: 50,
+						}}
+					>
+						{moment.utc(timeInterval * 1000).format('HH:mm:ss')}
+					</span>
+					<div
+						className={cx(
+							styles['timer-vertical-whitebar--big'],
+							styles['timer-vertical-whitebar']
+						)}
+						style={{
+							marginLeft: calculatedMargin * pauzinhoNumber + 'px',
+						}}
+					></div>
+				</>
+			);
+		},
+		[calculatedMargin]
+	);
+
+	const createPauzinhoMenor = useCallback(
+		(pauzinhoNumber) => {
+			return (
 				<div
-					className={cx(
-						styles['timer-vertical-whitebar--big'],
-						styles['timer-vertical-whitebar']
-					)}
+					className={styles['timer-vertical-whitebar']}
 					style={{
-						marginLeft: pauzinhoNumber * 10.5 + 'px',
+						marginLeft: calculatedMargin * pauzinhoNumber + 'px',
 					}}
 				></div>
-			</>
-		);
-	};
-
-	const createPauzinhoMenor = (pauzinhoNumber) => {
-		return (
-			<div
-				className={styles['timer-vertical-whitebar']}
-				style={{
-					marginLeft: pauzinhoNumber * 10.5 + 'px',
-				}}
-			></div>
-		);
-	};
+			);
+		},
+		[calculatedMargin]
+	);
 
 	const createPauzinhoMaiorSemTempo = () => {
 		return (
@@ -67,7 +73,7 @@ const TimeIndicator = ({ videoLength, zoomLevel }) => {
 		let arrayOfWhiteBarsAndTimers = [];
 
 		if (Number(zoomLevel) === ZOOM_MAX) {
-			qttPauzinhosGrandes = videoLength / zoomLevel;
+			qttPauzinhosGrandes = videoLength / zoomLevel; // videoLenght is duration * zoom
 			console.log('Qtt de pauzinhos de grandes: ' + qttPauzinhosGrandes);
 			console.log('-->', qttPauzinhosGrandes + qttPauzinhosGrandes * 24);
 			// console.log({ arrayOfWhiteBarsAndTimers });
@@ -106,7 +112,12 @@ const TimeIndicator = ({ videoLength, zoomLevel }) => {
 		}
 		// console.log({ length: arrayOfWhiteBarsAndTimers.length });
 		return React.Children.toArray(arrayOfWhiteBarsAndTimers);
-	}, [videoLength, zoomLevel]);
+	}, [
+		createPauzinhoMaiorComTempoEmcima,
+		createPauzinhoMenor,
+		videoLength,
+		zoomLevel,
+	]);
 
 	return (
 		<div
