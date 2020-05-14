@@ -5,17 +5,23 @@ import { ZOOM_MAX } from '../utils/constants';
 
 import styles from './TimelineControl.module.scss';
 import { useMemo } from 'react';
+import { useDispatch } from 'react-redux';
 
 const TimelineControl = (
 	{ timerDivWidth, zoom, setZoom },
 	videoTimelineRef
 ) => {
 	const mainScrollbarRef = useRef(null);
+	const dispatch = useDispatch();
 
 	const handleScroll = useCallback(() => {
 		if (!videoTimelineRef.current) return;
 		videoTimelineRef.current.scrollLeft = mainScrollbarRef.current.scrollLeft;
-	}, [videoTimelineRef]);
+		dispatch({
+			type: 'SET_SCROLL_LEFT',
+			scrollLeft: mainScrollbarRef.current.scrollLeft,
+		});
+	}, [dispatch, videoTimelineRef]);
 
 	const handleZoomChange = useCallback(
 		(evt) => {

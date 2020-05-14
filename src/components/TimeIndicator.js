@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useRef } from 'react';
 
 import cx from 'classnames';
 import moment from 'moment';
@@ -7,9 +7,13 @@ import { useSelector } from 'react-redux';
 import styles from './TimeIndicator.module.scss';
 import { ZOOM_MAX } from '../utils/constants';
 import { getNumberOfMainIndicators } from '../utils/conversions';
+import { FaPassport } from 'react-icons/fa';
 
 const TimeIndicator = ({ videoLength, zoomLevel, calculatedMargin }) => {
 	const duration = useSelector((state) => state.video.duration);
+	const scrollLeft = useSelector((state) => state.timeline.scrollLeft);
+	const visibleArea = useSelector((state) => state.timeline.visibleArea);
+	const indicatorsRef = useRef(null);
 
 	const createPauzinhoMaiorComTempoEmcima = useCallback(
 		(timeInterval, pauzinhoNumber) => {
@@ -68,65 +72,57 @@ const TimeIndicator = ({ videoLength, zoomLevel, calculatedMargin }) => {
 		);
 	};
 
-	const getNumberOfMainIndicators = (zoomLevel, duration) => {
-		return ((zoomLevel - 1) / 9) * (duration - 10) + 10;
-	};
-
 	const pauzinhos = useMemo(() => {
 		let qttPauzinhosGrandes = getNumberOfMainIndicators(zoomLevel, duration);
 
-		const qttPauzinhosMenores = qttPauzinhosGrandes * 9;
+		const numberOfSubIndicatorsBetweenEachMain =
+			Number(zoomLevel) === ZOOM_MAX ? 24 : 9;
+		const qttPauzinhosMenores =
+			qttPauzinhosGrandes * numberOfSubIndicatorsBetweenEachMain;
 
 		const timeInterval = duration / qttPauzinhosGrandes;
 
 		let arrayOfWhiteBarsAndTimers = [];
 
-		if (Number(zoomLevel) === ZOOM_MAX) {
-			qttPauzinhosGrandes = duration;
+		const spaceBetweenBiggerIndicator =
+			numberOfSubIndicatorsBetweenEachMain + 1;
 
-			for (
-				let i = 0;
-				i <= qttPauzinhosGrandes + qttPauzinhosGrandes * 24;
-				i++
-			) {
-				let tag;
-				if (i !== 0 && i % 25 === 0) {
-					tag = createPauzinhoMaiorComTempoEmcima(i / 25, i);
-				} else if (i === 0) {
-					tag = createPauzinhoMaiorSemTempo();
-				} else {
-					tag = createPauzinhoMenor(i);
-				}
-				arrayOfWhiteBarsAndTimers.push(tag);
+		for (let i = 0; i <= qttPauzinhosGrandes + qttPauzinhosMenores; i++) {
+			const margin = i * calculatedMargin;
+			if (margin < scrollLeft - 100 || margin > scrollLeft + visibleArea + 100)
+				continue;
+
+			let tag;
+			if (i !== 0 && i % spaceBetweenBiggerIndicator === 0) {
+				const intervalOffset = i / spaceBetweenBiggerIndicator;
+				tag = createPauzinhoMaiorComTempoEmcima(
+					timeInterval * intervalOffset,
+					i
+				);
+			} else if (i === 0) {
+				tag = createPauzinhoMaiorSemTempo();
+			} else {
+				tag = createPauzinhoMenor(i);
 			}
-		} else {
-			for (let i = 0; i <= qttPauzinhosGrandes + qttPauzinhosMenores; i++) {
-				let tag;
-				const spaceBetweenBiggerIndicator = 10;
-				if (i !== 0 && i % spaceBetweenBiggerIndicator === 0) {
-					const intervalOffset = i / spaceBetweenBiggerIndicator;
-					tag = createPauzinhoMaiorComTempoEmcima(
-						timeInterval * intervalOffset,
-						i
-					);
-				} else if (i === 0) {
-					tag = createPauzinhoMaiorSemTempo();
-				} else {
-					tag = createPauzinhoMenor(i);
-				}
-				arrayOfWhiteBarsAndTimers.push(tag);
-			}
+			arrayOfWhiteBarsAndTimers.push(tag);
 		}
-		// console.log({ length: arrayOfWhiteBarsAndTimers.length });
+
 		return React.Children.toArray(arrayOfWhiteBarsAndTimers);
 	}, [
+		calculatedMargin,
 		createPauzinhoMaiorComTempoEmcima,
 		createPauzinhoMenor,
 		duration,
+		scrollLeft,
+		visibleArea,
 		zoomLevel,
 	]);
 
-	return <div className={styles['timeIndicator__container']}>{pauzinhos}</div>;
+	return (
+		<div className={styles['timeIndicator__container']} ref={indicatorsRef}>
+			{pauzinhos}
+		</div>
+	);
 };
 
 export default TimeIndicator;

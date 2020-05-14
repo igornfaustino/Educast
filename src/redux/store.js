@@ -1,34 +1,8 @@
-import { createStore } from 'redux';
-
-const initialState = {
-	video: {
-		duration: 10,
-		currentTime: 0,
-	},
-};
-
-const videoReducer = (state = initialState, action) => {
-	switch (action.type) {
-		case 'SET_CURRENT_TIME':
-			return Object.assign({}, state, {
-				video: {
-					...state.video,
-					currentTime: action.currentTime,
-				},
-			});
-		case 'SET_DURATION':
-			return Object.assign({}, state, {
-				video: {
-					...state.video,
-					duration: action.duration,
-				},
-			});
-		default:
-			return state;
-	}
-};
+import { createStore, combineReducers } from 'redux';
+import { videoReducer } from './videoReducer';
+import { timelineReducer } from './timelineReducer';
 
 export const store = createStore(
-	videoReducer,
+	combineReducers({ video: videoReducer, timeline: timelineReducer }),
 	window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );
