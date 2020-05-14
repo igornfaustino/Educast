@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
-import CardActionArea from '@material-ui/core/CardActionArea';
+// import CardActionArea from '@material-ui/core/CardActionArea';
 import Typography from '@material-ui/core/Typography';
 import {
 	FaUpload,
@@ -57,7 +57,7 @@ const useStyles = makeStyles({
 		},
 	},
 	cardHeader: {
-		background: '#12AADA',
+		background: '#009bff',
 		color: 'white',
 		padding: '12px',
 		maxHeight: '35px',
@@ -90,6 +90,8 @@ const CustomCard = ({
 	deleteChapterFunction,
 	updateTitleFunction,
 	selectThumbnailFunction,
+	getPresentationScreenShot,
+	getPresenterScreenShot,
 }) => {
 	const [thumbnailImage, setThumbnailImage] = useState('');
 	const classes = useStyles();
@@ -101,15 +103,10 @@ const CustomCard = ({
 	const handleThumbnailSelection = (path) => {
 		selectThumbnailFunction(chapter.id, path);
 		if (path === 'primary') {
-			chapter.thumbnail = 'primary'; //take screenshot and replace this line
-			setThumbnailImage(images[0]); //extract snapshot
+			chapter.thumbnail = 'primary';
+			// setThumbnailImage(images[0]); //extract snapshot
 		} else if (path === 'secondary') {
 			chapter.thumbnail = 'secondary'; //take screenshot and replace this line
-			setThumbnailImage(images[1]); //extract snapshot
-		} else {
-			//upload, import/show image
-			chapter.thumbnail = path;
-			setThumbnailImage(images[2]); //upload function/import image in path
 		}
 	};
 
@@ -141,44 +138,41 @@ const CustomCard = ({
 						key={chapter.id}
 						className={classes.deleteButton}
 						startIcon={<FaTimes className={classes.deleteIcon} size="14px" />}
-						onClick={deleteChapterFunction}
+						onClick={() => deleteChapterFunction()}
 					/>
 				}
 			/>
 			{/* <CardActionArea> */}
-				<CardMedia
-					className={classes.media}
-					image={thumbnailImage}
-					title={'burger'}
-				>
-					<Box position="absolute" top="10%" left="81%">
+			<CardMedia className={classes.media} image={thumbnailImage}>
+				<Box position="absolute" top="10%" left="81%">
+					<Button
+						className={classes.thumbnailButton}
+						startIcon={<FaImages className={classes.thumbnailIcons} />}
+						// onClick={() => handleThumbnailSelection('primary')}
+						onClick={() => handleThumbnailSelection('primary')}
+					/>
+				</Box>
+				<Box position="absolute" top="37%" left="81%">
+					<Button
+						className={classes.thumbnailButton}
+						startIcon={
+							<FaChalkboardTeacher className={classes.thumbnailIcons} />
+						}
+						onClick={() => handleThumbnailSelection('secondary')}
+					/>
+				</Box>
+				<Box position="absolute" top="64%" left="81%">
+					<div {...getRootProps()}>
+						<input {...getInputProps()} />
 						<Button
+							key={chapter.id}
 							className={classes.thumbnailButton}
-							startIcon={<FaImages className={classes.thumbnailIcons} />}
-							onClick={() => handleThumbnailSelection('primary')}
+							onClick={open}
+							startIcon={<FaUpload className={classes.thumbnailIcons} />}
 						/>
-					</Box>
-					<Box position="absolute" top="37%" left="81%">
-						<Button
-							className={classes.thumbnailButton}
-							startIcon={
-								<FaChalkboardTeacher className={classes.thumbnailIcons} />
-							}
-							onClick={() => handleThumbnailSelection('secondary')}
-						/>
-					</Box>
-					<Box position="absolute" top="64%" left="81%">
-						<div {...getRootProps()}>
-							<input {...getInputProps()} />
-							<Button
-								key={chapter.id}
-								className={classes.thumbnailButton}
-								onClick={open}
-								startIcon={<FaUpload className={classes.thumbnailIcons} />}
-							/>
-						</div>
-					</Box>
-				</CardMedia>
+					</div>
+				</Box>
+			</CardMedia>
 			{/* </CardActionArea> */}
 			<div className={classes.cardActions}>
 				<div className={styles['CustomCard__TimeLabel']}>

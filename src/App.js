@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 import './App.scss';
 
 import VideoContainer from './components/VideoContainer';
@@ -29,6 +29,14 @@ function App() {
 		[]
 	);
 
+	const timelineProps = useMemo(
+		() => ({
+			getPresenterScreenShot,
+			getPresentationScreenShot,
+		}),
+		[getPresentationScreenShot, getPresenterScreenShot]
+	);
+
 	return (
 		<Container fluid className="app">
 			<div className="video-div">
@@ -37,7 +45,7 @@ function App() {
 			<div className="edition-div">
 				<div className="edition-div-container">
 					<BrowserRouter>
-						<Tabs step={step} setStep={setStep} />
+						<Tabs step={step} setStep={setStep} timelineProps={timelineProps} />
 					</BrowserRouter>
 				</div>
 				<div className="stepper-buttons-container">

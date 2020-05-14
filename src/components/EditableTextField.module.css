@@ -1,0 +1,14 @@
+.editable-textfield {
+	color: black;
+	background: #ECECEC;
+	width: 100%;
+	height: 50px;
+}
+
+.textfield-label{
+	height: 50px;
+	width: 100%;
+	background-color: '#F3E9FC';
+	background: #ECECEC;
+	cursor: pointer;
+}

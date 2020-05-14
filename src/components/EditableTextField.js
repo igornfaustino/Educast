@@ -1,28 +1,29 @@
 import React, { useState } from 'react';
-import './EditableTextField.module.css';
+import styles from './EditableTextField.module.css';
+import Input from '@material-ui/core/Input';
 
 const EditableTextField = ({ type, value, updateTitleFunction, chapter }) => {
 	const [editable, setEditable] = useState(false);
 	const [fieldValue, setFieldValue] = useState(value);
 	const [fieldBackupValue, setFieldBackupValue] = useState('');
 
-	const handleInputOnChange = event => {
+	const handleInputOnChange = (event) => {
 		setFieldValue(event.target.value);
 		updateTitleFunction(chapter.id, event.target.value);
 	};
 
-	const handleInputOnBlur = event => {
+	const handleInputOnBlur = (event) => {
 		setEditable(false);
 	};
 
-	const handleInputOnFocus = event => {
+	const handleInputOnFocus = (event) => {
 		const value = event.target.value;
 		event.target.value = '';
 		event.target.value = value;
 		setFieldBackupValue(fieldValue);
 	};
 
-	const handleInputOnKeyUp = event => {
+	const handleInputOnKeyUp = (event) => {
 		if (event.key === 'Escape') {
 			setEditable(false);
 			setFieldValue(fieldBackupValue);
@@ -33,7 +34,7 @@ const EditableTextField = ({ type, value, updateTitleFunction, chapter }) => {
 		}
 	};
 
-	const handleFieldOnClick = event => {
+	const handleFieldOnClick = (event) => {
 		setEditable(editable === false);
 		console.log('field clicked', editable);
 	};
@@ -41,18 +42,29 @@ const EditableTextField = ({ type, value, updateTitleFunction, chapter }) => {
 	return (
 		<div>
 			{editable ? (
-				<input
+				<Input
+					id="chapter-title"
 					type={type}
 					value={fieldValue}
-					className="title-chapter-form"
+					className={styles['editable-textfield']}
 					autoFocus
+					multiline={true}
 					onFocus={handleInputOnFocus}
 					onChange={handleInputOnChange}
 					onBlur={handleInputOnBlur}
 					onKeyUp={handleInputOnKeyUp}
+					rowsMax={2}
+					// value={values.weight}
+					// onChange={handleChange('weight')}
+					// endAdornment={<InputAdornment position="end">Kg</InputAdornment>}
+					inputProps={{
+						'aria-label': 'title',
+					}}
 				/>
 			) : (
-				<span onClick={handleFieldOnClick}>{fieldValue}</span>
+				<div className={styles['textfield-label']} onClick={handleFieldOnClick}>
+					{fieldValue}
+				</div>
 			)}
 		</div>
 	);

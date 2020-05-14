@@ -1,39 +1,4 @@
 .CustomCard__TimeLabel {
-	color: blue;
-}
-
-.CustomCard__DeleteButton {
-	float: center;
-	max-width: 25px;
-	max-height: 25px;
-	min-width: 25px;
-	min-height: 25px;
-	padding-right: 4px;
-	padding-top: 3px;
-	color: #12aada;
-	background: white;
-}
-
-/* borderRadius: '1px',
-maxWidth: '30px',
-maxHeight: '30px',
-minWidth: '30px',
-minHeight: '30px',
-// paddingRight: '4px',
-// paddingLeft: '15px',
-color: '#12AADA',
-background: 'white',
-'&:hover': {
-	color: '#12AADA',
-	background: '#EDD9FF',
-}, */
-
-.CustomCard__ThumbnailButton {
-	border-radius: 1px;
-	max-width: 30px;
-	max-height: 30px;
-	min-width: 30px;
-	min-height: 30px;
-	color: #12AADA;
-	background: white;
+	color: #009bff;
+	background: #ECECEC;
 }

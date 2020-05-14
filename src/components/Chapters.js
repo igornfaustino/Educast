@@ -71,7 +71,7 @@ const Chapters = ({ getPresenterSnapshot, getPresentationSnapshot }) => {
 	const selectThumbnailFunction = (chapterId, path) => {
 		console.log(chapterId, path);
 		setChapters(
-			chapters.filter(chapter => {
+			chapters.filter((chapter) => {
 				if (chapter.id === chapterId) {
 					chapter.thumbnail = path;
 				}
@@ -82,7 +82,7 @@ const Chapters = ({ getPresenterSnapshot, getPresentationSnapshot }) => {
 
 	const updateTitleFunction = (id, newTitle) => {
 		setChapters(
-			chapters.filter(chapter => {
+			chapters.filter((chapter) => {
 				if (chapter.id === id) {
 					chapter.thumbnail = newTitle;
 				}
@@ -92,8 +92,8 @@ const Chapters = ({ getPresenterSnapshot, getPresentationSnapshot }) => {
 		);
 	};
 
-	const deleteChapterFunction = async id => {
-		const chapter = chapters.find(chapter => chapter.id === id);
+	const deleteChapterFunction = async (id) => {
+		const chapter = chapters.find((chapter) => chapter.id === id);
 		let deleted = false;
 		await Swal.fire({
 			text: 'Excluir Capítulo: ' + chapter.title + '?',
@@ -103,11 +103,11 @@ const Chapters = ({ getPresenterSnapshot, getPresentationSnapshot }) => {
 			cancelButtonColor: '#d33',
 			confirmButtonText: 'Excluir',
 			cancelButtonText: 'Cancelar',
-		}).then(result => {
+		}).then((result) => {
 			if (result.value) {
 				deleted = true;
 				setChapters(
-					chapters.filter(chapter => {
+					chapters.filter((chapter) => {
 						return chapter.id !== id;
 					})
 				);
