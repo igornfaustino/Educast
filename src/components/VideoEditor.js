@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import Timeline from './Timeline';
 import TimelineControl from './TimelineControl';
@@ -24,6 +24,7 @@ const VideoEditor = ({
 	handleTimelineClick,
 }) => {
 	const duration = useSelector((state) => state.video.duration);
+	const dispatch = useDispatch();
 
 	const videoTimelineRef = useRef(null);
 
@@ -50,10 +51,7 @@ const VideoEditor = ({
 		const realTimeIndicatorMargin =
 			(wrapperWidth * BASE_TIME_INDICATOR_MARGIN) / BASE_DIV_WIDTH;
 
-		// if (ZOOM_MAX === Number(zoom)) {
-		// 	setCalculatedMargin(10.5);
-		// 	return setTimerDivWidth(10.5 * totalOfTimeIndicators);
-		// }
+		dispatch({ type: 'SET_VISIBLE_AREA', visibleArea: wrapperWidth });
 		setCalculatedMargin(realTimeIndicatorMargin);
 
 		setTimerDivWidth(realTimeIndicatorMargin * totalOfTimeIndicators);

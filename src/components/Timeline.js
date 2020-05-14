@@ -637,6 +637,12 @@ const Timeline = (
 						videoLength={videoLength}
 						zoomLevel={zoomLevel}
 						calculatedMargin={calculatedMargin}
+						scrollLeft={
+							videoTimelineRef.current && videoTimelineRef.current.scrollLeft
+						}
+						visibleWidth={
+							videoTimelineRef.current && videoTimelineRef.current.offsetWidth
+						}
 					/>
 
 					<div
