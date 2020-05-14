@@ -1,11 +1,16 @@
 import React, { useMemo, useCallback } from 'react';
-import styles from './TimeIndicator.module.scss';
+
 import cx from 'classnames';
 import moment from 'moment';
+import { useSelector } from 'react-redux';
 
+import styles from './TimeIndicator.module.scss';
 import { ZOOM_MAX } from '../utils/constants';
+import { getNumberOfMainIndicators } from '../utils/conversions';
 
 const TimeIndicator = ({ videoLength, zoomLevel, calculatedMargin }) => {
+	const duration = useSelector((state) => state.video.duration);
+
 	const createPauzinhoMaiorComTempoEmcima = useCallback(
 		(timeInterval, pauzinhoNumber) => {
 			return (
@@ -18,7 +23,7 @@ const TimeIndicator = ({ videoLength, zoomLevel, calculatedMargin }) => {
 							zIndex: 50,
 						}}
 					>
-						{moment.utc(timeInterval * 1000).format('HH:mm:ss')}
+						{moment.utc(timeInterval * 1000).format('HH:mm:ss:SSS')}
 					</span>
 					<div
 						className={cx(
@@ -63,20 +68,22 @@ const TimeIndicator = ({ videoLength, zoomLevel, calculatedMargin }) => {
 		);
 	};
 
+	const getNumberOfMainIndicators = (zoomLevel, duration) => {
+		return ((zoomLevel - 1) / 9) * (duration - 10) + 10;
+	};
+
 	const pauzinhos = useMemo(() => {
-		let qttPauzinhosGrandes = zoomLevel * 10;
+		let qttPauzinhosGrandes = getNumberOfMainIndicators(zoomLevel, duration);
 
-		const qttPauzinhosMenores = zoomLevel * 90;
+		const qttPauzinhosMenores = qttPauzinhosGrandes * 9;
 
-		const timeInterval = videoLength / (qttPauzinhosGrandes * zoomLevel);
+		const timeInterval = duration / qttPauzinhosGrandes;
 
 		let arrayOfWhiteBarsAndTimers = [];
 
 		if (Number(zoomLevel) === ZOOM_MAX) {
-			qttPauzinhosGrandes = videoLength / zoomLevel; // videoLenght is duration * zoom
-			console.log('Qtt de pauzinhos de grandes: ' + qttPauzinhosGrandes);
-			console.log('-->', qttPauzinhosGrandes + qttPauzinhosGrandes * 24);
-			// console.log({ arrayOfWhiteBarsAndTimers });
+			qttPauzinhosGrandes = duration;
+
 			for (
 				let i = 0;
 				i <= qttPauzinhosGrandes + qttPauzinhosGrandes * 24;
@@ -115,19 +122,11 @@ const TimeIndicator = ({ videoLength, zoomLevel, calculatedMargin }) => {
 	}, [
 		createPauzinhoMaiorComTempoEmcima,
 		createPauzinhoMenor,
-		videoLength,
+		duration,
 		zoomLevel,
 	]);
 
-	return (
-		<div
-			className={styles['timeIndicator__container']}
-			// style={{ width: videoLength * 10 + "px" }}
-		>
-			{/* {generateVerticalWhiteBarsAndTimers(videoLength)} */}
-			{pauzinhos}
-		</div>
-	);
+	return <div className={styles['timeIndicator__container']}>{pauzinhos}</div>;
 };
 
 export default TimeIndicator;
