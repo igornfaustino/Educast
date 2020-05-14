@@ -7,12 +7,16 @@ import TimelineControl from './TimelineControl';
 import { useSceneChapters } from '../hooks/useSceneChapters';
 import { useWindowSize } from '../hooks/useWindowSize';
 
+import { getNumberOfMainIndicators } from '../utils/conversions';
+
 import { ZOOM_MAX } from '../utils/constants';
 
 const BASE_DIV_WIDTH = 1064.32;
 const BASE_TIME_INDICATOR_MARGIN = 10.5;
 const INTIAL_NUMBER_OF_MAIN_TIME_INDICATOR = 10;
 const INTIAL_NUMBER_OF_SUB_TIME_INDICATOR = 90;
+const INITIAL_TOTAL_NUMBER_OF_INDICATORS =
+	INTIAL_NUMBER_OF_MAIN_TIME_INDICATOR * INTIAL_NUMBER_OF_SUB_TIME_INDICATOR;
 
 const VideoEditor = ({
 	getPresenterScreenShot,
@@ -26,37 +30,44 @@ const VideoEditor = ({
 	const [videoLength, setVideoLength] = useState(duration);
 	const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
 	const [zoom, setZoom] = useState(1);
+	const [totalOfTimeIndicators, setTotalOfTimeIndicators] = useState(
+		INITIAL_TOTAL_NUMBER_OF_INDICATORS
+	);
 	const [timerDivWidth, setTimerDivWidth] = useState(
-		10.5 * (zoom * 10 + zoom * 90)
+		BASE_TIME_INDICATOR_MARGIN * totalOfTimeIndicators
 	);
 
-	const [calculatedMargin, setCalculatedMargin] = useState(10.5);
-
-	const INITIAL_DIV_WIDTH = useState(10.5 * (zoom * 10 + zoom * 90))[0];
-	const qtdPauzinhos = duration + duration * 24;
-	console.log('QTD PAUZINHOS=', qtdPauzinhos);
-	const INITIAL_DIV_WIDTH2 = useState(10.5 * qtdPauzinhos)[0];
+	const [calculatedMargin, setCalculatedMargin] = useState(
+		BASE_TIME_INDICATOR_MARGIN
+	);
 
 	useWindowSize();
 
 	useEffect(() => {
 		if (!videoTimelineRef.current) return;
+
 		const wrapperWidth = videoTimelineRef.current.offsetWidth;
 		const realTimeIndicatorMargin =
 			(wrapperWidth * BASE_TIME_INDICATOR_MARGIN) / BASE_DIV_WIDTH;
 
-		if (ZOOM_MAX === Number(zoom)) {
-			setCalculatedMargin(10.5);
-			return setTimerDivWidth(10.5 * qtdPauzinhos);
-		}
+		// if (ZOOM_MAX === Number(zoom)) {
+		// 	setCalculatedMargin(10.5);
+		// 	return setTimerDivWidth(10.5 * totalOfTimeIndicators);
+		// }
 		setCalculatedMargin(realTimeIndicatorMargin);
 
-		const numberOfTimeIndicators =
-			zoom * INTIAL_NUMBER_OF_MAIN_TIME_INDICATOR +
-			zoom * INTIAL_NUMBER_OF_SUB_TIME_INDICATOR;
-
-		setTimerDivWidth(realTimeIndicatorMargin * numberOfTimeIndicators);
+		setTimerDivWidth(realTimeIndicatorMargin * totalOfTimeIndicators);
 	});
+
+	useEffect(() => {
+		const numberOfMainIndicators = getNumberOfMainIndicators(zoom, duration);
+		const numberOfSubIndicatorsBetweenEachMain =
+			Number(zoom) === ZOOM_MAX ? 24 : 9;
+		const numberOfSubIndicators =
+			numberOfMainIndicators * numberOfSubIndicatorsBetweenEachMain;
+		const totalOfIndicators = numberOfMainIndicators + numberOfSubIndicators;
+		setTotalOfTimeIndicators(totalOfIndicators);
+	}, [duration, zoom]);
 
 	const { scenes, setChapters, dispatchScene, chapters } = useSceneChapters(
 		timerDivWidth
@@ -64,12 +75,8 @@ const VideoEditor = ({
 
 	useEffect(() => {
 		setVideoLength(duration * zoom);
-		if (Number(zoom) === ZOOM_MAX) {
-			setTimerDivWidth(INITIAL_DIV_WIDTH2);
-		} else {
-			setTimerDivWidth(zoom * INITIAL_DIV_WIDTH);
-		}
-	}, [zoom, INITIAL_DIV_WIDTH, duration, INITIAL_DIV_WIDTH2]);
+		setTimerDivWidth(calculatedMargin * totalOfTimeIndicators);
+	}, [zoom, duration, calculatedMargin, totalOfTimeIndicators]);
 
 	return (
 		<div style={{}}>

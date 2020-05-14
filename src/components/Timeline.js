@@ -17,6 +17,7 @@ import cx from 'classnames';
 import styles from './Timeline.module.scss';
 
 const FINAL_SPACE = 34;
+const X_SNAP_TO = 1;
 
 const Timeline = (
 	{
@@ -386,7 +387,7 @@ const Timeline = (
 						axis="x"
 						handle=".handle"
 						bounds=".timeline__video-invisible"
-						grid={[10, 0]}
+						grid={[X_SNAP_TO, 0]}
 						position={{
 							x: getPositionInPx(scene.start.x, timerDivWidth),
 							y: 0,
@@ -422,7 +423,7 @@ const Timeline = (
 						axis="x"
 						handle=".handle"
 						bounds=".timeline__video-invisible"
-						grid={[10, 0]}
+						grid={[X_SNAP_TO, 0]}
 						position={{ x: getPositionInPx(scene.end.x, timerDivWidth), y: 0 }}
 						onStart={() =>
 							dispatchScene({ scene: scene, type: 'on_drag_start' })
@@ -656,7 +657,7 @@ const Timeline = (
 					onDrag={handleDrag}
 					position={{ x: cursorPosition.x * timerDivWidth, y: 0 }}
 					bounds=".timeline__video-invisible"
-					grid={[10.5, 0]}
+					grid={[X_SNAP_TO, 0]}
 				>
 					<div className={cx('handle', styles['stick'])}></div>
 				</Draggable>
