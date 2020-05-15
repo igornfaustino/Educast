@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import styles from './EditableTextField.module.css';
 import Input from '@material-ui/core/Input';
+import styles from './EditableTextField.module.css';
 
 const EditableTextField = ({ type, value, updateTitleFunction, chapter }) => {
 	const [editable, setEditable] = useState(false);

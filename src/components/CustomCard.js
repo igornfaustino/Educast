@@ -4,7 +4,6 @@ import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
-// import CardActionArea from '@material-ui/core/CardActionArea';
 import Typography from '@material-ui/core/Typography';
 import {
 	FaUpload,
@@ -77,7 +76,6 @@ const useStyles = makeStyles({
 	},
 });
 
-// Temporary functions
 function importAll(r) {
 	return r.keys().map(r);
 }
@@ -97,16 +95,17 @@ const CustomCard = ({
 	const classes = useStyles();
 
 	useEffect(() => {
-		setThumbnailImage(images[0]); //select presentation snapshot by default
+		//select presentation snapshot by default
+		setThumbnailImage(images[0]);
 	}, []);
 
 	const handleThumbnailSelection = (path) => {
 		selectThumbnailFunction(chapter.id, path);
 		if (path === 'primary') {
 			chapter.thumbnail = 'primary';
-			// setThumbnailImage(images[0]); //extract snapshot
+			// setThumbnailImage(images[0]);
 		} else if (path === 'secondary') {
-			chapter.thumbnail = 'secondary'; //take screenshot and replace this line
+			chapter.thumbnail = 'secondary';
 		}
 	};
 
@@ -142,13 +141,11 @@ const CustomCard = ({
 					/>
 				}
 			/>
-			{/* <CardActionArea> */}
 			<CardMedia className={classes.media} image={thumbnailImage}>
 				<Box position="absolute" top="10%" left="81%">
 					<Button
 						className={classes.thumbnailButton}
 						startIcon={<FaImages className={classes.thumbnailIcons} />}
-						// onClick={() => handleThumbnailSelection('primary')}
 						onClick={() => handleThumbnailSelection('primary')}
 					/>
 				</Box>
@@ -173,7 +170,6 @@ const CustomCard = ({
 					</div>
 				</Box>
 			</CardMedia>
-			{/* </CardActionArea> */}
 			<div className={classes.cardActions}>
 				<div className={styles['CustomCard__TimeLabel']}>
 					In {chapter.initTime}::{chapter.finalTime}

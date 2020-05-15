@@ -7,12 +7,14 @@ import IconButton from '@material-ui/core/IconButton';
 import './CustomSlider.css';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
-// unselectable component when dragging and undraggable carousel when editing text
+// unselectable component when dragging and undraggable carousel when editing text::::: usar useRef forwardRef para colocar draggable do carousel para false;
 // another bug: place scrollbar at origin and disable it when all cards fits
+// integrar com o componente do video-editor
+// como usar a função de screenShots.
 
 // NO: window resizing sometimes fucks up probably because of the way scroll bar updates its values ... can probably make it work
 // NO: another bug after deleting: scrollbar moves because its updating its max value... omfg it worked l0L
-// NO: make scroll bar bigger when deleting. make spacing between cards bigger when deleting
+// NO: make scroll bar bigger when deleting. make spacing between cards bigger when deleting; atualizar itemWidth na API quando deletar cards
 const useStyles = makeStyles({
 	leftArrow: {
 		position: 'relative',
@@ -49,14 +51,13 @@ const CustomSlider = ({
 	const carouselRef = useRef(null);
 	const scrollbarRef = useRef(null);
 	const [totItems, setTotItems] = useState(chapters.length);
-
 	const classes = useStyles();
 
 	const resizeWindow = () => {
 		if (carouselRef.current) {
 			const { transform, totalItems, slidesToShow } = carouselRef.current.state;
 			const maxTranslateX = getMaxTranslateX();
-			let value = maxTranslateX / 100; // calculate the unit of transform for the slider
+			let value = maxTranslateX / 100;
 			carouselRef.current.isAnimationAllowed = false;
 			const max = getMaxScrollbarValue(value);
 			const maxAllowedTransform = max * value;
@@ -64,7 +65,6 @@ const CustomSlider = ({
 			console.log(transform);
 			console.log('break');
 			if (Math.abs(transform) > maxAllowedTransform) {
-				// console.log("error")
 				carouselRef.current.setState({
 					transform: -maxAllowedTransform,
 					currentSlide:
@@ -84,7 +84,6 @@ const CustomSlider = ({
 		const deleted = await deleteChapterFunction(id);
 		if (deleted === true) {
 			setTotItems(totItems - 1);
-			// const maxTranslateX = getMaxTranslateX();
 			const {
 				slidesToShow,
 				totalItems,
@@ -110,9 +109,6 @@ const CustomSlider = ({
 			const maxTranslateX = getMaxTranslateX();
 			const value = maxTranslateX / 100;
 			scrollbarRef.current.value = Math.round(Math.abs(transform) / value); //omfg it worked
-			// scrollbarRef.current.value = scrollbarRef.current.max;
-			// scrollbarRef.current.value=0//this is key for getting exact value
-			// console.log(scrollbarRef.current)
 		}
 	};
 
@@ -145,23 +141,11 @@ const CustomSlider = ({
 		return (itemWidth * (totalItems - slidesToShow)) / value;
 	};
 
-	// how many times you can click on the right arrow until END is reached
-	const getMaxSlidesAvailable = () => {
-		let maxSlides = 0;
-		if (carouselRef.current) {
-			const { slidesToShow, totalItems } = carouselRef.current.state;
-			maxSlides = totalItems - slidesToShow;
-		}
-		return maxSlides;
-	};
-
-	//fix currentSlide, fix transform when resizing window
-	// atualizar itemWidth na API quando deletar cards
 	const CustomRightArrow = () => {
 		let value = 0;
 		if (carouselRef.current) {
 			const maxTranslateX = getMaxTranslateX();
-			value = maxTranslateX / 100; // calculate the unit of transform for the slider
+			value = maxTranslateX / 100;
 		}
 		const handleOnClick = () => {
 			carouselRef.current.isAnimationAllowed = true;
@@ -178,17 +162,14 @@ const CustomSlider = ({
 			const maxTransform = max * value;
 			console.log('rightValue:', maxTransform);
 			if (slidesToShow >= totalItems) {
-				//all cards fit in the screen
-				nextTransform = 0; //should try changing this to 0 instOf maxTransform
+				nextTransform = 0;
 				nextSlide = 0;
 			} else {
 				nextSlide =
 					currentSlide + 1 > maxSlides ? currentSlide : currentSlide + 1;
 				if (nextSlide === currentSlide) {
-					// last slide reached
 					nextTransform = maxTransform;
 				} else {
-					// can go up 1 slide (not the last)
 					nextTransform = nextSlide * itemWidth;
 					if (nextSlide >= maxSlides) {
 						nextTransform = maxTransform;
@@ -248,15 +229,13 @@ const CustomSlider = ({
 			const maxTranslateX = getMaxTranslateX();
 			value = maxTranslateX / 100;
 		}
-		// console.log(carouselRef.current.state);
 		const { transform, itemWidth } = carouselRef.current.state;
 		return (
 			<div className="custom-slider">
 				<input
 					type="range"
 					ref={scrollbarRef}
-					// style={scrollbarStyle}
-					value={Math.round(Math.abs(transform) / value)} //this is key for getting exact value
+					value={Math.round(Math.abs(transform) / value)}
 					max={getMaxScrollbarValue(value)}
 					onChange={(e) => {
 						if (carouselRef.current.isAnimationAllowed) {
@@ -269,7 +248,7 @@ const CustomSlider = ({
 						}
 						console.log(nextTransform, ' aaa', nextSlide);
 						carouselRef.current.setState({
-							transform: -nextTransform, // padding 20px and 5 items.
+							transform: -nextTransform,
 							currentSlide: nextSlide,
 						});
 					}}
@@ -286,7 +265,6 @@ const CustomSlider = ({
 				min: 1810,
 			},
 			items: 6,
-			// partialVisibilityGutter: 40,
 		},
 		mobile: {
 			breakpoint: {
@@ -294,7 +272,6 @@ const CustomSlider = ({
 				min: 0,
 			},
 			items: 3,
-			// partialVisibilityGutter: 30,
 		},
 		tablet: {
 			breakpoint: {
@@ -302,7 +279,6 @@ const CustomSlider = ({
 				min: 1360,
 			},
 			items: 4,
-			// partialVisibilityGutter: 30,
 		},
 	};
 
