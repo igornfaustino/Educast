@@ -600,9 +600,7 @@ const Timeline = (
 				<div className={styles['btnContainer']} style={{}}>
 					<div className={styles['btnContainer__left']}>
 						<GiStack className={styles['btnContainer__icon']} />
-						<span className={styles['btnContainer__text--smallMargin']}>
-							Capítulos
-						</span>
+						<span className={styles['btnContainer__text']}>Capítulos</span>
 					</div>
 
 					<div className={styles['btnContainer__right']}>

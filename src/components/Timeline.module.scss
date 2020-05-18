@@ -44,9 +44,12 @@ $chapter-limiter-size: 0.35rem;
 	height: 36%;
 	width: 100%;
 
+	position: relative;
 	/* to align text and icon*/
 	display: flex;
-	justify-content: space-around;
+	align-items: center;
+
+	// justify-content: space-around;
 }
 
 .blackbox {
@@ -85,21 +88,21 @@ $chapter-limiter-size: 0.35rem;
 }
 
 .btnContainer__right {
+	position: absolute;
 	display: flex;
+	height: 100%;
 	flex-direction: column;
 	justify-content: space-evenly;
+	right: 1rem;
 }
 
 .btnContainer__icon {
 	height: 1.5rem;
 	width: 1.5rem;
-}
-
-.btnContainer__text {
 	margin-left: 1rem;
 }
 
-.btnContainer__text--smallMargin {
+.btnContainer__text {
 	margin-left: 0.5rem;
 }
 
