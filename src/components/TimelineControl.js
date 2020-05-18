@@ -1,11 +1,11 @@
 import React, { forwardRef, useRef, useCallback } from 'react';
 import { MdZoomIn, MdZoomOut } from 'react-icons/md';
 
-import { ZOOM_MAX } from '../utils/constants';
+import { ZOOM_MAX, FINAL_SPACE } from '../utils/constants';
 
 import styles from './TimelineControl.module.scss';
 import { useMemo } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 const TimelineControl = (
 	{ timerDivWidth, zoom, setZoom },
@@ -13,15 +13,25 @@ const TimelineControl = (
 ) => {
 	const mainScrollbarRef = useRef(null);
 	const dispatch = useDispatch();
+	const visibleArea = useSelector((state) => state.timeline.visibleArea);
+
+	const scrollWidth = useMemo(() => {
+		if (!mainScrollbarRef.current) return 0;
+		const scrollBarWrapperSize = mainScrollbarRef.current.offsetWidth;
+		return (scrollBarWrapperSize * (timerDivWidth + FINAL_SPACE)) / visibleArea;
+	}, [timerDivWidth, visibleArea]);
 
 	const handleScroll = useCallback(() => {
-		if (!videoTimelineRef.current) return;
-		videoTimelineRef.current.scrollLeft = mainScrollbarRef.current.scrollLeft;
+		if (!videoTimelineRef.current || !mainScrollbarRef.current) return;
+		const scrollBarScrollLeft = mainScrollbarRef.current.scrollLeft;
+		const videoScroll =
+			(scrollBarScrollLeft * (timerDivWidth + FINAL_SPACE)) / scrollWidth;
+		videoTimelineRef.current.scrollLeft = videoScroll;
 		dispatch({
 			type: 'SET_SCROLL_LEFT',
-			scrollLeft: mainScrollbarRef.current.scrollLeft,
+			scrollLeft: videoScroll,
 		});
-	}, [dispatch, videoTimelineRef]);
+	}, [dispatch, scrollWidth, timerDivWidth, videoTimelineRef]);
 
 	const handleZoomChange = useCallback(
 		(evt) => {
@@ -33,10 +43,10 @@ const TimelineControl = (
 	const scrollStyle = useMemo(
 		() => ({
 			height: '100%',
-			width: timerDivWidth + 'px',
+			width: scrollWidth + 'px',
 			backgroundColor: 'transparent',
 		}),
-		[timerDivWidth]
+		[scrollWidth]
 	);
 
 	const scrollBar = useMemo(

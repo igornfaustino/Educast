@@ -6,18 +6,18 @@ import React, {
 	forwardRef,
 } from 'react';
 
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { GiFilmStrip, GiStack } from 'react-icons/gi';
 import { FaPlusSquare, FaMinusSquare } from 'react-icons/fa';
 import Draggable from 'react-draggable';
+
 import TimeIndicator from './TimeIndicator';
 import { getPositionInPercent, getPositionInPx } from '../utils/conversions';
+import { FINAL_SPACE, X_SNAP_TO } from '../utils/constants';
+import { useWindowSize } from '../hooks/useWindowSize';
 
 import cx from 'classnames';
 import styles from './Timeline.module.scss';
-
-const FINAL_SPACE = 34;
-const X_SNAP_TO = 1;
 
 const Timeline = (
 	{
@@ -34,8 +34,12 @@ const Timeline = (
 	},
 	videoTimelineRef
 ) => {
+	const dispatch = useDispatch();
+
 	const currentTime = useSelector((state) => state.video.currentTime);
 	const duration = useSelector((state) => state.video.duration);
+
+	const windowsSize = useWindowSize();
 
 	const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
 	const [selectedScenes, setSelectedScenes] = useState([]);
@@ -46,10 +50,6 @@ const Timeline = (
 	const [isSelectedChaptersEmpty, setIsSelectedChaptersEmpty] = useState(true);
 	const [lastSceneWithCursor, setLastSceneWithCursor] = useState(undefined);
 	const [lastGapWithCursor, setLastGapWithCursor] = useState(undefined);
-
-	useEffect(() => {
-		console.log('timerdivwidth ', timerDivWidth);
-	}, [timerDivWidth]);
 
 	const getPlayingScene = useCallback(
 		(cursorPosition) =>
@@ -164,10 +164,6 @@ const Timeline = (
 	const handleDrag = (e, ui) => {
 		const { x: lastPosition } = cursorPosition;
 		const deltaXInPercent = getPositionInPercent(ui.deltaX, timerDivWidth);
-		// const deltaXInTime = deltaXInPercent * videoLength;
-		// const newTime = (lastPosition + deltaXInPercent) * videoLength;
-		// handleTimelineClick(newTime);
-		// console.log({ newTime });
 		setCursorPosition({
 			x: lastPosition + deltaXInPercent,
 		});
@@ -523,6 +519,11 @@ const Timeline = (
 			}),
 		[scenes, timerDivWidth, selectedScenes, dispatchScene]
 	);
+
+	useEffect(() => {
+		const wrapperWidth = videoTimelineRef.current.offsetWidth;
+		dispatch({ type: 'SET_VISIBLE_AREA', visibleArea: wrapperWidth });
+	}, [dispatch, videoTimelineRef, windowsSize]);
 
 	useEffect(() => {
 		setLastGapWithCursor(undefined);
