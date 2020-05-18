@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import Timeline from './Timeline';
 import TimelineControl from './TimelineControl';
@@ -8,14 +8,12 @@ import { useSceneChapters } from '../hooks/useSceneChapters';
 
 import { getNumberOfMainIndicators } from '../utils/conversions';
 
-import { ZOOM_MAX } from '../utils/constants';
-
-const BASE_DIV_WIDTH = 1064.32;
-const BASE_TIME_INDICATOR_MARGIN = 10.5;
-const INITIAL_NUMBER_OF_MAIN_TIME_INDICATOR = 10;
-const INITIAL_NUMBER_OF_SUB_TIME_INDICATOR = 90;
-const INITIAL_TOTAL_NUMBER_OF_INDICATORS =
-	INITIAL_NUMBER_OF_MAIN_TIME_INDICATOR * INITIAL_NUMBER_OF_SUB_TIME_INDICATOR;
+import {
+	ZOOM_MAX,
+	INITIAL_TOTAL_NUMBER_OF_INDICATORS,
+	BASE_TIME_INDICATOR_MARGIN,
+	BASE_DIV_WIDTH,
+} from '../utils/constants';
 
 const VideoEditor = ({
 	getPresenterScreenShot,
@@ -24,7 +22,6 @@ const VideoEditor = ({
 }) => {
 	const duration = useSelector((state) => state.video.duration);
 	const visibleArea = useSelector((state) => state.timeline.visibleArea);
-	const dispatch = useDispatch();
 
 	const videoTimelineRef = useRef(null);
 
@@ -35,19 +32,24 @@ const VideoEditor = ({
 		INITIAL_TOTAL_NUMBER_OF_INDICATORS
 	);
 	const [timerDivWidth, setTimerDivWidth] = useState(
-		BASE_TIME_INDICATOR_MARGIN * totalOfTimeIndicators
+		(visibleArea * BASE_TIME_INDICATOR_MARGIN) / BASE_DIV_WIDTH
 	);
 
 	const [calculatedMargin, setCalculatedMargin] = useState(
 		BASE_TIME_INDICATOR_MARGIN
 	);
 
+	const getRealTimeIndicatorMargin = useCallback(() => {
+		if (visibleArea > 900)
+			return (visibleArea * BASE_TIME_INDICATOR_MARGIN) / BASE_DIV_WIDTH;
+		return BASE_TIME_INDICATOR_MARGIN;
+	}, [visibleArea]);
+
 	useEffect(() => {
-		const realTimeIndicatorMargin =
-			(visibleArea * BASE_TIME_INDICATOR_MARGIN) / BASE_DIV_WIDTH;
+		const realTimeIndicatorMargin = getRealTimeIndicatorMargin();
 		setCalculatedMargin(realTimeIndicatorMargin);
 		setTimerDivWidth(realTimeIndicatorMargin * totalOfTimeIndicators);
-	}, [totalOfTimeIndicators, visibleArea]);
+	}, [getRealTimeIndicatorMargin, totalOfTimeIndicators]);
 
 	useEffect(() => {
 		const numberOfMainIndicators = getNumberOfMainIndicators(zoom, duration);

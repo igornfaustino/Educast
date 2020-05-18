@@ -101,6 +101,12 @@ $chapter-limiter-size: 0.35rem;
 	margin-left: 1rem;
 }
 
+@media screen and (max-width: 1032px) {
+	.btnContainer__text {
+		display: none;
+	}
+}
+
 .btnContainer__text {
 	margin-left: 0.5rem;
 }
