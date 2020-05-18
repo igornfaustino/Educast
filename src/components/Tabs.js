@@ -110,9 +110,9 @@ function Tabs({ step, setStep }) {
 				{renderTabButtons}
 			</ButtonGroup>
 			<ButtonGroup></ButtonGroup>
-			<Container fluid className="container-tabs-content">
+			<div className="container-tabs-content">
 				<RouteContentArea />
-			</Container>
+			</div>
 		</div>
 	);
 }
