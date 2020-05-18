@@ -1,4 +1,12 @@
 .CustomCard__TimeLabel {
 	color: #009bff;
-	background: #ECECEC;
+	background: #ececec;
+}
+
+.unselectable-image {
+	user-select: none;
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
+	-o-user-select: none;
 }

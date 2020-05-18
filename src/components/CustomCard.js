@@ -19,7 +19,7 @@ import { useDropzone } from 'react-dropzone';
 const useStyles = makeStyles({
 	root: {
 		marginTop: '40px',
-		maxWidth: '210px',
+		maxWidth: '280px',
 	},
 	media: {
 		height: 140,
@@ -90,23 +90,24 @@ const CustomCard = ({
 	selectThumbnailFunction,
 	getPresentationScreenShot,
 	getPresenterScreenShot,
+	isTextFieldBeingEdited,
 }) => {
 	const [thumbnailImage, setThumbnailImage] = useState('');
 	const classes = useStyles();
 
 	useEffect(() => {
 		//select presentation snapshot by default
-		setThumbnailImage(images[0]);
+		setThumbnailImage(getPresentationScreenShot());
 	}, []);
 
 	const handleThumbnailSelection = (path) => {
-		selectThumbnailFunction(chapter.id, path);
 		if (path === 'primary') {
-			chapter.thumbnail = 'primary';
-			// setThumbnailImage(images[0]);
+			chapter.thumbnail = getPresentationScreenShot();
 		} else if (path === 'secondary') {
-			chapter.thumbnail = 'secondary';
+			chapter.thumbnail = getPresenterScreenShot();
 		}
+		selectThumbnailFunction(chapter.id, chapter.thumbnail);
+		setThumbnailImage(chapter.thumbnail);
 	};
 
 	const { getRootProps, getInputProps, open } = useDropzone({
@@ -141,35 +142,37 @@ const CustomCard = ({
 					/>
 				}
 			/>
-			<CardMedia className={classes.media} image={thumbnailImage}>
-				<Box position="absolute" top="10%" left="81%">
-					<Button
-						className={classes.thumbnailButton}
-						startIcon={<FaImages className={classes.thumbnailIcons} />}
-						onClick={() => handleThumbnailSelection('primary')}
-					/>
-				</Box>
-				<Box position="absolute" top="37%" left="81%">
-					<Button
-						className={classes.thumbnailButton}
-						startIcon={
-							<FaChalkboardTeacher className={classes.thumbnailIcons} />
-						}
-						onClick={() => handleThumbnailSelection('secondary')}
-					/>
-				</Box>
-				<Box position="absolute" top="64%" left="81%">
-					<div {...getRootProps()}>
-						<input {...getInputProps()} />
+			<div className={styles["unselectable-image"]}>
+				<CardMedia className={classes.media} image={thumbnailImage}>
+					<Box position="absolute" top="7%" left="86%">
 						<Button
-							key={chapter.id}
 							className={classes.thumbnailButton}
-							onClick={open}
-							startIcon={<FaUpload className={classes.thumbnailIcons} />}
+							startIcon={<FaImages className={classes.thumbnailIcons} />}
+							onClick={() => handleThumbnailSelection('primary')}
 						/>
-					</div>
-				</Box>
-			</CardMedia>
+					</Box>
+					<Box position="absolute" top="34%" left="86%">
+						<Button
+							className={classes.thumbnailButton}
+							startIcon={
+								<FaChalkboardTeacher className={classes.thumbnailIcons} />
+							}
+							onClick={() => handleThumbnailSelection('secondary')}
+						/>
+					</Box>
+					<Box position="absolute" top="61%" left="86%">
+						<div {...getRootProps()}>
+							<input {...getInputProps()} />
+							<Button
+								key={chapter.id}
+								className={classes.thumbnailButton}
+								onClick={open}
+								startIcon={<FaUpload className={classes.thumbnailIcons} />}
+							/>
+						</div>
+					</Box>
+				</CardMedia>
+			</div>
 			<div className={classes.cardActions}>
 				<div className={styles['CustomCard__TimeLabel']}>
 					In {chapter.initTime}::{chapter.finalTime}
@@ -179,6 +182,7 @@ const CustomCard = ({
 					value={chapter.title}
 					updateTitleFunction={updateTitleFunction}
 					chapter={chapter}
+					isTextFieldBeingEdited={isTextFieldBeingEdited}
 				/>
 			</div>
 		</Card>

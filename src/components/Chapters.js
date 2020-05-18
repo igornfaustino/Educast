@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 import CustomSlider from './CustomSlider';
 
-const Chapters = ({ getPresenterSnapshot, getPresentationSnapshot }) => {
+const Chapters = ({ getPresenterScreenShot, getPresentationScreenShot }) => {
 	const [chapters, setChapters] = useState([]);
 
 	const initialChapters = [
@@ -123,8 +123,8 @@ const Chapters = ({ getPresenterSnapshot, getPresentationSnapshot }) => {
 				deleteChapterFunction={deleteChapterFunction}
 				updateTitleFunction={updateTitleFunction}
 				selectThumbnailFunction={selectThumbnailFunction}
-				getPresenterSnapshot={getPresenterSnapshot}
-				getPresentationSnapshot={getPresentationSnapshot}
+				getPresenterScreenShot={getPresenterScreenShot}
+				getPresentationScreenShot={getPresentationScreenShot}
 			/>
 		</div>
 	);

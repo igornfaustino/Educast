@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Input from '@material-ui/core/Input';
 import styles from './EditableTextField.module.css';
 
-const EditableTextField = ({ type, value, updateTitleFunction, chapter }) => {
+const EditableTextField = ({ type, value, updateTitleFunction, chapter, isTextFieldBeingEdited }) => {
 	const [editable, setEditable] = useState(false);
 	const [fieldValue, setFieldValue] = useState(value);
 	const [fieldBackupValue, setFieldBackupValue] = useState('');
@@ -14,6 +14,7 @@ const EditableTextField = ({ type, value, updateTitleFunction, chapter }) => {
 
 	const handleInputOnBlur = (event) => {
 		setEditable(false);
+		isTextFieldBeingEdited(false);
 	};
 
 	const handleInputOnFocus = (event) => {
@@ -26,16 +27,19 @@ const EditableTextField = ({ type, value, updateTitleFunction, chapter }) => {
 	const handleInputOnKeyUp = (event) => {
 		if (event.key === 'Escape') {
 			setEditable(false);
+			isTextFieldBeingEdited(false);
 			setFieldValue(fieldBackupValue);
 			updateTitleFunction(chapter.id, fieldBackupValue);
 		}
 		if (event.key === 'Enter') {
 			setEditable(false);
+			isTextFieldBeingEdited(false);
 		}
 	};
 
 	const handleFieldOnClick = (event) => {
 		setEditable(editable === false);
+		isTextFieldBeingEdited(editable === false);
 		console.log('field clicked', editable);
 	};
 

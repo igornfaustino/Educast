@@ -6,15 +6,14 @@ import 'react-multi-carousel/lib/styles.css';
 import IconButton from '@material-ui/core/IconButton';
 import './CustomSlider.css';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { jsx, css } from '@emotion/core';
 
-// unselectable component when dragging and undraggable carousel when editing text::::: usar useRef forwardRef para colocar draggable do carousel para false;
-// another bug: place scrollbar at origin and disable it when all cards fits
-// integrar com o componente do video-editor
-// como usar a função de screenShots.
+// quant q da p mostrar / quant total * 100 == complemento dissos
+// style inline lib react
 
-// NO: window resizing sometimes fucks up probably because of the way scroll bar updates its values ... can probably make it work
-// NO: another bug after deleting: scrollbar moves because its updating its max value... omfg it worked l0L
-// NO: make scroll bar bigger when deleting. make spacing between cards bigger when deleting; atualizar itemWidth na API quando deletar cards
+// TODO: another bug: place scrollbar at origin and disable it when all cards fits
+// TODO: NO: make scroll bar bigger when deleting. make spacing between cards bigger when deleting; atualizar itemWidth na API quando deletar cards
+// TODO: integrar com o componente do video-editor
 const useStyles = makeStyles({
 	leftArrow: {
 		position: 'relative',
@@ -52,6 +51,7 @@ const CustomSlider = ({
 	const scrollbarRef = useRef(null);
 	const [totItems, setTotItems] = useState(chapters.length);
 	const classes = useStyles();
+	const [carouselDraggable, setCarouselDraggable] = useState(true);
 
 	const resizeWindow = () => {
 		if (carouselRef.current) {
@@ -80,6 +80,10 @@ const CustomSlider = ({
 		return () => window.removeEventListener('resize', resizeWindow);
 	}, []);
 
+	const isTextFieldBeingEdited = (isIt) => {
+		setCarouselDraggable(!isIt);
+	};
+
 	const modifiedDeleteChapterFunction = async (id) => {
 		const deleted = await deleteChapterFunction(id);
 		if (deleted === true) {
@@ -95,7 +99,7 @@ const CustomSlider = ({
 			let nextTransform;
 			let nextSlide;
 			if (slidesToShow >= totalItems) {
-				// disable scrollbar here, and make it full width
+				// ! disable scrollbar here, and make it full width
 				nextTransform = 0;
 				nextSlide = 0;
 			} else {
@@ -108,7 +112,7 @@ const CustomSlider = ({
 			});
 			const maxTranslateX = getMaxTranslateX();
 			const value = maxTranslateX / 100;
-			scrollbarRef.current.value = Math.round(Math.abs(transform) / value); //omfg it worked
+			scrollbarRef.current.value = Math.round(Math.abs(transform) / value);
 		}
 	};
 
@@ -122,6 +126,7 @@ const CustomSlider = ({
 				selectThumbnailFunction={selectThumbnailFunction}
 				getPresenterScreenShot={getPresenterScreenShot}
 				getPresentationScreenShot={getPresentationScreenShot}
+				isTextFieldBeingEdited={isTextFieldBeingEdited}
 			></CustomCard>
 		));
 	};
@@ -252,7 +257,7 @@ const CustomSlider = ({
 							currentSlide: nextSlide,
 						});
 					}}
-					className="custom-slider__input"
+					className={'custom-slider__input'}
 				/>
 			</div>
 		);
@@ -264,7 +269,7 @@ const CustomSlider = ({
 				max: 3000,
 				min: 1810,
 			},
-			items: 6,
+			items: 5,
 		},
 		mobile: {
 			breakpoint: {
@@ -297,7 +302,7 @@ const CustomSlider = ({
 				infinite={false}
 				itemClass="slider-image-item"
 				containerClass="carousel-container-with-scrollbar"
-				draggable={true}
+				draggable={carouselDraggable}
 				responsive={responsive}
 			>
 				{cardsToShow()}
