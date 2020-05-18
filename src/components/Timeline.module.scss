@@ -32,7 +32,7 @@ $chapter-limiter-size: 0.35rem;
 	overflow-x: hidden;
 }
 
-.timeline__video-invisible {
+:global(.timeline__video-invisible) {
 	height: 100%;
 }
 
