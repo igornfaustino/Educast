@@ -110,9 +110,9 @@ function Tabs({ step, setStep, timelineProps }) {
 				{renderTabButtons}
 			</ButtonGroup>
 			<ButtonGroup></ButtonGroup>
-			<Container fluid className="container-tabs-content">
+			<div className="container-tabs-content">
 				<RouteContentArea timelineProps={timelineProps} />
-			</Container>
+			</div>
 		</div>
 	);
 }
