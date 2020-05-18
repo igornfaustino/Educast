@@ -628,9 +628,9 @@ const Timeline = (
 			<div className={styles['timeline']} ref={videoTimelineRef}>
 				<div
 					style={{
-						width: timerDivWidth + FINAL_SPACE + 'px',
+						width: timerDivWidth + FINAL_SPACE,
+						height: '100%',
 					}}
-					className={styles['timeline__video-invisible']}
 				>
 					<TimeIndicator
 						videoLength={videoLength}
@@ -643,14 +643,20 @@ const Timeline = (
 							videoTimelineRef.current && videoTimelineRef.current.offsetWidth
 						}
 					/>
-
 					<div
 						className={cx(
 							styles['timeline__video'],
 							styles['timeline__content']
 						)}
 					>
-						{renderScene}
+						<div
+							className="timeline__video-invisible"
+							style={{
+								width: timerDivWidth,
+							}}
+						>
+							{renderScene}
+						</div>
 					</div>
 
 					<div className={cx(styles['timeline__content'])}>{renderChapter}</div>
