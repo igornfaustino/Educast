@@ -5,7 +5,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import Timeline from './Timeline';
 import TimelineControl from './TimelineControl';
 import { useSceneChapters } from '../hooks/useSceneChapters';
-import { useWindowSize } from '../hooks/useWindowSize';
 
 import { getNumberOfMainIndicators } from '../utils/conversions';
 
@@ -13,10 +12,10 @@ import { ZOOM_MAX } from '../utils/constants';
 
 const BASE_DIV_WIDTH = 1064.32;
 const BASE_TIME_INDICATOR_MARGIN = 10.5;
-const INTIAL_NUMBER_OF_MAIN_TIME_INDICATOR = 10;
-const INTIAL_NUMBER_OF_SUB_TIME_INDICATOR = 90;
+const INITIAL_NUMBER_OF_MAIN_TIME_INDICATOR = 10;
+const INITIAL_NUMBER_OF_SUB_TIME_INDICATOR = 90;
 const INITIAL_TOTAL_NUMBER_OF_INDICATORS =
-	INTIAL_NUMBER_OF_MAIN_TIME_INDICATOR * INTIAL_NUMBER_OF_SUB_TIME_INDICATOR;
+	INITIAL_NUMBER_OF_MAIN_TIME_INDICATOR * INITIAL_NUMBER_OF_SUB_TIME_INDICATOR;
 
 const VideoEditor = ({
 	getPresenterScreenShot,
@@ -24,6 +23,7 @@ const VideoEditor = ({
 	handleTimelineClick,
 }) => {
 	const duration = useSelector((state) => state.video.duration);
+	const visibleArea = useSelector((state) => state.timeline.visibleArea);
 	const dispatch = useDispatch();
 
 	const videoTimelineRef = useRef(null);
@@ -42,20 +42,12 @@ const VideoEditor = ({
 		BASE_TIME_INDICATOR_MARGIN
 	);
 
-	useWindowSize();
-
 	useEffect(() => {
-		if (!videoTimelineRef.current) return;
-
-		const wrapperWidth = videoTimelineRef.current.offsetWidth;
 		const realTimeIndicatorMargin =
-			(wrapperWidth * BASE_TIME_INDICATOR_MARGIN) / BASE_DIV_WIDTH;
-
-		dispatch({ type: 'SET_VISIBLE_AREA', visibleArea: wrapperWidth });
+			(visibleArea * BASE_TIME_INDICATOR_MARGIN) / BASE_DIV_WIDTH;
 		setCalculatedMargin(realTimeIndicatorMargin);
-
 		setTimerDivWidth(realTimeIndicatorMargin * totalOfTimeIndicators);
-	});
+	}, [totalOfTimeIndicators, visibleArea]);
 
 	useEffect(() => {
 		const numberOfMainIndicators = getNumberOfMainIndicators(zoom, duration);

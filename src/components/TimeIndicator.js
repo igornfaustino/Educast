@@ -9,7 +9,7 @@ import { ZOOM_MAX } from '../utils/constants';
 import { getNumberOfMainIndicators } from '../utils/conversions';
 import { FaPassport } from 'react-icons/fa';
 
-const TimeIndicator = ({ videoLength, zoomLevel, calculatedMargin }) => {
+const TimeIndicator = ({ zoomLevel, calculatedMargin }) => {
 	const duration = useSelector((state) => state.video.duration);
 	const scrollLeft = useSelector((state) => state.timeline.scrollLeft);
 	const visibleArea = useSelector((state) => state.timeline.visibleArea);
@@ -23,7 +23,7 @@ const TimeIndicator = ({ videoLength, zoomLevel, calculatedMargin }) => {
 						style={{
 							bottom: 20,
 							position: 'absolute',
-							marginLeft: pauzinhoNumber * calculatedMargin - 21 + 'px',
+							marginLeft: pauzinhoNumber * calculatedMargin - 35 + 'px',
 							zIndex: 50,
 						}}
 					>
@@ -58,7 +58,7 @@ const TimeIndicator = ({ videoLength, zoomLevel, calculatedMargin }) => {
 		[calculatedMargin]
 	);
 
-	const createPauzinhoMaiorSemTempo = () => {
+	const createPauzinhoMaiorSemTempo = (pauzinhoNumber) => {
 		return (
 			<div
 				className={cx(
@@ -66,7 +66,7 @@ const TimeIndicator = ({ videoLength, zoomLevel, calculatedMargin }) => {
 					styles['timer-vertical-whitebar']
 				)}
 				style={{
-					marginLeft: 0 + 'px',
+					marginLeft: calculatedMargin * pauzinhoNumber + 'px',
 				}}
 			></div>
 		);
@@ -87,20 +87,26 @@ const TimeIndicator = ({ videoLength, zoomLevel, calculatedMargin }) => {
 		const spaceBetweenBiggerIndicator =
 			numberOfSubIndicatorsBetweenEachMain + 1;
 
-		for (let i = 0; i <= qttPauzinhosGrandes + qttPauzinhosMenores; i++) {
+		const totalOfIndicators = qttPauzinhosGrandes + qttPauzinhosMenores;
+
+		for (let i = 0; i <= totalOfIndicators; i++) {
 			const margin = i * calculatedMargin;
 			if (margin < scrollLeft - 100 || margin > scrollLeft + visibleArea + 100)
 				continue;
 
 			let tag;
-			if (i !== 0 && i % spaceBetweenBiggerIndicator === 0) {
+			if (
+				i !== 0 &&
+				i !== totalOfIndicators &&
+				i % spaceBetweenBiggerIndicator === 0
+			) {
 				const intervalOffset = i / spaceBetweenBiggerIndicator;
 				tag = createPauzinhoMaiorComTempoEmcima(
 					timeInterval * intervalOffset,
 					i
 				);
-			} else if (i === 0) {
-				tag = createPauzinhoMaiorSemTempo();
+			} else if (i === 0 || i === totalOfIndicators) {
+				tag = createPauzinhoMaiorSemTempo(i);
 			} else {
 				tag = createPauzinhoMenor(i);
 			}
