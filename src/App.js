@@ -29,12 +29,18 @@ function App() {
 		[]
 	);
 
+	const handleTimelineClick = useCallback(
+		(time) => videoComponentRef.current.handleTimelineClick(time),
+		[]
+	);
+
 	const timelineProps = useMemo(
 		() => ({
 			getPresenterScreenShot,
 			getPresentationScreenShot,
+			handleTimelineClick,
 		}),
-		[getPresentationScreenShot, getPresenterScreenShot]
+		[getPresentationScreenShot, getPresenterScreenShot, handleTimelineClick]
 	);
 
 	return (

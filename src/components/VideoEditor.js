@@ -86,6 +86,7 @@ const VideoEditor = ({
 				getPresenterScreenShot={getPresenterScreenShot}
 				getPresentationScreenShot={getPresentationScreenShot}
 				calculatedMargin={calculatedMargin}
+				handleTimelineClick={handleTimelineClick}
 			/>
 			<TimelineControl
 				timerDivWidth={timerDivWidth}

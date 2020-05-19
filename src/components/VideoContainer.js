@@ -248,6 +248,7 @@ function VideoContainer(props, ref) {
 		getPresentationScreenShot() {
 			return getSnapshot(video2Ref.current);
 		},
+		handleTimelineClick,
 	}));
 
 	useEffect(() => {

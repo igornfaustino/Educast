@@ -31,6 +31,7 @@ const Timeline = (
 		getPresentationScreenShot,
 		videoLength,
 		calculatedMargin,
+		handleTimelineClick,
 	},
 	videoTimelineRef
 ) => {
@@ -253,6 +254,16 @@ const Timeline = (
 		getSticksEndPosition,
 		isCursorInScene,
 	]);
+
+	const handleDragCursorEnd = useCallback(
+		(e) => {
+			const { x: cursorPositionInPercent } = cursorPosition;
+			const cursorPositionInTime = duration * cursorPositionInPercent;
+			console.log({ cursorPositionInTime, cursorPositionInPercent });
+			handleTimelineClick(cursorPositionInTime);
+		},
+		[cursorPosition, duration, handleTimelineClick]
+	);
 
 	const createChapter = useCallback(() => {
 		//  extra verification (just in case)
@@ -666,6 +677,7 @@ const Timeline = (
 					axis="x"
 					handle=".handle"
 					onDrag={handleDrag}
+					onStop={handleDragCursorEnd}
 					position={{ x: cursorPosition.x * timerDivWidth, y: 0 }}
 					bounds=".timeline__video-invisible"
 					grid={[X_SNAP_TO, 0]}
