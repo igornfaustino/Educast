@@ -19,6 +19,7 @@ import { useWindowSize } from '../../hooks/useWindowSize';
 import cx from 'classnames';
 import styles from './Timeline.module.scss';
 import { useSceneChapters } from '../../hooks/useSceneChapters';
+import Scene from './Scene';
 
 const Timeline = (
 	{
@@ -255,6 +256,18 @@ const Timeline = (
 		isCursorInScene,
 	]);
 
+	const handleSceneSelect = useCallback((idx) => {
+		setSelectedScenes((prevState) => {
+			const tmpSelectedScenes = [...prevState];
+			if (tmpSelectedScenes.indexOf(idx) !== -1) {
+				tmpSelectedScenes.splice(tmpSelectedScenes.indexOf(idx), 1);
+			} else {
+				tmpSelectedScenes.push(idx);
+			}
+			return [...tmpSelectedScenes];
+		});
+	}, []);
+
 	const handleDragCursorEnd = useCallback(
 		(e) => {
 			const { x: cursorPositionInPercent } = cursorPosition;
@@ -388,147 +401,17 @@ const Timeline = (
 
 	const renderScene = useMemo(
 		() =>
-			scenes.map((scene, idx) => {
-				const sceneStartBar = (
-					<Draggable
-						axis="x"
-						handle=".handle"
-						bounds=".timeline__video-invisible"
-						grid={[X_SNAP_TO, 0]}
-						position={{
-							x: getPositionInPx(scene.start.x, timerDivWidth),
-							y: 0,
-						}}
-						onStart={() =>
-							dispatchScene({ scene: scene, type: 'on_drag_start' })
-						}
-						onDrag={(e, ui) => {
-							const tmpScene = {
-								start: { x: getPositionInPercent(ui.x, timerDivWidth), y: 0 },
-								end: scene.end,
-							};
-							dispatchScene({
-								sceneIdx: idx,
-								scene: tmpScene,
-								type: 'drag_left',
-							});
-						}}
-						onStop={() => dispatchScene({ type: 'on_drag_end' })}
-					>
-						<div
-							className={cx(
-								'handle',
-								styles['scene-limiter'],
-								styles['scene-limiter---start']
-							)}
-						></div>
-					</Draggable>
-				);
-
-				const sceneEndBar = (
-					<Draggable
-						axis="x"
-						handle=".handle"
-						bounds=".timeline__video-invisible"
-						grid={[X_SNAP_TO, 0]}
-						position={{ x: getPositionInPx(scene.end.x, timerDivWidth), y: 0 }}
-						onStart={() =>
-							dispatchScene({ scene: scene, type: 'on_drag_start' })
-						}
-						onDrag={(e, ui) => {
-							// ve qual pauzinho tu tá usando
-							const updatedScene = {
-								start: scene.start,
-								end: { x: getPositionInPercent(ui.x, timerDivWidth), y: 0 },
-							};
-							dispatchScene({
-								sceneIdx: idx,
-								scene: updatedScene,
-								type: 'drag_right',
-							});
-						}}
-						onStop={() => dispatchScene({ type: 'on_drag_end' })}
-					>
-						<div
-							className={cx(
-								'handle',
-								styles['scene-limiter'],
-								styles['scene-limiter---end']
-							)}
-						></div>
-					</Draggable>
-				);
-
-				const centerDiv = (
-					<div
-						className={styles['scene-content']}
-						style={{
-							marginLeft:
-								getPositionInPx(scene.start.x, timerDivWidth) + 4 + 'px', // 7 is the scene-limiter width
-							width:
-								getPositionInPx(scene.end.x - scene.start.x, timerDivWidth) +
-								'px',
-
-							backgroundImage: `url(${scene.img})`,
-							backgroundSize: 'auto 100%',
-						}}
-						onClick={() => {
-							setSelectedScenes((prevState) => {
-								const tmpSelectedScenes = [...prevState];
-								if (tmpSelectedScenes.indexOf(idx) !== -1) {
-									tmpSelectedScenes.splice(tmpSelectedScenes.indexOf(idx), 1);
-								} else {
-									tmpSelectedScenes.push(idx);
-								}
-								return [...tmpSelectedScenes];
-							});
-						}}
-					></div>
-				);
-
-				const layer = (
-					<div
-						className={styles['scene-content']}
-						style={{
-							marginLeft:
-								getPositionInPx(scene.start.x, timerDivWidth) + 4 + 'px',
-							backgroundColor: selectedScenes.includes(idx)
-								? 'rgba(63, 136, 191, 0.75)'
-								: 'rgba(84, 80, 79, 0.75)',
-							position: 'absolute',
-							height: '100%',
-							width:
-								getPositionInPx(scene.end.x - scene.start.x, timerDivWidth) +
-								// + 20 bcos of the second scene's default position
-								'px',
-							backgroundSize: 'auto 100%',
-						}}
-						onClick={() => {
-							setSelectedScenes((prevState) => {
-								const tmpSelectedScenes = [...prevState];
-								if (tmpSelectedScenes.indexOf(idx) !== -1) {
-									tmpSelectedScenes.splice(tmpSelectedScenes.indexOf(idx), 1);
-								} else {
-									tmpSelectedScenes.push(idx);
-								}
-								return [...tmpSelectedScenes];
-							});
-						}}
-					>
-						Cena {idx + 1}
-					</div>
-				);
-
-				return (
-					<>
-						{sceneStartBar}
-						{centerDiv}
-						{layer}
-						{sceneEndBar}
-					</>
-				);
-			}),
-		[scenes, timerDivWidth, selectedScenes, dispatchScene]
+			scenes.map((scene, idx) => (
+				<Scene
+					scene={scene}
+					idx={idx}
+					timerDivWidth={timerDivWidth}
+					isSelected={selectedScenes.includes(idx)}
+					dispatchScene={dispatchScene}
+					handleSceneSelect={handleSceneSelect}
+				/>
+			)),
+		[scenes, timerDivWidth, selectedScenes, dispatchScene, handleSceneSelect]
 	);
 
 	useEffect(() => {
@@ -562,19 +445,11 @@ const Timeline = (
 
 	useEffect(() => {
 		if (isCursorInScene()) {
-			setDisableVideoButton(() => {
-				return true;
-			});
-			setDisableChapterButton(() => {
-				return false;
-			});
+			setDisableVideoButton(true);
+			setDisableChapterButton(false);
 		} else {
-			setDisableVideoButton(() => {
-				return false;
-			});
-			setDisableChapterButton(() => {
-				return true;
-			});
+			setDisableVideoButton(false);
+			setDisableChapterButton(true);
 		}
 	}, [cursorPosition, isCursorInScene, scenes]);
 
