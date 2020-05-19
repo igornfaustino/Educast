@@ -19,7 +19,8 @@ import { useDropzone } from 'react-dropzone';
 const useStyles = makeStyles({
 	root: {
 		marginTop: '40px',
-		maxWidth: '280px',
+		maxWidth: '80%',
+		maxHeight: '100%',
 	},
 	media: {
 		height: 140,

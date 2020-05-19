@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useLayoutEffect } from 'react';
 import Carousel from 'react-multi-carousel';
 import { makeStyles } from '@material-ui/core/styles';
 import CustomCard from './CustomCard';
@@ -6,10 +6,7 @@ import 'react-multi-carousel/lib/styles.css';
 import IconButton from '@material-ui/core/IconButton';
 import './CustomSlider.css';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
-import { jsx, css } from '@emotion/core';
-
-// quant q da p mostrar / quant total * 100 == complemento dissos
-// style inline lib react
+import classNames from 'classnames';
 
 // TODO: another bug: place scrollbar at origin and disable it when all cards fits
 // TODO: NO: make scroll bar bigger when deleting. make spacing between cards bigger when deleting; atualizar itemWidth na API quando deletar cards
@@ -49,21 +46,21 @@ const CustomSlider = ({
 }) => {
 	const carouselRef = useRef(null);
 	const scrollbarRef = useRef(null);
-	const [totItems, setTotItems] = useState(chapters.length);
+	const [totItems, setTotItems] = useState(0);
 	const classes = useStyles();
 	const [carouselDraggable, setCarouselDraggable] = useState(true);
+	const [scrollBarWidth, setScrollBarWidth] = useState(null);
+	const [disableScrollBar, setDisableScrollBar] = useState(false);
 
 	const resizeWindow = () => {
-		if (carouselRef.current) {
+		if (carouselRef.current.state) {
 			const { transform, totalItems, slidesToShow } = carouselRef.current.state;
+			getScrollBarWidth(slidesToShow, totalItems);
 			const maxTranslateX = getMaxTranslateX();
 			let value = maxTranslateX / 100;
 			carouselRef.current.isAnimationAllowed = false;
 			const max = getMaxScrollbarValue(value);
 			const maxAllowedTransform = max * value;
-			console.log(maxAllowedTransform);
-			console.log(transform);
-			console.log('break');
 			if (Math.abs(transform) > maxAllowedTransform) {
 				carouselRef.current.setState({
 					transform: -maxAllowedTransform,
@@ -72,6 +69,31 @@ const CustomSlider = ({
 				});
 			}
 		}
+	};
+
+	const getScrollBarWidth = (itemsThatFit, total) => {
+		let dict = {};
+		let size = 0; // ! get chapters length and also get screen sizes, and set things manually
+		if (itemsThatFit === 0) {
+			size = 50;
+		}
+		dict['custom-slider__input'] = true;
+		if (total > 0 && total > itemsThatFit) {
+			setDisableScrollBar(false);
+			size = (itemsThatFit / total).toFixed(1) * 100;
+			if (size > 80) {
+				size = 80;
+			} else if (size < 20) {
+				size = 20;
+			}
+		} else {
+			if (itemsThatFit !== 0) {
+				setDisableScrollBar(true);
+				size = 100;
+			}
+		}
+		dict['custom-slider__input' + size] = true;
+		setScrollBarWidth(dict);
 	};
 
 	useEffect(() => {
@@ -87,6 +109,7 @@ const CustomSlider = ({
 	const modifiedDeleteChapterFunction = async (id) => {
 		const deleted = await deleteChapterFunction(id);
 		if (deleted === true) {
+			// setScrollBarWidth(1);
 			setTotItems(totItems - 1);
 			const {
 				slidesToShow,
@@ -98,8 +121,9 @@ const CustomSlider = ({
 			scrollbarRef.current.value = 0;
 			let nextTransform;
 			let nextSlide;
+			getScrollBarWidth(slidesToShow, totalItems - 1);
 			if (slidesToShow >= totalItems) {
-				// ! disable scrollbar here, and make it full width
+				// getScrollBarWidth(slidesToShow, totalItems);
 				nextTransform = 0;
 				nextSlide = 0;
 			} else {
@@ -117,18 +141,22 @@ const CustomSlider = ({
 	};
 
 	const cardsToShow = () => {
-		return chapters.map((chapter) => (
-			<CustomCard
-				key={chapter.id}
-				chapter={chapter}
-				deleteChapterFunction={() => modifiedDeleteChapterFunction(chapter.id)}
-				updateTitleFunction={updateTitleFunction}
-				selectThumbnailFunction={selectThumbnailFunction}
-				getPresenterScreenShot={getPresenterScreenShot}
-				getPresentationScreenShot={getPresentationScreenShot}
-				isTextFieldBeingEdited={isTextFieldBeingEdited}
-			></CustomCard>
-		));
+		return chapters.map((chapter) => {
+			return (
+				<CustomCard
+					key={chapter.id}
+					chapter={chapter}
+					deleteChapterFunction={() =>
+						modifiedDeleteChapterFunction(chapter.id)
+					}
+					updateTitleFunction={updateTitleFunction}
+					selectThumbnailFunction={selectThumbnailFunction}
+					getPresenterScreenShot={getPresenterScreenShot}
+					getPresentationScreenShot={getPresentationScreenShot}
+					isTextFieldBeingEdited={isTextFieldBeingEdited}
+				></CustomCard>
+			);
+		});
 	};
 
 	const getMaxTranslateX = () => {
@@ -165,7 +193,6 @@ const CustomSlider = ({
 			let nextSlide;
 			const maxSlides = totalItems - slidesToShow;
 			const maxTransform = max * value;
-			console.log('rightValue:', maxTransform);
 			if (slidesToShow >= totalItems) {
 				nextTransform = 0;
 				nextSlide = 0;
@@ -251,13 +278,18 @@ const CustomSlider = ({
 						if (e.target.value === 0) {
 							carouselRef.current.isAnimationAllowed = true;
 						}
-						console.log(nextTransform, ' aaa', nextSlide);
 						carouselRef.current.setState({
 							transform: -nextTransform,
 							currentSlide: nextSlide,
 						});
 					}}
-					className={'custom-slider__input'}
+					disabled={disableScrollBar}
+					className={classNames(
+						scrollBarWidth !== null
+							? scrollBarWidth
+							: { 'custom-slider__input': true, 'custom-slider__input30': true }
+					)}
+					// className={classNames(setwidth())}
 				/>
 			</div>
 		);
