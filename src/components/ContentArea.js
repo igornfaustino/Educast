@@ -1,7 +1,7 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import Documents from './Documents';
-import VideoEditor from './VideoEditor';
+import VideoEditor from './Timeline/VideoEditor';
 
 function RouteContentArea({ timelineProps }) {
 	return (

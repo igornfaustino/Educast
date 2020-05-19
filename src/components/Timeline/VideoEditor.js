@@ -4,26 +4,23 @@ import { useSelector } from 'react-redux';
 
 import Timeline from './Timeline';
 import TimelineControl from './TimelineControl';
-import { useSceneChapters } from '../hooks/useSceneChapters';
-
-import { getNumberOfMainIndicators } from '../utils/conversions';
-
+import { getNumberOfMainIndicators } from '../../utils/conversions';
 import {
 	ZOOM_MAX,
 	INITIAL_TOTAL_NUMBER_OF_INDICATORS,
 	BASE_TIME_INDICATOR_MARGIN,
 	BASE_DIV_WIDTH,
-} from '../utils/constants';
+} from '../../utils/constants';
 
 const VideoEditor = ({
 	getPresenterScreenShot,
 	getPresentationScreenShot,
 	handleTimelineClick,
 }) => {
+	const videoTimelineRef = useRef(null);
+
 	const duration = useSelector((state) => state.video.duration);
 	const visibleArea = useSelector((state) => state.timeline.visibleArea);
-
-	const videoTimelineRef = useRef(null);
 
 	const [videoLength, setVideoLength] = useState(duration);
 	const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
@@ -34,7 +31,6 @@ const VideoEditor = ({
 	const [timerDivWidth, setTimerDivWidth] = useState(
 		(visibleArea * BASE_TIME_INDICATOR_MARGIN) / BASE_DIV_WIDTH
 	);
-
 	const [calculatedMargin, setCalculatedMargin] = useState(
 		BASE_TIME_INDICATOR_MARGIN
 	);
@@ -61,10 +57,6 @@ const VideoEditor = ({
 		setTotalOfTimeIndicators(totalOfIndicators);
 	}, [duration, zoom]);
 
-	const { scenes, setChapters, dispatchScene, chapters } = useSceneChapters(
-		timerDivWidth
-	);
-
 	useEffect(() => {
 		setVideoLength(duration * zoom);
 		setTimerDivWidth(calculatedMargin * totalOfTimeIndicators);
@@ -79,10 +71,6 @@ const VideoEditor = ({
 				setCursorPosition={setCursorPosition}
 				ref={videoTimelineRef}
 				videoLength={videoLength}
-				scenes={scenes}
-				dispatchScene={dispatchScene}
-				chapters={chapters}
-				setChapters={setChapters}
 				getPresenterScreenShot={getPresenterScreenShot}
 				getPresentationScreenShot={getPresentationScreenShot}
 				calculatedMargin={calculatedMargin}
