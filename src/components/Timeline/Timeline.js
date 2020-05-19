@@ -12,21 +12,18 @@ import { FaPlusSquare, FaMinusSquare } from 'react-icons/fa';
 import Draggable from 'react-draggable';
 
 import TimeIndicator from './TimeIndicator';
-import { getPositionInPercent, getPositionInPx } from '../utils/conversions';
-import { FINAL_SPACE, X_SNAP_TO } from '../utils/constants';
-import { useWindowSize } from '../hooks/useWindowSize';
+import { getPositionInPercent, getPositionInPx } from '../../utils/conversions';
+import { FINAL_SPACE, X_SNAP_TO } from '../../utils/constants';
+import { useWindowSize } from '../../hooks/useWindowSize';
 
 import cx from 'classnames';
 import styles from './Timeline.module.scss';
+import { useSceneChapters } from '../../hooks/useSceneChapters';
 
 const Timeline = (
 	{
 		zoomLevel,
 		timerDivWidth,
-		scenes,
-		dispatchScene,
-		chapters,
-		setChapters,
 		getPresenterScreenShot,
 		getPresentationScreenShot,
 		videoLength,
@@ -41,6 +38,9 @@ const Timeline = (
 	const duration = useSelector((state) => state.video.duration);
 
 	const windowsSize = useWindowSize();
+	const { scenes, setChapters, dispatchScene, chapters } = useSceneChapters(
+		timerDivWidth
+	);
 
 	const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
 	const [selectedScenes, setSelectedScenes] = useState([]);

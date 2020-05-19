@@ -5,8 +5,8 @@ import moment from 'moment';
 import { useSelector } from 'react-redux';
 
 import styles from './TimeIndicator.module.scss';
-import { ZOOM_MAX } from '../utils/constants';
-import { getNumberOfMainIndicators } from '../utils/conversions';
+import { ZOOM_MAX } from '../../utils/constants';
+import { getNumberOfMainIndicators } from '../../utils/conversions';
 import { FaPassport } from 'react-icons/fa';
 
 const TimeIndicator = ({ zoomLevel, calculatedMargin }) => {

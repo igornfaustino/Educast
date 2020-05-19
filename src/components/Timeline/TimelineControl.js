@@ -1,7 +1,7 @@
 import React, { forwardRef, useRef, useCallback } from 'react';
 import { MdZoomIn, MdZoomOut } from 'react-icons/md';
 
-import { ZOOM_MAX, FINAL_SPACE } from '../utils/constants';
+import { ZOOM_MAX, FINAL_SPACE } from '../../utils/constants';
 
 import styles from './TimelineControl.module.scss';
 import { useMemo } from 'react';
