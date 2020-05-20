@@ -1,0 +1,95 @@
+@import '../../variables.scss';
+
+.chapter-tag {
+	height: 10%;
+	width: $scene-limiter-width;
+	position: absolute;
+	top: 0.99rem;
+	z-index: 300;
+	left: -2px;
+
+	border-bottom: $chapter-limiter-size solid transparent;
+	border-left: $chapter-limiter-size solid transparent;
+	border-right: $chapter-limiter-size solid transparent;
+
+	&:before {
+		content: '';
+		position: absolute;
+		top: -1.45rem;
+		right: -$chapter-limiter-size;
+	}
+
+	&:after {
+		content: '';
+		position: absolute;
+		top: -0.5375rem;
+		left: -0.0725rem;
+		background-color: white;
+		height: 0.1875rem;
+		width: 0.1875rem;
+		border-radius: 50%;
+	}
+}
+
+.chapter-tag--gray {
+	border-top: $chapter-limiter-size solid gray;
+	&:before {
+		border-top: 0.55rem solid gray;
+		border-bottom: 0.55rem solid gray;
+		border-left: $chapter-limiter-size solid gray;
+		border-right: $chapter-limiter-size solid gray;
+	}
+}
+
+.chapter-tag--blue {
+	border-top: $chapter-limiter-size solid rgb(63, 138, 224);
+	&:before {
+		border-top: 0.55rem solid rgb(63, 138, 224);
+		border-bottom: 0.55rem solid rgb(63, 138, 224);
+		border-left: $chapter-limiter-size solid rgb(63, 138, 224);
+		border-right: $chapter-limiter-size solid rgb(63, 138, 224);
+	}
+}
+
+.chapter-content {
+	border-left: 2px solid #3f8ae0;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	top: 0;
+
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+
+	font-weight: bolder;
+	color: white;
+
+	height: 100%;
+	position: absolute;
+	background-color: #cfcdcd;
+	background-size: auto 100%;
+
+	-webkit-touch-callout: none; /* iOS Safari */
+	-webkit-user-select: none; /* Safari */
+	-khtml-user-select: none; /* Konqueror HTML */
+	-moz-user-select: none; /* Old versions of Firefox */
+	-ms-user-select: none; /* Internet Explorer/Edge */
+	user-select: none; /* Non-prefixed version, currently
+																supported by Chrome, Edge, Opera and Firefox */
+
+	&:hover {
+		cursor: pointer;
+	}
+}
+
+.chapter-content-layer {
+	position: absolute;
+	height: 100%;
+	background-color: transparent;
+}
+
+.selected {
+	background-color: rgba(63, 136, 191, 0.75);
+}
