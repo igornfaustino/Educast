@@ -12,7 +12,7 @@ import { FaPlusSquare, FaMinusSquare } from 'react-icons/fa';
 import Draggable from 'react-draggable';
 
 import TimeIndicator from './TimeIndicator';
-import { getPositionInPercent, getPositionInPx } from '../../utils/conversions';
+import { getPositionInPercent } from '../../utils/conversions';
 import { FINAL_SPACE, X_SNAP_TO } from '../../utils/constants';
 import { useWindowSize } from '../../hooks/useWindowSize';
 
@@ -21,6 +21,7 @@ import styles from './Timeline.module.scss';
 import { useSceneChapters } from '../../hooks/useSceneChapters';
 import Scene from './Scene';
 import { useCursor } from '../../hooks/useCursor';
+import Chapter from './Chapter';
 
 const Timeline = (
 	{
@@ -152,6 +153,18 @@ const Timeline = (
 		});
 	}, []);
 
+	const handleChapterSelectedSelect = useCallback((id) => {
+		setSelectedChapters((prevState) => {
+			const tmpSelectedChapters = [...prevState];
+			if (tmpSelectedChapters.indexOf(id) !== -1) {
+				tmpSelectedChapters.splice(tmpSelectedChapters.indexOf(id), 1);
+			} else {
+				tmpSelectedChapters.push(id);
+			}
+			return [...tmpSelectedChapters];
+		});
+	}, []);
+
 	const createChapter = useCallback(() => {
 		//  extra verification (just in case)
 		if (!isCursorInScene()) {
@@ -180,111 +193,51 @@ const Timeline = (
 
 	const renderChapter = useMemo(
 		() =>
-			chapters.map((chapter, idx) => {
-				const endSceneX = Math.max.apply(
-					Math,
-					scenes.map(function (scene) {
-						return scene.end.x;
-					})
-				);
+			React.Children.toArray(
+				chapters.map((chapter, idx) => {
+					const lastScene = scenes[scenes.length - 1];
+					const lastSceneEndPosition = lastScene ? lastScene.end.x : 0;
 
-				const startTag = (
-					<div
-						className={cx(
-							styles['chapter-tag'],
-							selectedChapters.includes(chapter.id)
-								? styles['chapter-tag--blue']
-								: styles['chapter-tag--gray']
-						)}
-						style={{
-							marginLeft:
-								getPositionInPx(chapter.position, timerDivWidth) + 1.5,
-						}}
-					></div>
-				);
+					const chapterEndPosition = chapters[idx + 1]
+						? chapters[idx + 1].position
+						: lastSceneEndPosition;
 
-				const chapterContent = (
-					<div
-						className={styles['scene-content']}
-						style={{
-							marginLeft:
-								getPositionInPx(chapter.position, timerDivWidth) + 4 + 'px', // 4 is the scene-limiter width
-							width: chapters[idx + 1]
-								? getPositionInPx(
-										chapters[idx + 1].position - chapter.position,
-										timerDivWidth
-								  ) + 'px'
-								: getPositionInPx(endSceneX - chapter.position, timerDivWidth) +
-								  'px',
-							backgroundImage: `url(${chapter.img})`,
-							backgroundSize: 'auto 100%',
-							borderLeft: `2px solid #3f8ae0`,
-						}}
-					>
-						{/* Capítulo {idx + 1} */}
-					</div>
-				);
-
-				const layer = (
-					<div
-						className={styles['scene-content']}
-						style={{
-							marginLeft:
-								getPositionInPx(chapter.position, timerDivWidth) + 4 + 'px',
-							backgroundColor: selectedChapters.includes(chapter.id)
-								? 'rgba(63, 136, 191, 0.75)'
-								: 'rgba(0, 0, 0, 0)',
-							position: 'absolute',
-							height: '100%',
-							width: chapters[idx + 1]
-								? getPositionInPx(
-										chapters[idx + 1].position - chapter.position,
-										timerDivWidth
-								  ) + 'px'
-								: getPositionInPx(endSceneX - chapter.position, timerDivWidth) +
-								  'px',
-							backgroundSize: 'auto 100%',
-						}}
-						onClick={() => {
-							setSelectedChapters((prevState) => {
-								const tmpSelectedChapters = [...prevState];
-								if (tmpSelectedChapters.indexOf(chapter.id) !== -1) {
-									tmpSelectedChapters.splice(
-										tmpSelectedChapters.indexOf(chapter.id),
-										1
-									);
-								} else {
-									tmpSelectedChapters.push(chapter.id);
-								}
-								return [...tmpSelectedChapters];
-							});
-						}}
-					></div>
-				);
-
-				return (
-					<>
-						{startTag}
-						{chapterContent}
-						{layer}
-					</>
-				);
-			}),
-		[chapters, scenes, selectedChapters, timerDivWidth]
+					return (
+						<Chapter
+							chapterEndPosition={chapterEndPosition}
+							chapter={chapter}
+							idx={idx}
+							timerDivWidth={timerDivWidth}
+							isSelected={selectedChapters.includes(chapter.id)}
+							chapters={chapters}
+							handleChapterSelectedSelect={handleChapterSelectedSelect}
+						/>
+					);
+				})
+			),
+		[
+			chapters,
+			handleChapterSelectedSelect,
+			scenes,
+			selectedChapters,
+			timerDivWidth,
+		]
 	);
 
 	const renderScene = useMemo(
 		() =>
-			scenes.map((scene, idx) => (
-				<Scene
-					scene={scene}
-					idx={idx}
-					timerDivWidth={timerDivWidth}
-					isSelected={selectedScenes.includes(idx)}
-					dispatchScene={dispatchScene}
-					handleSceneSelect={handleSceneSelect}
-				/>
-			)),
+			React.Children.toArray(
+				scenes.map((scene, idx) => (
+					<Scene
+						scene={scene}
+						idx={idx}
+						timerDivWidth={timerDivWidth}
+						isSelected={selectedScenes.includes(idx)}
+						dispatchScene={dispatchScene}
+						handleSceneSelect={handleSceneSelect}
+					/>
+				))
+			),
 		[scenes, timerDivWidth, selectedScenes, dispatchScene, handleSceneSelect]
 	);
 
