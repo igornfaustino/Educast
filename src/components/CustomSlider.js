@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useLayoutEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Carousel from 'react-multi-carousel';
 import { makeStyles } from '@material-ui/core/styles';
 import CustomCard from './CustomCard';
@@ -8,9 +8,8 @@ import './CustomSlider.css';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import classNames from 'classnames';
 
-// TODO: another bug: place scrollbar at origin and disable it when all cards fits
-// TODO: NO: make scroll bar bigger when deleting. make spacing between cards bigger when deleting; atualizar itemWidth na API quando deletar cards
 // TODO: integrar com o componente do video-editor
+// TODO: deixar responsivo
 const useStyles = makeStyles({
 	leftArrow: {
 		position: 'relative',
@@ -49,13 +48,14 @@ const CustomSlider = ({
 	const [totItems, setTotItems] = useState(0);
 	const classes = useStyles();
 	const [carouselDraggable, setCarouselDraggable] = useState(true);
-	const [scrollBarWidth, setScrollBarWidth] = useState(null);
+	const [size, setSize] = useState([0, 0]);
+	const [scrollBarValue, setScrollBarValue] = useState(0);
 	const [disableScrollBar, setDisableScrollBar] = useState(false);
 
 	const resizeWindow = () => {
+		setSize([window.innerWidth, window.innerHeight]);
 		if (carouselRef.current.state) {
 			const { transform, totalItems, slidesToShow } = carouselRef.current.state;
-			getScrollBarWidth(slidesToShow, totalItems);
 			const maxTranslateX = getMaxTranslateX();
 			let value = maxTranslateX / 100;
 			carouselRef.current.isAnimationAllowed = false;
@@ -72,12 +72,7 @@ const CustomSlider = ({
 	};
 
 	const getScrollBarWidth = (itemsThatFit, total) => {
-		let dict = {};
-		let size = 0; // ! get chapters length and also get screen sizes, and set things manually
-		if (itemsThatFit === 0) {
-			size = 50;
-		}
-		dict['custom-slider__input'] = true;
+		let size = 0;
 		if (total > 0 && total > itemsThatFit) {
 			setDisableScrollBar(false);
 			size = (itemsThatFit / total).toFixed(1) * 100;
@@ -92,9 +87,22 @@ const CustomSlider = ({
 				size = 100;
 			}
 		}
-		dict['custom-slider__input' + size] = true;
-		setScrollBarWidth(dict);
+		return size;
 	};
+
+	useEffect(() => {
+		const length = () => {
+			const width = size[0];
+			if (width > responsive.desktop.breakpoint.min) {
+				return responsive.desktop.items;
+			} else if (width > responsive.tablet.breakpoint.min) {
+				return responsive.tablet.items;
+			} else if (width > responsive.mobile.breakpoint.min) {
+				return responsive.mobile.items;
+			}
+		};
+		setScrollBarValue(getScrollBarWidth(length(), chapters.length));
+	}, [chapters.length, size]);
 
 	useEffect(() => {
 		resizeWindow();
@@ -121,7 +129,6 @@ const CustomSlider = ({
 			scrollbarRef.current.value = 0;
 			let nextTransform;
 			let nextSlide;
-			getScrollBarWidth(slidesToShow, totalItems - 1);
 			if (slidesToShow >= totalItems) {
 				// getScrollBarWidth(slidesToShow, totalItems);
 				nextTransform = 0;
@@ -284,12 +291,10 @@ const CustomSlider = ({
 						});
 					}}
 					disabled={disableScrollBar}
-					className={classNames(
-						scrollBarWidth !== null
-							? scrollBarWidth
-							: { 'custom-slider__input': true, 'custom-slider__input30': true }
-					)}
-					// className={classNames(setwidth())}
+					className={classNames({
+						[`custom-slider__input${scrollBarValue}`]: true,
+						[`custom-slider__input`]: true,
+					})}
 				/>
 			</div>
 		);

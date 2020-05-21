@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -18,17 +18,17 @@ import { useDropzone } from 'react-dropzone';
 
 const useStyles = makeStyles({
 	root: {
-		marginTop: '40px',
+		marginTop: '3%',
 		maxWidth: '80%',
 		maxHeight: '100%',
 	},
 	media: {
-		height: 140,
+		height: '10rem',
 		width: '100%',
 		position: 'relative',
 	},
 	title: {
-		fontSize: 17,
+		fontSize: '1rem',
 	},
 	deleteButton: {
 		borderRadius: '1px',
@@ -76,13 +76,6 @@ const useStyles = makeStyles({
 		left: '4px',
 	},
 });
-
-function importAll(r) {
-	return r.keys().map(r);
-}
-const images = importAll(
-	require.context('../sampleImages/', false, /\.(png|jpe?g|svg)$/)
-);
 
 const CustomCard = ({
 	chapter,
@@ -176,7 +169,7 @@ const CustomCard = ({
 			</div>
 			<div className={classes.cardActions}>
 				<div className={styles['CustomCard__TimeLabel']}>
-					In {chapter.initTime}::{chapter.finalTime}
+					In {chapter.initTime}
 				</div>
 				<EditableTextField
 					type="text"
