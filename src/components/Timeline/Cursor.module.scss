@@ -1,0 +1,36 @@
+.stick {
+	position: absolute;
+	background-color: #2196f3;
+	z-index: 200;
+	top: 2.5rem;
+	height: 9.9rem;
+	width: 2px;
+	overflow-y: visible;
+
+	&:hover {
+		cursor: pointer;
+	}
+
+	&::before {
+		content: '';
+		position: absolute;
+		right: -9.01px;
+		top: -8.5px;
+		border-top: 10px solid rgba(33, 150, 243, 0.5);
+		border-bottom: 10px solid transparent;
+		border-left: 10px solid transparent;
+		border-right: 10px solid transparent;
+	}
+
+	&::after {
+		content: '';
+		position: absolute;
+		right: -30px;
+		top: -38.3px;
+		z-index: -20;
+		border-top: 15px solid rgba(33, 150, 243, 0.5);
+		border-bottom: 15px solid rgba(33, 150, 243, 0.5);
+		border-left: 30px solid rgba(33, 150, 243, 0.5);
+		border-right: 30px solid rgba(33, 150, 243, 0.5);
+	}
+}
