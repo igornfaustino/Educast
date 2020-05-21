@@ -24,16 +24,13 @@ export function useTimeline(
 	const [isAddVideoDisabled, setIsAddVideoDisabled] = useState(false);
 	const [isChapterButtonDisabled, setIsChapterButtonDisabled] = useState(false);
 
-	const getSticksEndPosition = useCallback(() => {
+	const getSceneBarEndPosition = useCallback(() => {
 		const possibleScenes = scenes.filter((scene) => {
 			return scene.start.x > cursorPosition.x;
 		});
 
 		if (possibleScenes.length > 0) {
-			return (
-				possibleScenes.sort((a, b) => a.start.x - b.start.x)[0].start.x -
-				getPositionInPercent(10, timerDivWidth)
-			);
+			return possibleScenes.sort((a, b) => a.start.x - b.start.x)[0].start.x;
 		} else {
 			return getPositionInPercent(timerDivWidth, timerDivWidth);
 		}
@@ -79,7 +76,7 @@ export function useTimeline(
 	const createScene = useCallback(() => {
 		if (isCursorInScene()) return;
 
-		const endPosition = getSticksEndPosition();
+		const endPosition = getSceneBarEndPosition();
 
 		const scene = {
 			start: { x: cursorPosition.x, y: 0 },
@@ -93,7 +90,7 @@ export function useTimeline(
 		cursorPosition.x,
 		dispatchScene,
 		getPresenterScreenShot,
-		getSticksEndPosition,
+		getSceneBarEndPosition,
 		isCursorInScene,
 	]);
 

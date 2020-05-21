@@ -79,6 +79,7 @@ function VideoContainer(props, ref) {
 		isPlaying,
 		duration,
 		currentTime,
+		isReady,
 		size: sizeVideo1,
 		isSeeking: isPlayer1Seeking,
 		play: playPlayer1,
@@ -293,6 +294,10 @@ function VideoContainer(props, ref) {
 	useEffect(() => {
 		dispatch({ type: 'SET_CURRENT_TIME', currentTime });
 	}, [dispatch, currentTime]);
+
+	useEffect(() => {
+		dispatch({ type: 'SET_IS_READY', isReady });
+	}, [dispatch, isReady]);
 
 	return (
 		<>

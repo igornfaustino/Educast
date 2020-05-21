@@ -18,7 +18,7 @@ export function useCursor(scenes, timerDivWidth, handleTimelineClick) {
 		[scenes]
 	);
 
-	const getPlayingDrag = useCallback(
+	const getPlayingGap = useCallback(
 		(cursorPosition) => {
 			let gap = undefined;
 			scenes.some((scene, idx) => {
@@ -62,7 +62,10 @@ export function useCursor(scenes, timerDivWidth, handleTimelineClick) {
 
 	const isCursorInsideThis = useCallback((value, cursorPosition) => {
 		if (!value) return false;
-		if (value.start.x <= cursorPosition && cursorPosition <= value.end.x)
+		if (
+			value.start.x <= cursorPosition + 0.001 &&
+			cursorPosition <= value.end.x
+		)
 			return true;
 		return false;
 	}, []);
@@ -75,14 +78,14 @@ export function useCursor(scenes, timerDivWidth, handleTimelineClick) {
 				setLastGapWithCursor(undefined);
 				return true;
 			}
-			const playingGap = getPlayingDrag(cursorPosition);
+			const playingGap = getPlayingGap(cursorPosition);
 			if (playingGap) {
 				setLastGapWithCursor(playingGap);
 				setLastSceneWithCursor(undefined);
 				return false;
 			}
 		},
-		[getPlayingDrag, getPlayingScene]
+		[getPlayingGap, getPlayingScene]
 	);
 
 	const isCursorInsideSomeScene = useCallback(
