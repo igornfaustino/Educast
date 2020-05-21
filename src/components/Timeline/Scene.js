@@ -78,7 +78,7 @@ const Scene = ({
 
 	const sceneStyle = useMemo(
 		() => ({
-			marginLeft: getPositionInPx(scene.start.x, timerDivWidth) + 4,
+			marginLeft: getPositionInPx(scene.start.x, timerDivWidth) + 1,
 			width: getPositionInPx(scene.end.x - scene.start.x, timerDivWidth),
 
 			backgroundImage: `url(${scene.img})`,

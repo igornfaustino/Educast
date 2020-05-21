@@ -42,50 +42,54 @@ export function useSceneChapters(timerDivWidth) {
 		[removeChaptersInsideScene]
 	);
 
-	const isSceneInvadingOther = useCallback(
-		(sceneIdx, scene, scenes) =>
-			scenes.some((otherScene, idx) => {
-				if (sceneIdx === idx) return false;
+	const isSceneInvadingOther = useCallback((sceneIdx, scene, scenes, type) => {
+		let validScene = scene;
+		scenes.some((otherScene, idx) => {
+			if (sceneIdx === idx) return false;
 
-				const isSceneInvadingRight =
-					otherScene.start.x <= scene.end.x && scene.end.x <= otherScene.end.x;
+			const isSceneInvadingRight =
+				type === 'drag_right' &&
+				otherScene.start.x < scene.end.x &&
+				scene.end.x < otherScene.end.x;
 
-				const isSceneInvadingLeft =
-					scene.start.x <= otherScene.end.x &&
-					otherScene.start.x <= scene.start.x;
+			const isSceneRightInsideScene =
+				type === 'drag_right' &&
+				scene.start.x < otherScene.start.x &&
+				scene.end.x > otherScene.end.x;
 
-				const isSceneLeftInsideScene =
-					scene.end.x >= otherScene.end.x &&
-					scene.start.x <= otherScene.start.x;
-
-				const isSceneRightInsideScene =
-					scene.start.x <= otherScene.start.x &&
-					scene.end.x >= otherScene.end.x;
-
-				return (
-					isSceneInvadingRight ||
-					isSceneInvadingLeft ||
-					isSceneLeftInsideScene ||
-					isSceneRightInsideScene
-				);
-			}),
-		[]
-	);
-
-	const isSceneValid = useCallback(
-		(scene, sceneIdx, scenes) => {
-			const isSceneLimitsAreCrossing =
-				scene.start.x >= scene.end.x || scene.end.x <= scene.start.x;
-			if (isSceneLimitsAreCrossing) {
-				return false;
+			if (isSceneInvadingRight || isSceneRightInsideScene) {
+				validScene.end.x = otherScene.start.x;
+				return true;
 			}
-			if (isSceneInvadingOther(sceneIdx, scene, scenes)) {
-				return false;
+
+			const isSceneInvadingLeft =
+				type === 'drag_left' &&
+				scene.start.x < otherScene.end.x &&
+				otherScene.start.x < scene.start.x;
+
+			const isSceneLeftInsideScene =
+				type === 'drag_left' &&
+				scene.end.x > otherScene.end.x &&
+				scene.start.x < otherScene.start.x;
+
+			if (isSceneInvadingLeft || isSceneLeftInsideScene) {
+				validScene.start.x = otherScene.end.x;
+				return true;
 			}
-			return true;
-		},
-		[isSceneInvadingOther]
-	);
+
+			return false;
+		});
+		return validScene;
+	}, []);
+
+	const isSceneValid = useCallback((scene) => {
+		const isSceneLimitsAreCrossing =
+			scene.start.x >= scene.end.x || scene.end.x <= scene.start.x;
+		if (isSceneLimitsAreCrossing) {
+			return false;
+		}
+		return true;
+	}, []);
 
 	const getIdOfChaptersInsideDraggedScene = useCallback(
 		(scene) => [
@@ -189,18 +193,39 @@ export function useSceneChapters(timerDivWidth) {
 		(state, action) => {
 			const stateBeforeUpdate = [...state];
 
-			if (!isSceneValid(action.scene, action.sceneIdx, state)) {
+			if (!isSceneValid(action.scene)) {
 				return stateBeforeUpdate;
 			}
 
-			handleChapterBetweenScenes(action.scene, action.type);
+			const ValidScene = isSceneInvadingOther(
+				action.sceneIdx,
+				action.scene,
+				state,
+				action.type
+			);
+
+			handleChapterBetweenScenes(ValidScene, action.type);
 
 			const updatedState = [...state];
-			updatedState[action.sceneIdx] = action.scene;
+			updatedState[action.sceneIdx] = {
+				...updatedState[action.sceneIdx],
+				...ValidScene,
+			};
 			return [...updatedState];
 		},
-		[handleChapterBetweenScenes, isSceneValid]
+		[handleChapterBetweenScenes, isSceneInvadingOther, isSceneValid]
 	);
+
+	const updateSceneImage = useCallback((state, action) => {
+		const { img, sceneIdx } = action;
+
+		if (!img || !state[sceneIdx]) return state;
+
+		const updatedState = [...state];
+		updatedState[sceneIdx].img = img;
+
+		return updatedState;
+	}, []);
 
 	const [scenes, dispatchScene] = useReducer(
 		(state, action) => {
@@ -220,6 +245,8 @@ export function useSceneChapters(timerDivWidth) {
 				case 'drag_left':
 				case 'drag_right':
 					return updateScene(state, action);
+				case 'update_scene_img':
+					return updateSceneImage(state, action);
 				default:
 					return state;
 			}

@@ -52,7 +52,7 @@
 }
 
 .chapter-content {
-	border-left: 2px solid #3f8ae0;
+	border-left: 3px solid #fff;
 
 	display: flex;
 	justify-content: center;
@@ -87,7 +87,7 @@
 .chapter-content-layer {
 	position: absolute;
 	height: 100%;
-	background-color: transparent;
+	background-color: rgba(#444, 0.5);
 }
 
 .selected {

@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, forwardRef } from 'react';
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import TimeIndicator from './TimeIndicator';
 import { FINAL_SPACE } from '../../utils/constants';
@@ -13,6 +13,7 @@ import Chapter from './Chapter';
 import { useTimeline } from '../../hooks/useTimeline';
 import Guide from './Guide';
 import Cursor from './Cursor';
+import { getIdxOfScenesWithoutImg } from '../../utils/scenes';
 
 const Timeline = (
 	{
@@ -27,6 +28,7 @@ const Timeline = (
 	videoTimelineRef
 ) => {
 	const dispatch = useDispatch();
+	const isVideoReady = useSelector((state) => state.video.isReady);
 
 	const windowsSize = useWindowSize();
 
@@ -128,6 +130,18 @@ const Timeline = (
 		const wrapperWidth = videoTimelineRef.current.offsetWidth;
 		dispatch({ type: 'SET_VISIBLE_AREA', visibleArea: wrapperWidth });
 	}, [dispatch, videoTimelineRef, windowsSize]);
+
+	useEffect(() => {
+		if (!isVideoReady) return;
+
+		const idxsOfScenesWithoutImg = getIdxOfScenesWithoutImg(scenes);
+		if (idxsOfScenesWithoutImg.length === 0) return;
+
+		const img = getPresenterScreenShot();
+		idxsOfScenesWithoutImg.forEach((idx) => {
+			dispatchScene({ type: 'update_scene_img', sceneIdx: idx, img });
+		});
+	}, [dispatchScene, getPresenterScreenShot, isVideoReady, scenes]);
 
 	return (
 		<div className={styles['timeline__wrapper']}>
