@@ -30,79 +30,10 @@
 	height: 100%;
 }
 
-.btnContainer {
-	background-color: rgb(53, 52, 52);
-	color: white;
-
-	height: 36%;
-	width: 100%;
-
-	position: relative;
-	/* to align text and icon*/
-	display: flex;
-	align-items: center;
-
-	// justify-content: space-around;
-}
-
 .blackbox {
 	width: 100%;
 	height: 25%;
 	background-color: rgb(53, 52, 52);
-}
-
-@mixin btn-style {
-	height: 1.2rem;
-	width: 1.2rem;
-}
-
-.btnContainer__button {
-	@include btn-style;
-
-	fill: rgb(0, 174, 255);
-
-	cursor: pointer;
-	transition: all 0.2s;
-
-	&:hover {
-		transform: scale(1.1);
-	}
-}
-
-.btnContainer__button-disabled {
-	@include btn-style;
-	fill: rgb(95, 95, 95);
-}
-
-.btnContainer__left {
-	display: flex;
-	justify-content: space-around;
-	align-self: center;
-}
-
-.btnContainer__right {
-	position: absolute;
-	display: flex;
-	height: 100%;
-	flex-direction: column;
-	justify-content: space-evenly;
-	right: 1rem;
-}
-
-.btnContainer__icon {
-	height: 1.5rem;
-	width: 1.5rem;
-	margin-left: 1rem;
-}
-
-@media screen and (max-width: 1032px) {
-	.btnContainer__text {
-		display: none;
-	}
-}
-
-.btnContainer__text {
-	margin-left: 0.5rem;
 }
 
 .timeline__video {
@@ -115,41 +46,4 @@
 	position: relative;
 	width: 100%;
 	height: 36%;
-}
-
-.stick {
-	position: absolute;
-	background-color: #2196f3;
-	z-index: 200;
-	top: 2.5rem;
-	height: 9.9rem;
-	width: 2px;
-	overflow-y: visible;
-
-	&:hover {
-		cursor: pointer;
-	}
-
-	&::before {
-		content: '';
-		position: absolute;
-		right: -9.01px;
-		top: -8.5px;
-		border-top: 10px solid rgba(33, 150, 243, 0.5);
-		border-bottom: 10px solid transparent;
-		border-left: 10px solid transparent;
-		border-right: 10px solid transparent;
-	}
-
-	&::after {
-		content: '';
-		position: absolute;
-		right: -30px;
-		top: -38.3px;
-		z-index: -20;
-		border-top: 15px solid rgba(33, 150, 243, 0.5);
-		border-bottom: 15px solid rgba(33, 150, 243, 0.5);
-		border-left: 30px solid rgba(33, 150, 243, 0.5);
-		border-right: 30px solid rgba(33, 150, 243, 0.5);
-	}
 }
