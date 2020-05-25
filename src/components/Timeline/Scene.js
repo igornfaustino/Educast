@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 
 import cx from 'classnames';
+import { useDispatch } from 'react-redux';
 
 import styles from './Scene.module.scss';
 import { getPositionInPx, getPositionInPercent } from '../../utils/conversions';
@@ -11,16 +12,17 @@ const Scene = ({
 	idx,
 	timerDivWidth,
 	isSelected,
-	dispatchScene,
 	handleSceneSelect,
 }) => {
+	const dispatch = useDispatch();
+
 	const onDragStart = useCallback(
-		() => dispatchScene({ scene: scene, type: 'on_drag_start' }),
-		[dispatchScene, scene]
+		() => dispatch({ scene: scene, type: 'ON_DRAG_START' }),
+		[dispatch, scene]
 	);
 
-	const onDragStop = useCallback(() => dispatchScene({ type: 'on_drag_end' }), [
-		dispatchScene,
+	const onDragStop = useCallback(() => dispatch({ type: 'ON_DRAG_END' }), [
+		dispatch,
 	]);
 
 	const onDragLeft = useCallback(
@@ -29,13 +31,13 @@ const Scene = ({
 				start: { x: getPositionInPercent(ui.x, timerDivWidth), y: 0 },
 				end: scene.end,
 			};
-			dispatchScene({
+			dispatch({
 				sceneIdx: idx,
 				scene: tmpScene,
-				type: 'drag_left',
+				type: 'DRAG_LEFT',
 			});
 		},
-		[dispatchScene, idx, scene.end, timerDivWidth]
+		[dispatch, idx, scene.end, timerDivWidth]
 	);
 
 	const onDragRight = useCallback(
@@ -44,13 +46,13 @@ const Scene = ({
 				start: scene.start,
 				end: { x: getPositionInPercent(ui.x, timerDivWidth), y: 0 },
 			};
-			dispatchScene({
+			dispatch({
 				sceneIdx: idx,
 				scene: updatedScene,
-				type: 'drag_right',
+				type: 'DRAG_RIGHT',
 			});
 		},
-		[dispatchScene, idx, scene.start, timerDivWidth]
+		[dispatch, idx, scene.start, timerDivWidth]
 	);
 
 	const onClick = useCallback(() => handleSceneSelect(idx), [

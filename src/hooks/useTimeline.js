@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
-import { useSceneChapters } from './useSceneChapters';
 import { useCursor } from './useCursor';
 import { getPositionInPercent } from '../utils/conversions';
+import { useDispatch, useSelector } from 'react-redux';
 
 export function useTimeline(
 	timerDivWidth,
@@ -9,9 +9,10 @@ export function useTimeline(
 	getPresenterScreenShot,
 	getPresentationScreenShot
 ) {
-	const { scenes, setChapters, dispatchScene, chapters } = useSceneChapters(
-		timerDivWidth
-	);
+	const dispatch = useDispatch();
+	const scenes = useSelector((state) => state.sceneChapters.scenes);
+	const chapters = useSelector((state) => state.sceneChapters.chapters);
+
 	const {
 		cursorPosition,
 		isCursorInScene,
@@ -59,19 +60,17 @@ export function useTimeline(
 				});
 			}
 		});
-		dispatchScene({ type: 'delete', scenesIdx: selectedScenes });
-	}, [chapters, dispatchScene, scenes, selectedScenes]);
+		dispatch({ type: 'DELETE', scenesIdx: selectedScenes });
+	}, [chapters, dispatch, scenes, selectedScenes]);
 
 	const deleteChapter = useCallback(() => {
-		setChapters((prevState) => {
-			const tmp = prevState.filter((val) => {
-				return !selectedChapters.includes(val.id);
-			});
-
-			return [...tmp];
+		const updatedChapters = chapters.filter((val) => {
+			return !selectedChapters.includes(val.id);
 		});
+
+		dispatch({ type: 'SET_CHAPTERS', chapters: updatedChapters });
 		setSelectedChapters([]);
-	}, [selectedChapters, setChapters]);
+	}, [chapters, dispatch, selectedChapters]);
 
 	const createScene = useCallback(() => {
 		if (isCursorInScene()) return;
@@ -84,11 +83,11 @@ export function useTimeline(
 			img: getPresenterScreenShot(),
 		};
 
-		dispatchScene({ type: 'create', scene });
+		dispatch({ type: 'CREATE', scene });
 		setIsAddVideoDisabled(() => true);
 	}, [
 		cursorPosition.x,
-		dispatchScene,
+		dispatch,
 		getPresenterScreenShot,
 		getSceneBarEndPosition,
 		isCursorInScene,
@@ -121,23 +120,22 @@ export function useTimeline(
 	const createChapter = useCallback(() => {
 		if (!isCursorInScene()) return;
 
-		setChapters((prevState) => {
-			let tmpMarkInChapter = [...prevState];
+		const updatedChapters = [...chapters];
 
-			tmpMarkInChapter.push({
-				position: cursorPosition.x,
-				id: Date.now(),
-				img: getPresentationScreenShot(),
-			});
-			tmpMarkInChapter.sort((a, b) => a.position - b.position);
-
-			return [...tmpMarkInChapter];
+		updatedChapters.push({
+			position: cursorPosition.x,
+			id: Date.now(),
+			img: getPresentationScreenShot(),
 		});
+		updatedChapters.sort((a, b) => a.position - b.position);
+
+		dispatch({ type: 'SET_CHAPTERS', chapters: updatedChapters });
 	}, [
+		chapters,
 		cursorPosition.x,
+		dispatch,
 		getPresentationScreenShot,
 		isCursorInScene,
-		setChapters,
 	]);
 
 	useEffect(() => {
@@ -174,7 +172,6 @@ export function useTimeline(
 		chapters,
 		selectedChapters,
 		selectedScenes,
-		dispatchScene,
 		isAddVideoDisabled,
 		isChapterButtonDisabled,
 	};
