@@ -62,10 +62,7 @@ export function useCursor(scenes, timerDivWidth, handleTimelineClick) {
 
 	const isCursorInsideThis = useCallback((value, cursorPosition) => {
 		if (!value) return false;
-		if (
-			value.start.x <= cursorPosition + 0.001 &&
-			cursorPosition <= value.end.x
-		)
+		if (value.start.x <= cursorPosition && cursorPosition <= value.end.x)
 			return true;
 		return false;
 	}, []);

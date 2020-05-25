@@ -43,7 +43,6 @@ const Timeline = (
 		selectedChapters,
 		handleChapterSelectedSelect,
 		selectedScenes,
-		dispatchScene,
 		handleSceneSelect,
 		isAddVideoDisabled,
 		createScene,
@@ -98,12 +97,11 @@ const Timeline = (
 						idx={idx}
 						timerDivWidth={timerDivWidth}
 						isSelected={selectedScenes.includes(idx)}
-						dispatchScene={dispatchScene}
 						handleSceneSelect={handleSceneSelect}
 					/>
 				))
 			),
-		[scenes, timerDivWidth, selectedScenes, dispatchScene, handleSceneSelect]
+		[scenes, timerDivWidth, selectedScenes, handleSceneSelect]
 	);
 
 	const cursorPositionPx = useMemo(() => cursorPosition.x * timerDivWidth, [
@@ -139,9 +137,9 @@ const Timeline = (
 
 		const img = getPresenterScreenShot();
 		idxsOfScenesWithoutImg.forEach((idx) => {
-			dispatchScene({ type: 'update_scene_img', sceneIdx: idx, img });
+			dispatch({ type: 'UPDATE_SCENE_IMG', sceneIdx: idx, img });
 		});
-	}, [dispatchScene, getPresenterScreenShot, isVideoReady, scenes]);
+	}, [dispatch, getPresenterScreenShot, isVideoReady, scenes]);
 
 	return (
 		<div className={styles['timeline__wrapper']}>
