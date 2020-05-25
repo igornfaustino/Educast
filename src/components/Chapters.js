@@ -117,16 +117,14 @@ const Chapters = ({ getPresenterScreenShot, getPresentationScreenShot }) => {
 	};
 
 	return (
-		<div>
-			<CustomSlider
-				chapters={chapters}
-				deleteChapterFunction={deleteChapterFunction}
-				updateTitleFunction={updateTitleFunction}
-				selectThumbnailFunction={selectThumbnailFunction}
-				getPresenterScreenShot={getPresenterScreenShot}
-				getPresentationScreenShot={getPresentationScreenShot}
-			/>
-		</div>
+		<CustomSlider
+			chapters={chapters}
+			deleteChapterFunction={deleteChapterFunction}
+			updateTitleFunction={updateTitleFunction}
+			selectThumbnailFunction={selectThumbnailFunction}
+			getPresenterScreenShot={getPresenterScreenShot}
+			getPresentationScreenShot={getPresentationScreenShot}
+		/>
 	);
 };
 

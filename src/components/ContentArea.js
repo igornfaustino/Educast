@@ -2,7 +2,7 @@ import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import Chapters from './Chapters';
 
-function RouteContentArea({ getPresentationScreenShot, getPresenterScreenShot, timelineProps }) {
+function RouteContentArea({ timelineProps }) {
 	return (
 		<Switch>
 			<Route exact path="/editor" component={() => <div>editor</div>} />

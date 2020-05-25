@@ -19,23 +19,23 @@ import { useDropzone } from 'react-dropzone';
 const useStyles = makeStyles({
 	root: {
 		marginTop: '3%',
-		maxWidth: '80%',
-		maxHeight: '100%',
+		// height: '10rem',
+		maxWidth: '250px',
 	},
 	media: {
-		height: '10rem',
+		height: '16vh',
 		width: '100%',
 		position: 'relative',
 	},
 	title: {
-		fontSize: '1rem',
+		fontSize: '100%',
 	},
 	deleteButton: {
 		borderRadius: '1px',
-		maxWidth: '18px',
-		maxHeight: '18px',
-		minWidth: '18px',
-		minHeight: '18px',
+		maxWidth: '2vh',
+		maxHeight: '2vh',
+		minWidth: '2vh',
+		minHeight: '2vh',
 		color: '#12AADA',
 		background: 'white',
 		'&:hover': {
@@ -45,10 +45,10 @@ const useStyles = makeStyles({
 	},
 	thumbnailButton: {
 		borderRadius: '1px',
-		maxWidth: '30px',
-		maxHeight: '30px',
-		minWidth: '30px',
-		minHeight: '30px',
+		maxWidth: '3vh',
+		maxHeight: '3vh',
+		minWidth: '3vh',
+		minHeight: '3vh',
 		color: '#12AADA',
 		background: 'white',
 		'&:hover': {
@@ -59,21 +59,33 @@ const useStyles = makeStyles({
 	cardHeader: {
 		background: '#009bff',
 		color: 'white',
-		padding: '12px',
-		maxHeight: '35px',
+		cursor: 'pointer',
+		padding: '1.5vh',
+		maxHeight: '4vh',
+		
+		minHeight: '4vh',
+	},
+	boxes: {
 	},
 	cardActions: {
 		background: '#F3E9FC',
+		maxHeight: '10vh',
 	},
 	deleteIcon: {
 		position: 'absolute',
-		top: '2px',
-		left: '2px',
+		maxHeight: '1.9vh',
+		minHeight: '1.9vh',
+		top: '0.13vh',
+		left: '0.25vh',
 	},
 	thumbnailIcons: {
 		position: 'absolute',
-		top: '5px',
-		left: '4px',
+		top: '0.4vh',
+		left: '0.32vh',
+		maxWidth: '2.5vh',
+		maxHeight: '2.5vh',
+		minWidth: '2.5vh',
+		minHeight: '2.5vh',
 	},
 });
 
@@ -138,14 +150,14 @@ const CustomCard = ({
 			/>
 			<div className={styles["unselectable-image"]}>
 				<CardMedia className={classes.media} image={thumbnailImage}>
-					<Box position="absolute" top="7%" left="86%">
+					<Box position="absolute" className={classes.boxes} top="7%" left="85%">
 						<Button
 							className={classes.thumbnailButton}
 							startIcon={<FaImages className={classes.thumbnailIcons} />}
 							onClick={() => handleThumbnailSelection('primary')}
 						/>
 					</Box>
-					<Box position="absolute" top="34%" left="86%">
+					<Box position="absolute" top="34%" left="85%">
 						<Button
 							className={classes.thumbnailButton}
 							startIcon={
@@ -154,7 +166,7 @@ const CustomCard = ({
 							onClick={() => handleThumbnailSelection('secondary')}
 						/>
 					</Box>
-					<Box position="absolute" top="61%" left="86%">
+					<Box position="absolute" top="61%" left="85%">
 						<div {...getRootProps()}>
 							<input {...getInputProps()} />
 							<Button

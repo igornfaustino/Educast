@@ -9,7 +9,7 @@ import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import classNames from 'classnames';
 
 // TODO: integrar com o componente do video-editor
-// TODO: deixar responsivo
+// TODO: fazer o negócio ficar laranja
 const useStyles = makeStyles({
 	leftArrow: {
 		position: 'relative',
@@ -117,7 +117,6 @@ const CustomSlider = ({
 	const modifiedDeleteChapterFunction = async (id) => {
 		const deleted = await deleteChapterFunction(id);
 		if (deleted === true) {
-			// setScrollBarWidth(1);
 			setTotItems(totItems - 1);
 			const {
 				slidesToShow,
@@ -130,7 +129,6 @@ const CustomSlider = ({
 			let nextTransform;
 			let nextSlide;
 			if (slidesToShow >= totalItems) {
-				// getScrollBarWidth(slidesToShow, totalItems);
 				nextTransform = 0;
 				nextSlide = 0;
 			} else {
@@ -304,21 +302,21 @@ const CustomSlider = ({
 		desktop: {
 			breakpoint: {
 				max: 3000,
-				min: 1810,
+				min: 1600,
 			},
-			items: 5,
+			items: 6,
 		},
 		mobile: {
 			breakpoint: {
-				max: 1360,
+				max: 930,
 				min: 0,
 			},
-			items: 3,
+			items: 2,
 		},
 		tablet: {
 			breakpoint: {
-				max: 1810,
-				min: 1360,
+				max: 1600,
+				min: 930,
 			},
 			items: 4,
 		},

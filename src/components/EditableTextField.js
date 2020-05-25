@@ -44,7 +44,7 @@ const EditableTextField = ({ type, value, updateTitleFunction, chapter, isTextFi
 	};
 
 	return (
-		<div>
+		<div className={styles['description-label']}>
 			{editable ? (
 				<Input
 					id="chapter-title"
