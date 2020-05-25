@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-
 import { useSelector } from 'react-redux';
-
+import { useHotkeys } from 'react-hotkeys-hook';
 import Timeline from './Timeline';
 import TimelineControl from './TimelineControl';
 import { getNumberOfMainIndicators } from '../../utils/conversions';
@@ -21,6 +20,7 @@ const VideoEditor = ({
 
 	const duration = useSelector((state) => state.video.duration);
 	const visibleArea = useSelector((state) => state.timeline.visibleArea);
+	const currentTime = useSelector((state) => state.video.currentTime);
 
 	const [videoLength, setVideoLength] = useState(duration);
 	const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
@@ -33,6 +33,49 @@ const VideoEditor = ({
 	);
 	const [calculatedMargin, setCalculatedMargin] = useState(
 		BASE_TIME_INDICATOR_MARGIN
+	);
+
+	useHotkeys(
+		'left',
+		() => {
+			const frameSize = 1 / 25;
+			const currentFrame = Math.round(currentTime / frameSize);
+			const previousFramePosition = (currentFrame - 1) * frameSize;
+			handleTimelineClick(previousFramePosition);
+		},
+		{},
+		[currentTime]
+	);
+
+	useHotkeys(
+		'right',
+		() => {
+			const frameSize = 1 / 25;
+			const currentFrame = Math.round(currentTime / frameSize);
+			const nextFramePosition = (currentFrame + 1) * frameSize;
+			console.log({ currentFrame, nextFramePosition });
+			handleTimelineClick(nextFramePosition);
+		},
+		{},
+		[currentTime]
+	);
+
+	useHotkeys(
+		'shift+right',
+		() => {
+			handleTimelineClick(parseInt(currentTime) + 1);
+		},
+		{},
+		[currentTime]
+	);
+
+	useHotkeys(
+		'shift+left',
+		() => {
+			handleTimelineClick(parseInt(currentTime) - 1);
+		},
+		{},
+		[currentTime]
 	);
 
 	const getRealTimeIndicatorMargin = useCallback(() => {
