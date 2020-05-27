@@ -1,10 +1,16 @@
-import React, { forwardRef, useRef, useCallback } from 'react';
+import React, {
+	forwardRef,
+	useRef,
+	useCallback,
+	useMemo,
+	useEffect,
+	useState,
+} from 'react';
 import { MdZoomIn, MdZoomOut } from 'react-icons/md';
 
 import { ZOOM_MAX, FINAL_SPACE } from '../../utils/constants';
 
 import styles from './TimelineControl.module.scss';
-import { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 const TimelineControl = (
@@ -12,8 +18,15 @@ const TimelineControl = (
 	videoTimelineRef
 ) => {
 	const mainScrollbarRef = useRef(null);
+
 	const dispatch = useDispatch();
+
 	const visibleArea = useSelector((state) => state.timeline.visibleArea);
+	const isPlaying = useSelector((state) => state.video.isPlaying);
+	const currentTime = useSelector((state) => state.video.currentTime);
+	const duration = useSelector((state) => state.video.duration);
+
+	const [lastTimerDivWidth, setLastTimerDivWidth] = useState(timerDivWidth);
 
 	const scrollWidth = useMemo(() => {
 		if (!mainScrollbarRef.current) return 0;
@@ -32,6 +45,14 @@ const TimelineControl = (
 			scrollLeft: videoScroll,
 		});
 	}, [dispatch, scrollWidth, timerDivWidth, videoTimelineRef]);
+
+	const updateScrollPosition = useCallback(() => {
+		const percentPlayed = currentTime / duration;
+		const scrollOffset = visibleArea * 0.2;
+		const newScroll = scrollWidth * percentPlayed - scrollOffset;
+		mainScrollbarRef.current.scrollLeft = newScroll;
+		handleScroll();
+	}, [currentTime, duration, handleScroll, scrollWidth, visibleArea]);
 
 	const handleZoomChange = useCallback(
 		(evt) => {
@@ -87,6 +108,13 @@ const TimelineControl = (
 		),
 		[handleZoomChange, zoom]
 	);
+
+	useEffect(() => {
+		if (isPlaying) return updateScrollPosition();
+		if (timerDivWidth === lastTimerDivWidth) return;
+		setLastTimerDivWidth(timerDivWidth);
+		updateScrollPosition();
+	}, [isPlaying, lastTimerDivWidth, timerDivWidth, updateScrollPosition]);
 
 	return (
 		<div className={styles['scrollbar']}>

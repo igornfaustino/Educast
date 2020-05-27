@@ -21,7 +21,6 @@ const Timeline = (
 		timerDivWidth,
 		getPresenterScreenShot,
 		getPresentationScreenShot,
-		videoLength,
 		calculatedMargin,
 		handleTimelineClick,
 	},
@@ -165,7 +164,6 @@ const Timeline = (
 			<div className={styles['timeline']} ref={videoTimelineRef}>
 				<div style={timelineStyle}>
 					<TimeIndicator
-						videoLength={videoLength}
 						zoomLevel={zoomLevel}
 						calculatedMargin={calculatedMargin}
 					/>

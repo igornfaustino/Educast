@@ -22,7 +22,6 @@ const VideoEditor = ({
 	const visibleArea = useSelector((state) => state.timeline.visibleArea);
 	const currentTime = useSelector((state) => state.video.currentTime);
 
-	const [videoLength, setVideoLength] = useState(duration);
 	const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
 	const [zoom, setZoom] = useState(1);
 	const [totalOfTimeIndicators, setTotalOfTimeIndicators] = useState(
@@ -101,7 +100,6 @@ const VideoEditor = ({
 	}, [duration, zoom]);
 
 	useEffect(() => {
-		setVideoLength(duration * zoom);
 		setTimerDivWidth(calculatedMargin * totalOfTimeIndicators);
 	}, [zoom, duration, calculatedMargin, totalOfTimeIndicators]);
 
@@ -113,7 +111,6 @@ const VideoEditor = ({
 				cursorPosition={cursorPosition}
 				setCursorPosition={setCursorPosition}
 				ref={videoTimelineRef}
-				videoLength={videoLength}
 				getPresenterScreenShot={getPresenterScreenShot}
 				getPresentationScreenShot={getPresentationScreenShot}
 				calculatedMargin={calculatedMargin}
