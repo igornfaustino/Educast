@@ -1,7 +1,7 @@
 import React, { useState, useRef, useMemo } from 'react';
 import './App.scss';
 
-import VideoContainer from './components/VideoContainer';
+import VideoContainer from './components/VideoPlayer/VideoContainer';
 import Tabs from './components/Tabs';
 import { BrowserRouter } from 'react-router-dom';
 import { Container, Button } from 'reactstrap';

@@ -2,6 +2,7 @@ const initialState = {
 	duration: 10,
 	currentTime: 0,
 	isReady: false,
+	isPlaying: false,
 };
 
 export const videoReducer = (state = initialState, action) => {
@@ -17,6 +18,10 @@ export const videoReducer = (state = initialState, action) => {
 		case 'SET_IS_READY':
 			return Object.assign({}, state, {
 				isReady: action.isReady,
+			});
+		case 'SET_IS_PLAYING':
+			return Object.assign({}, state, {
+				isPlaying: action.isPlaying,
 			});
 		default:
 			return state;
