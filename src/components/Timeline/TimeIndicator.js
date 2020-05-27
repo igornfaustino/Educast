@@ -8,7 +8,12 @@ import styles from './TimeIndicator.module.scss';
 import { ZOOM_MAX } from '../../utils/constants';
 import { getNumberOfMainIndicators } from '../../utils/conversions';
 
-const TimeIndicator = ({ zoomLevel, calculatedMargin }) => {
+const TimeIndicator = ({
+	zoomLevel,
+	calculatedMargin,
+	handleTimelineClick,
+	timerDivWidth,
+}) => {
 	const duration = useSelector((state) => state.video.duration);
 	const scrollLeft = useSelector((state) => state.timeline.scrollLeft);
 	const visibleArea = useSelector((state) => state.timeline.visibleArea);
@@ -72,6 +77,17 @@ const TimeIndicator = ({ zoomLevel, calculatedMargin }) => {
 			);
 		},
 		[calculatedMargin]
+	);
+
+	const onClick = useCallback(
+		(e) => {
+			const rect = indicatorsRef.current.getBoundingClientRect();
+			const relativeX = e.clientX - rect.left;
+			const percentagePlayed = (relativeX * 100) / timerDivWidth;
+			const currentTime = (percentagePlayed * duration) / 100;
+			handleTimelineClick(currentTime);
+		},
+		[duration, handleTimelineClick, timerDivWidth]
 	);
 
 	const quantityOfMainIndicators = useMemo(
@@ -142,7 +158,11 @@ const TimeIndicator = ({ zoomLevel, calculatedMargin }) => {
 	]);
 
 	return (
-		<div className={styles['timeIndicator__container']} ref={indicatorsRef}>
+		<div
+			className={styles['timeIndicator__container']}
+			ref={indicatorsRef}
+			onClick={onClick}
+		>
 			{indicators}
 		</div>
 	);

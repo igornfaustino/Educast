@@ -74,12 +74,12 @@ function VideoControl({
 
 	const currentTimeFormatted = useMemo(() => {
 		const currentTimeInMs = currentTime * 1000;
-		return moment.utc(currentTimeInMs).format('HH:mm:ss');
+		return moment.utc(currentTimeInMs).format('HH:mm:ss:SSS');
 	}, [currentTime]);
 
 	const durationFormatted = useMemo(() => {
 		const durationInMs = duration * 1000;
-		return moment.utc(durationInMs).format('HH:mm:ss');
+		return moment.utc(durationInMs).format('HH:mm:ss:SSS');
 	}, [duration]);
 
 	const playOrPauseIcon = useMemo(
