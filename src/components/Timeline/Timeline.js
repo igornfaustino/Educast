@@ -166,6 +166,8 @@ const Timeline = (
 					<TimeIndicator
 						zoomLevel={zoomLevel}
 						calculatedMargin={calculatedMargin}
+						handleTimelineClick={handleTimelineClick}
+						timerDivWidth={timerDivWidth}
 					/>
 					<div
 						className={cx(
