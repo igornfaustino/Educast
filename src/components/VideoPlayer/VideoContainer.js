@@ -17,12 +17,12 @@ import { useDispatch } from 'react-redux';
 
 import styles from './VideoContainer.module.scss';
 
-import { useVideo } from '../hooks/useVideo';
-import { useWindowSize } from '../hooks/useWindowSize';
-import { useVideoHeight } from '../hooks/useVideoHeight';
+import { useVideo } from '../../hooks/useVideo';
+import { useWindowSize } from '../../hooks/useWindowSize';
+import { useVideoHeight } from '../../hooks/useVideoHeight';
 import IndicatorIcon from './IndicatorIcon';
-import { tryToEnterFullscreen } from '../utils/fullscreen';
-import { getSnapshot } from '../utils/snapshot';
+import { tryToEnterFullscreen } from '../../utils/fullscreen';
+import { getSnapshot } from '../../utils/snapshot';
 
 const videoJSOptions = {
 	controls: false,
