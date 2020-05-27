@@ -299,6 +299,10 @@ function VideoContainer(props, ref) {
 		dispatch({ type: 'SET_IS_READY', isReady });
 	}, [dispatch, isReady]);
 
+	useEffect(() => {
+		dispatch({ type: 'SET_IS_PLAYING', isPlaying });
+	}, [isPlaying, dispatch]);
+
 	return (
 		<>
 			<VideoContainerHeader
