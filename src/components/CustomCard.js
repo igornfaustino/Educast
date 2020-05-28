@@ -19,7 +19,6 @@ import { useDropzone } from 'react-dropzone';
 const useStyles = makeStyles({
 	root: {
 		marginTop: '3%',
-		// height: '10rem',
 		maxWidth: '250px',
 	},
 	media: {
@@ -28,14 +27,16 @@ const useStyles = makeStyles({
 		position: 'relative',
 	},
 	title: {
-		fontSize: '100%',
+		fontSize: '2vh',
 	},
 	deleteButton: {
-		borderRadius: '1px',
-		maxWidth: '2vh',
-		maxHeight: '2vh',
-		minWidth: '2vh',
-		minHeight: '2vh',
+		borderRadius: '0px',
+		paddingTop: '3%',
+		paddingRight: '2%',
+		maxWidth: '2.1vh',
+		maxHeight: '2.1vh',
+		minWidth: '2.1vh',
+		minHeight: '2.1vh',
 		color: '#12AADA',
 		background: 'white',
 		'&:hover': {
@@ -44,7 +45,7 @@ const useStyles = makeStyles({
 		},
 	},
 	thumbnailButton: {
-		borderRadius: '1px',
+		borderRadius: '0px',
 		maxWidth: '3vh',
 		maxHeight: '3vh',
 		minWidth: '3vh',
@@ -62,30 +63,47 @@ const useStyles = makeStyles({
 		cursor: 'pointer',
 		padding: '1.5vh',
 		maxHeight: '4vh',
-		
+
 		minHeight: '4vh',
 	},
-	boxes: {
+	box1: {
+		paddingTop: '0.6rem',
+		paddingRight: '0.6rem',
+	},
+	box2: {
+		paddingTop: '0.6rem',
+		paddingRight: '0.6rem',
+	},
+	box3: {
+		paddingTop: '0.6rem',
+		paddingRight: '0.6rem',
 	},
 	cardActions: {
 		background: '#F3E9FC',
-		maxHeight: '10vh',
+		maxHeight: '9vh',
 	},
 	deleteIcon: {
+		// position: 'absolute',
+		// maxHeight: '1.3rem',
+		// minHeight: '1.3rem',
+		// top: '-0.099rem',
+		// left: '-0.15rem',
 		position: 'absolute',
-		maxHeight: '1.9vh',
-		minHeight: '1.9vh',
-		top: '0.13vh',
-		left: '0.25vh',
+		top: '12%',
+		left: '11%',
+		maxWidth: '1.7vh',
+		maxHeight: '1.7vh',
+		minWidth: '1.7vh',
+		minHeight: '1.7vh',
 	},
 	thumbnailIcons: {
 		position: 'absolute',
-		top: '0.4vh',
-		left: '0.32vh',
-		maxWidth: '2.5vh',
-		maxHeight: '2.5vh',
-		minWidth: '2.5vh',
-		minHeight: '2.5vh',
+		top: '14%',
+		left: '16%',
+		maxWidth: '2vh',
+		maxHeight: '2vh',
+		minWidth: '2vh',
+		minHeight: '2vh',
 	},
 });
 
@@ -140,24 +158,38 @@ const CustomCard = ({
 					</Typography>
 				}
 				action={
-					<Button
-						key={chapter.id}
-						className={classes.deleteButton}
-						startIcon={<FaTimes className={classes.deleteIcon} size="14px" />}
-						onClick={() => deleteChapterFunction()}
-					/>
+					// <Box
+					// 	// display="flex"
+					// 	// justifyContent="center"
+					// 	className={classes.deleteBox}
+					// >
+						<Button
+							key={chapter.id}
+							className={classes.deleteButton}
+							startIcon={<FaTimes className={classes.deleteIcon} />}
+							onClick={() => deleteChapterFunction()}
+						/>
+					// </Box>
 				}
-			/>
-			<div className={styles["unselectable-image"]}>
+			></CardHeader>
+			<div className={styles['unselectable-image']}>
 				<CardMedia className={classes.media} image={thumbnailImage}>
-					<Box position="absolute" className={classes.boxes} top="7%" left="85%">
+					<Box
+						display="flex"
+						justifyContent="flex-end"
+						className={classes.box1}
+					>
 						<Button
 							className={classes.thumbnailButton}
 							startIcon={<FaImages className={classes.thumbnailIcons} />}
 							onClick={() => handleThumbnailSelection('primary')}
 						/>
 					</Box>
-					<Box position="absolute" top="34%" left="85%">
+					<Box
+						display="flex"
+						justifyContent="flex-end"
+						className={classes.box2}
+					>
 						<Button
 							className={classes.thumbnailButton}
 							startIcon={
@@ -166,7 +198,11 @@ const CustomCard = ({
 							onClick={() => handleThumbnailSelection('secondary')}
 						/>
 					</Box>
-					<Box position="absolute" top="61%" left="85%">
+					<Box
+						display="flex"
+						justifyContent="flex-end"
+						className={classes.box3}
+					>
 						<div {...getRootProps()}>
 							<input {...getInputProps()} />
 							<Button

@@ -10,6 +10,8 @@ import classNames from 'classnames';
 
 // TODO: integrar com o componente do video-editor
 // TODO: fazer o negócio ficar laranja
+
+// TODO: se tiver tempo: deixar o botão de deletar mais pra esquerda
 const useStyles = makeStyles({
 	leftArrow: {
 		position: 'relative',
