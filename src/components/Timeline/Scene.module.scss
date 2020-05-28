@@ -1,0 +1,75 @@
+@import '../../variables.scss';
+
+.scene-limiter {
+	height: 100%;
+	width: $scene-limiter-width;
+	background-color: $scene-limiter-color;
+	position: absolute;
+	top: 0;
+	z-index: 300;
+}
+
+.scene-limiter---start::before {
+	content: '';
+	position: absolute;
+
+	right: $scene-pseudo-margin-distance;
+	top: $scene-pseudo-top-distance;
+	border-top: $scene-limiter-triangle-width solid transparent;
+	border-bottom: $scene-limiter-triangle-width solid transparent;
+	border-left: $scene-limiter-triangle-width solid transparent;
+	border-right: $scene-limiter-triangle-width solid $scene-limiter-color;
+}
+
+.scene-limiter---end::after {
+	content: '';
+	position: absolute;
+
+	left: $scene-pseudo-margin-distance;
+	top: $scene-pseudo-top-distance;
+	border-top: $scene-limiter-triangle-width solid transparent;
+	border-bottom: $scene-limiter-triangle-width solid transparent;
+	border-left: $scene-limiter-triangle-width solid $scene-limiter-color;
+	border-right: $scene-limiter-triangle-width solid transparent;
+}
+
+.scene-content {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	top: 0;
+
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+
+	font-weight: bolder;
+	color: white;
+
+	height: 100%;
+	position: absolute;
+	background-color: #cfcdcd;
+	background-size: auto 100%;
+
+	-webkit-touch-callout: none; /* iOS Safari */
+	-webkit-user-select: none; /* Safari */
+	-khtml-user-select: none; /* Konqueror HTML */
+	-moz-user-select: none; /* Old versions of Firefox */
+	-ms-user-select: none; /* Internet Explorer/Edge */
+	user-select: none; /* Non-prefixed version, currently
+																supported by Chrome, Edge, Opera and Firefox */
+
+	&:hover {
+		cursor: pointer;
+	}
+}
+
+.scene-content-layer {
+	position: absolute;
+	height: 100%;
+	background-color: rgba(84, 80, 79, 0.75);
+}
+
+.selected {
+	background-color: rgba(63, 136, 191, 0.75);
+}

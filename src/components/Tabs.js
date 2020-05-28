@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { ButtonToggle, ButtonGroup, Container } from 'reactstrap';
+import { ButtonToggle, ButtonGroup } from 'reactstrap';
 import './Tabs.scss';
 import { FaTags, FaBuffer, FaImage } from 'react-icons/fa';
 import { FiScissors } from 'react-icons/fi';
@@ -110,9 +110,9 @@ function Tabs({ step, setStep, timelineProps }) {
 				{renderTabButtons}
 			</ButtonGroup>
 			<ButtonGroup></ButtonGroup>
-			<Container fluid className="container-tabs-content">
+			<div className="container-tabs-content">
 				<RouteContentArea timelineProps={timelineProps} />
-			</Container>
+			</div>
 		</div>
 	);
 }
