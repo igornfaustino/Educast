@@ -44,7 +44,8 @@
 }
 
 .text {
-	font-weight: 500;
+	font-weight: 500 !important;
+	color: black;
 }
 
 .link-icon {
@@ -104,8 +105,15 @@
 .list-documents-item-name {
 	margin-right: auto;
 	margin-left: 20px;
+	cursor: pointer;
 }
 
 .trash-icon {
 	padding-top: 2px;
+}
+
+.list-documents-input-item {
+	margin-right: auto;
+	margin-left: 20px;
+	border-width: 0px !important;
 }

@@ -1,45 +1,115 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Documents.scss';
 import { FaLink } from 'react-icons/fa';
 import { AiFillFolderOpen } from 'react-icons/ai';
 import { BsTrashFill } from 'react-icons/bs';
 import { TiEdit } from 'react-icons/ti';
+import axios from 'axios';
+
+const apiUrlDocuments = 'http://localhost:8080/documents/';
 
 function Documents() {
-	const [documents, setDocuments] = useState([
-		{
-			title: 'Ola mundo',
-			link: 'a fake link1',
-		},
-		{
-			title: 'Ola mundo2',
-			link: 'a fake link2',
-		},
-		{
-			title: 'Ola mundo3',
-			link: 'a fake link3',
-		},
-		{
-			title: 'Ola mundo3',
-			link: 'a fake link4',
-		},
-		{
-			title: 'Ola mundo3',
-			link: 'a fake link5',
-		},
-		{
-			title: 'Ola mundo3',
-			link: 'a fake link6',
-		},
-		{
-			title: 'Ola mundo3',
-			link: 'a fake link7',
-		},
-		{
-			title: 'Ola mundo3',
-			link: 'a fake link8',
-		},
-	]);
+	const [documents, setDocuments] = useState([]);
+	const [isEditingFilename, setIsEditingFilename] = useState(false);
+	const [actualFilename, setActualFilename] = useState('');
+	const [extensionFilename, setExtensionFilename] = useState('')
+
+	useEffect(() => {
+		axios.get(apiUrlDocuments).then((response) => {
+			const formattedFiles = response.data.data.map((file) => {
+				return { title: file['name'] };
+			});
+			setDocuments(formattedFiles);
+		});
+	}, []);
+
+	const deleteDocument = (documentTitle) => {
+		axios
+			.delete(apiUrlDocuments, { data: { name: documentTitle } })
+			.then((response) => {
+				if (response.status === 200) {
+					setDocuments(documents.filter((doc) => doc.title !== documentTitle));
+				}
+			});
+	};
+
+	const editDocument = (oldTitle, newTitle, callback) => {
+		axios
+			.put(apiUrlDocuments, { oldName: oldTitle, newName: newTitle })
+			.then((_) => {
+				callback();
+			});
+	};
+
+	const downloadFile = (filename) => {
+		axios
+			.get(`${apiUrlDocuments}${filename}`).then((res) => {
+				const blob = new Blob([res.data], { type: 'application/pdf' })
+				let link = document.createElement('a')
+				link.href = window.URL.createObjectURL(blob)
+				link.download = filename
+				link.click()
+			})
+	}
+
+	const onChangeFileName = (event) => {
+		if (event !== null && event !== '') {
+			setActualFilename(event.target.value);
+		}
+	};
+
+	const editInput = (filename) => {
+		setExtensionFilename(filename.slice(filename.length - 4))
+		setActualFilename(filename.substring(0, filename.length - 4));
+		setIsEditingFilename(true);
+	};
+
+	const onEditInputKeyDown = (event) => {
+		var code = event.charCode || event.keyCode;
+		if (code === 27) stopEditing();
+		if (code === 13) submitEditing(event);
+	};
+
+	const stopEditing = () => {
+		setIsEditingFilename(false);
+	};
+
+	const submitEditing = (event) => {
+		const oldName = event.target.id
+		const newName = `${event.target.value}${extensionFilename}`
+		editDocument(oldName, newName, () => {
+			setIsEditingFilename(false);
+			setDocuments(
+				documents.map((doc) => {
+					return doc.title === oldName ? { title: newName } : { title: doc.title };
+				})
+			);
+		});
+	};
+
+	const renderFilename = (document) => {
+		if (isEditingFilename) {
+			return (
+				<input
+					className="text list-documents-input-item"
+					value={actualFilename}
+					id={document.title}
+					autoFocus={true}
+					onChange={(event) => onChangeFileName(event)}
+					onKeyDown={(event) => onEditInputKeyDown(event)}
+				/>
+			);
+		} else {
+			return (
+				<div
+					onClick={() => downloadFile(document.title)}
+					className="list-documents-item-name"
+				>
+					<span className="text">{document.title}</span>
+				</div>
+			);
+		}
+	};
 
 	return (
 		<div className="general-container">
@@ -73,12 +143,21 @@ function Documents() {
 				<div className="list-documents-container">
 					{documents.map((document) => {
 						return (
-							<div key={document.link} className="list-documents-item">
-								<span className="text list-documents-item-name">
-									{document.title}
-								</span>
-								<BsTrashFill size="1.75rem" color="#d0d0d0" className="trash-icon"></BsTrashFill>
-								<TiEdit size="1.75rem" color="#d0d0d0"></TiEdit>
+							<div key={document.title} className="list-documents-item">
+								{renderFilename(document)}
+								<BsTrashFill
+									size="1.75rem"
+									color="#d0d0d0"
+									className="trash-icon"
+									onClick={() => deleteDocument(document.title)}
+									cursor="pointer"
+								></BsTrashFill>
+								<TiEdit
+									size="1.75rem"
+									color="#d0d0d0"
+									onClick={() => editInput(document.title)}
+									cursor="pointer"
+								></TiEdit>
 							</div>
 						);
 					})}
