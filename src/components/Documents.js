@@ -10,18 +10,23 @@ const apiUrlDocuments = 'http://localhost:8080/documents/';
 
 function Documents() {
 	const [documents, setDocuments] = useState([]);
-	const [isEditingFilename, setIsEditingFilename] = useState(false);
+	const [editingFilename, setEditingFilename] = useState('');
 	const [actualFilename, setActualFilename] = useState('');
 	const [extensionFilename, setExtensionFilename] = useState('')
 
 	useEffect(() => {
-		axios.get(apiUrlDocuments).then((response) => {
-			const formattedFiles = response.data.data.map((file) => {
-				return { title: file['name'] };
-			});
-			setDocuments(formattedFiles);
-		});
+		getDocuments()
 	}, []);
+
+	const getDocuments = () => {
+		axios
+			.get(apiUrlDocuments).then((response) => {
+				const formattedFiles = response.data.data.map((file) => {
+					return { title: file['name'] };
+				});
+				setDocuments(formattedFiles);
+			});
+	}
 
 	const deleteDocument = (documentTitle) => {
 		axios
@@ -52,6 +57,32 @@ function Documents() {
 			})
 	}
 
+	const uploadFile = (event) => {
+		event.preventDefault()
+		if (event.dataTransfer.items) {
+			for (var i = 0; i < event.dataTransfer.items.length; i++) {
+				if (event.dataTransfer.items[i].kind === 'file') {
+					const file = event.dataTransfer.items[i].getAsFile()
+					var formData = new FormData();
+					formData.append("data", file);
+					axios.post(apiUrlDocuments, formData, {
+						headers: {
+							"Content-Type": "multipart/form-data"
+						}
+					}).then((res) => {
+						if (res.status == 200) {
+							getDocuments()
+						}
+					})
+				}
+			}
+		}
+	}
+	const onDragOver = (event) => {
+		event.preventDefault()
+		event.stopPropagation()
+	}
+
 	const onChangeFileName = (event) => {
 		if (event !== null && event !== '') {
 			setActualFilename(event.target.value);
@@ -61,7 +92,7 @@ function Documents() {
 	const editInput = (filename) => {
 		setExtensionFilename(filename.slice(filename.length - 4))
 		setActualFilename(filename.substring(0, filename.length - 4));
-		setIsEditingFilename(true);
+		setEditingFilename(filename)
 	};
 
 	const onEditInputKeyDown = (event) => {
@@ -71,14 +102,14 @@ function Documents() {
 	};
 
 	const stopEditing = () => {
-		setIsEditingFilename(false);
+		setEditingFilename('');
 	};
 
 	const submitEditing = (event) => {
 		const oldName = event.target.id
 		const newName = `${event.target.value}${extensionFilename}`
 		editDocument(oldName, newName, () => {
-			setIsEditingFilename(false);
+			setEditingFilename('');
 			setDocuments(
 				documents.map((doc) => {
 					return doc.title === oldName ? { title: newName } : { title: doc.title };
@@ -88,7 +119,7 @@ function Documents() {
 	};
 
 	const renderFilename = (document) => {
-		if (isEditingFilename) {
+		if (editingFilename == document.title) {
 			return (
 				<input
 					className="text list-documents-input-item"
@@ -104,6 +135,7 @@ function Documents() {
 				<div
 					onClick={() => downloadFile(document.title)}
 					className="list-documents-item-name"
+					id={document.title}
 				>
 					<span className="text">{document.title}</span>
 				</div>
@@ -125,7 +157,9 @@ function Documents() {
 				<div className="or-text-container">
 					<span className="text">ou</span>
 				</div>
-				<div className="upload-file-container">
+				<div className="upload-file-container"
+					onDrop={(event) => uploadFile(event)}
+					onDragOver={(event) => onDragOver(event)}>
 					<div className="folder-icon">
 						<AiFillFolderOpen size="4.0rem" color="#0099ff" />
 					</div>
