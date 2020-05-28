@@ -1,0 +1,48 @@
+@import '../variables.scss';
+
+.modalHeader {
+	background-color: $dark-gray !important;
+	color: #fff;
+	border-radius: 0px !important;
+	display: flex;
+	align-items: center !important;
+	justify-content: flex-end !important;
+}
+
+:global(.modal-title) {
+	display: block;
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);
+}
+
+.modal {
+	border: none !important;
+	border-radius: 0px !important;
+}
+
+.titleWrapper {
+	display: flex;
+	text-align: center;
+
+	&:first-child() {
+		justify-self: center;
+	}
+}
+
+.closeIcon {
+	cursor: pointer;
+}
+
+.textBox {
+	background-color: #d0d0d0;
+	padding: 4px 8px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	font-weight: bold;
+
+	&:not(:last-child) {
+		margin-bottom: 4px;
+	}
+}

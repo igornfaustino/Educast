@@ -7,9 +7,18 @@ import { IoIosFolderOpen } from 'react-icons/io';
 import { MdChat } from 'react-icons/md';
 import RouteContentArea from './ContentArea';
 import { useHistory } from 'react-router-dom';
+import { FaInfoCircle } from 'react-icons/fa';
+import InfoModal from './InfoModal';
 
 function Tabs({ step, setStep, timelineProps }) {
 	let history = useHistory();
+
+	const [isOpen, setIsOpen] = useState(false);
+
+	const onToggle = useCallback(() => {
+		setIsOpen((prevState) => !prevState);
+	}, []);
+
 	const [buttons, setButtons] = useState([
 		{
 			title: 'Metadados',
@@ -106,13 +115,20 @@ function Tabs({ step, setStep, timelineProps }) {
 
 	return (
 		<div className="full tabs">
-			<ButtonGroup className="container-buttons-tab">
-				{renderTabButtons}
-			</ButtonGroup>
-			<ButtonGroup></ButtonGroup>
+			<div className="buttons-wrapper">
+				<ButtonGroup className="container-buttons-tab">
+					{renderTabButtons}
+				</ButtonGroup>
+				<ButtonToggle className="info-button" onClick={onToggle}>
+					<FaInfoCircle size="1.4rem" />
+				</ButtonToggle>
+			</div>
+
 			<div className="container-tabs-content">
 				<RouteContentArea timelineProps={timelineProps} />
 			</div>
+
+			<InfoModal onToggle={onToggle} isOpen={isOpen} />
 		</div>
 	);
 }

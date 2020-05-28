@@ -6,6 +6,8 @@ import TimeIndicator from './TimeIndicator';
 import { FINAL_SPACE } from '../../utils/constants';
 import { useWindowSize } from '../../hooks/useWindowSize';
 
+import { useHotkeys } from 'react-hotkeys-hook';
+
 import cx from 'classnames';
 import styles from './Timeline.module.scss';
 import Scene from './Scene';
@@ -52,6 +54,36 @@ const Timeline = (
 		handleTimelineClick,
 		getPresenterScreenShot,
 		getPresentationScreenShot
+	);
+
+	useHotkeys(
+		's',
+		() => {
+			if (isAddVideoDisabled) return;
+			createScene();
+		},
+		{},
+		[isAddVideoDisabled, createScene]
+	);
+
+	useHotkeys(
+		'c',
+		() => {
+			if (isChapterButtonDisabled) return;
+			createChapter();
+		},
+		{},
+		[isChapterButtonDisabled, createChapter]
+	);
+
+	useHotkeys(
+		'delete, backspace',
+		() => {
+			deleteChapter();
+			deleteScene();
+		},
+		{},
+		[deleteChapter, deleteScene]
 	);
 
 	const renderChapter = useMemo(
