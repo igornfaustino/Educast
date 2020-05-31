@@ -40,7 +40,7 @@ const LabelComment = props => {
                         value={value}
                         onChange={setValue}
                         selectedTab={selectedTab}
-                        minEditorHeight="97px"
+                        minEditorHeight="99px"
                         minPreviewHeight="8000px"
                         maxEditorHeight="2200px"
                         onTabChange={setSelectedTab}
