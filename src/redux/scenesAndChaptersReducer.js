@@ -215,6 +215,32 @@ const updateSceneImage = (state, action) => {
 	});
 };
 
+const updateChapterImage = (state, action) => {
+	const { img, id } = action;
+	const chapterIdx = state.chapters.findIndex((chapter) => chapter.id === id);
+	if (!img || !chapterIdx) return state;
+
+	const updatedState = [...state.chapters];
+	updatedState[chapterIdx].img = img;
+
+	return Object.assign({}, state, {
+		chapters: updatedState,
+	});
+};
+
+const updateChapterTitle = (state, action) => {
+	const { title, id } = action;
+	const chapterIdx = state.chapters.findIndex((chapter) => chapter.id === id);
+	if (!title || !chapterIdx) return state;
+
+	const updatedState = [...state.chapters];
+	updatedState[chapterIdx].title = title;
+
+	return Object.assign({}, state, {
+		chapters: updatedState,
+	});
+};
+
 const createScene = (state, action) =>
 	Object.assign({}, state, {
 		scenes: [...state.scenes, action.scene].sort(
@@ -237,6 +263,10 @@ export const sceneAndChaptersReducer = (state = initialState, action) => {
 			return updateScene(state, action);
 		case 'UPDATE_SCENE_IMG':
 			return updateSceneImage(state, action);
+		case 'UPDATE_CHAPTER_IMG':
+			return updateChapterImage(state, action);
+		case 'UPDATE_CHAPTER_TITLE':
+			return updateChapterTitle(state, action);
 		case 'SET_CHAPTERS':
 			return Object.assign({}, state, {
 				chapters: action.chapters,
