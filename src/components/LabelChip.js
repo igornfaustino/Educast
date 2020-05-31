@@ -19,7 +19,7 @@ const LabelChip = props => {
 
 	return (
 		<div>
-			<label>
+			<label className={style['label']}>
 				<h4> {profileState.title} </h4>
 				{/* <h5>
 					< TextareaAutosize
