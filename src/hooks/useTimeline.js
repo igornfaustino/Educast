@@ -73,7 +73,6 @@ export function useTimeline(
 	}, [chapters, dispatch, selectedChapters]);
 
 	const createScene = useCallback(() => {
-		console.log({ isCursorInScene: isCursorInScene() });
 		if (isCursorInScene()) return;
 
 		const endPosition = getSceneBarEndPosition();

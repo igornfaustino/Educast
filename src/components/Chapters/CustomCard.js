@@ -13,7 +13,7 @@ import {
 } from 'react-icons/fa';
 import Box from '@material-ui/core/Box';
 import EditableTextField from './EditableTextField';
-import styles from './CustomCard.module.css';
+import styles from './CustomCard.module.scss';
 import { useDropzone } from 'react-dropzone';
 
 const useStyles = makeStyles({
@@ -66,15 +66,7 @@ const useStyles = makeStyles({
 
 		minHeight: '4vh',
 	},
-	box1: {
-		paddingTop: '0.6rem',
-		paddingRight: '0.6rem',
-	},
-	box2: {
-		paddingTop: '0.6rem',
-		paddingRight: '0.6rem',
-	},
-	box3: {
+	boxes: {
 		paddingTop: '0.6rem',
 		paddingRight: '0.6rem',
 	},
@@ -116,9 +108,8 @@ const CustomCard = ({
 	const classes = useStyles();
 
 	useEffect(() => {
-		//select presentation snapshot by default
-		setThumbnailImage(getPresentationScreenShot());
-	}, []);
+		setThumbnailImage(chapter.img);
+	}, [chapter.img]);
 
 	const handleThumbnailSelection = (path) => {
 		if (path === 'primary') {
@@ -167,7 +158,7 @@ const CustomCard = ({
 					<Box
 						display="flex"
 						justifyContent="flex-end"
-						className={classes.box1}
+						className={classes.boxes}
 					>
 						<Button
 							className={classes.thumbnailButton}
@@ -178,7 +169,7 @@ const CustomCard = ({
 					<Box
 						display="flex"
 						justifyContent="flex-end"
-						className={classes.box2}
+						className={classes.boxes}
 					>
 						<Button
 							className={classes.thumbnailButton}
@@ -191,7 +182,7 @@ const CustomCard = ({
 					<Box
 						display="flex"
 						justifyContent="flex-end"
-						className={classes.box3}
+						className={classes.boxes}
 					>
 						<div {...getRootProps()}>
 							<input {...getInputProps()} />

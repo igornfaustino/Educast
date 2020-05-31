@@ -1,30 +1,65 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Swal from 'sweetalert2';
 import CustomSlider from './CustomSlider';
 import { useDispatch, useSelector } from 'react-redux';
-import { useTimeline } from '../../hooks/useTimeline';
 
 const Chapters = ({ getPresenterScreenShot, getPresentationScreenShot }) => {
 	const [chapters, setChapters] = useState([]);
-	const { deleteChapter, handleChapterSelectedSelect } = useTimeline();
 	const chs = useSelector((state) => state.sceneChapters.chapters);
+	const videoInSeconds = useSelector((state) => state.video.duration);
+	const dispatch = useDispatch();
 
 	useEffect(() => {
-		const c = chs.map(ch => {
+		const c = chs.map((ch) => {
+			let positionToSeconds = Math.floor(videoInSeconds * ch.position);
 			const temp = {
 				id: ch.id,
 				img: ch.img,
-				position: ch.position,
-				title: 'Title',
+				position: hhmmss(positionToSeconds),
+				title: ch.title,
 			};
 			return temp;
 		});
 		setChapters(c);
-		console.log(chs);
 	}, []);
 
+	function pad(num) {
+		return ('0' + num).slice(-2);
+	}
+
+	function hhmmss(secs) {
+		let minutes = Math.floor(secs / 60);
+		secs = secs % 60;
+		let hours = Math.floor(minutes / 60);
+		minutes = minutes % 60;
+		return `${pad(hours)}:${pad(minutes)}:${pad(secs)}`;
+	}
+
+	const excludeChapter = useCallback(
+		(id) => {
+			const updatedChapters = chs.filter((val) => {
+				return val.id !== id;
+			});
+			dispatch({ type: 'SET_CHAPTERS', chapters: updatedChapters });
+		},
+		[chs, dispatch]
+	);
+
+	const updateChapterImg = useCallback(
+		(newImg, chId) => {
+			dispatch({ type: 'UPDATE_CHAPTER_IMG', img: newImg, id: chId });
+		},
+		[dispatch]
+	);
+
+	const updateChapterTitle = useCallback(
+		(newTitle, chId) => {
+			dispatch({ type: 'UPDATE_CHAPTER_TITLE', title: newTitle, id: chId });
+		},
+		[dispatch]
+	);
+
 	const selectThumbnailFunction = (chapterId, path) => {
-		// console.log(chapterId, path);
 		setChapters(
 			chapters.filter((chapter) => {
 				if (chapter.id === chapterId) {
@@ -33,15 +68,17 @@ const Chapters = ({ getPresenterScreenShot, getPresentationScreenShot }) => {
 				return chapter;
 			})
 		);
+		updateChapterImg(path, chapterId);
 	};
 
+	// Corrigir essa função
 	const updateTitleFunction = (id, newTitle) => {
 		setChapters(
 			chapters.filter((chapter) => {
 				if (chapter.id === id) {
 					chapter.thumbnail = newTitle;
 				}
-				console.log('title changed', newTitle);
+				updateChapterTitle(newTitle, id);
 				return chapter;
 			})
 		);
@@ -66,8 +103,7 @@ const Chapters = ({ getPresenterScreenShot, getPresentationScreenShot }) => {
 						return chapter.id !== id;
 					})
 				);
-				handleChapterSelectedSelect(id);
-				deleteChapter();
+				excludeChapter(id);
 			}
 		});
 		return deleted;

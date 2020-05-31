@@ -1,21 +1,32 @@
 import React, { useState } from 'react';
 import Input from '@material-ui/core/Input';
-import styles from './EditableTextField.module.css';
+import styles from './EditableTextField.module.scss';
 import { makeStyles } from '@material-ui/core/styles';
+
+const mkStyles = makeStyles({
+	editableTextfield: {
+		fontSize: '1.7vh',
+		color: 'black',
+		background: '#ECECEC',
+		width: '100%',
+		height: '100%',
+	}
+});
 
 const EditableTextField = ({ type, value, updateTitleFunction, chapter, isTextFieldBeingEdited }) => {
 	const [editable, setEditable] = useState(false);
 	const [fieldValue, setFieldValue] = useState(value);
 	const [fieldBackupValue, setFieldBackupValue] = useState('');
+	const classes = mkStyles();
 
 	const handleInputOnChange = (event) => {
 		setFieldValue(event.target.value);
-		updateTitleFunction(chapter.id, event.target.value);
 	};
 
 	const handleInputOnBlur = (event) => {
 		setEditable(false);
 		isTextFieldBeingEdited(false);
+		updateTitleFunction(chapter.id, fieldValue);
 	};
 
 	const handleInputOnFocus = (event) => {
@@ -35,13 +46,13 @@ const EditableTextField = ({ type, value, updateTitleFunction, chapter, isTextFi
 		if (event.key === 'Enter') {
 			setEditable(false);
 			isTextFieldBeingEdited(false);
+			updateTitleFunction(chapter.id, fieldValue);
 		}
 	};
 
 	const handleFieldOnClick = (event) => {
 		setEditable(editable === false);
 		isTextFieldBeingEdited(editable === false);
-		console.log('field clicked', editable);
 	};
 
 	return (
@@ -51,7 +62,7 @@ const EditableTextField = ({ type, value, updateTitleFunction, chapter, isTextFi
 					id="chapter-title"
 					type={type}
 					value={fieldValue}
-					className={styles['editable-textfield']}
+					className={classes.editableTextfield}
 					autoFocus
 					multiline={true}
 					onFocus={handleInputOnFocus}
