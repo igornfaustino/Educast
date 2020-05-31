@@ -1,79 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 import CustomSlider from './CustomSlider';
+import { useDispatch, useSelector } from 'react-redux';
+import { useTimeline } from '../../hooks/useTimeline';
 
 const Chapters = ({ getPresenterScreenShot, getPresentationScreenShot }) => {
 	const [chapters, setChapters] = useState([]);
-
-	const initialChapters = [
-		{
-			id: 1,
-			initTime: 1,
-			finalTime: 2,
-			title: 'Chapter 1',
-			thumbnail: 'primaryScreen',
-		},
-		{
-			id: 2,
-			initTime: 2,
-			finalTime: 3,
-			title: 'Chapter 2',
-			thumbnail: 'primaryScreen',
-		},
-		{
-			id: 3,
-			initTime: 3,
-			finalTime: 4,
-			title: 'Chapter 3',
-			thumbnail: 'primaryScreen',
-		},
-		{
-			id: 4,
-			initTime: 4,
-			finalTime: 5,
-			title: 'Chapter 4',
-			thumbnail: 'primaryScreen',
-		},
-		{
-			id: 5,
-			initTime: 5,
-			finalTime: 6,
-			title: 'Chapter 5',
-			thumbnail: 'primaryScreen',
-		},
-		{
-			id: 6,
-			initTime: 6,
-			finalTime: 7,
-			title: 'Chapter 6',
-			thumbnail: 'primaryScreen',
-		},
-		{
-			id: 7,
-			initTime: 7,
-			finalTime: 8,
-			title: 'Chapter 7',
-			thumbnail: 'primaryScreen',
-		},
-		{
-			id: 8,
-			initTime: 8,
-			finalTime: 9,
-			title: 'Chapter 8',
-			thumbnail: 'primaryScreen',
-		},
-	];
+	const { deleteChapter, handleChapterSelectedSelect } = useTimeline();
+	const chs = useSelector((state) => state.sceneChapters.chapters);
 
 	useEffect(() => {
-		setChapters(initialChapters);
+		const c = chs.map(ch => {
+			const temp = {
+				id: ch.id,
+				img: ch.img,
+				position: ch.position,
+				title: 'Title',
+			};
+			return temp;
+		});
+		setChapters(c);
+		console.log(chs);
 	}, []);
 
 	const selectThumbnailFunction = (chapterId, path) => {
-		console.log(chapterId, path);
+		// console.log(chapterId, path);
 		setChapters(
 			chapters.filter((chapter) => {
 				if (chapter.id === chapterId) {
-					chapter.thumbnail = path;
+					chapter.img = path;
 				}
 				return chapter;
 			})
@@ -111,6 +66,8 @@ const Chapters = ({ getPresenterScreenShot, getPresentationScreenShot }) => {
 						return chapter.id !== id;
 					})
 				);
+				handleChapterSelectedSelect(id);
+				deleteChapter();
 			}
 		});
 		return deleted;

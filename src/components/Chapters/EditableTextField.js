@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Input from '@material-ui/core/Input';
 import styles from './EditableTextField.module.css';
+import { makeStyles } from '@material-ui/core/styles';
 
 const EditableTextField = ({ type, value, updateTitleFunction, chapter, isTextFieldBeingEdited }) => {
 	const [editable, setEditable] = useState(false);
@@ -58,8 +59,6 @@ const EditableTextField = ({ type, value, updateTitleFunction, chapter, isTextFi
 					onBlur={handleInputOnBlur}
 					onKeyUp={handleInputOnKeyUp}
 					rowsMax={2}
-					// value={values.weight}
-					// onChange={handleChange('weight')}
 					// endAdornment={<InputAdornment position="end">Kg</InputAdornment>}
 					inputProps={{
 						'aria-label': 'title',

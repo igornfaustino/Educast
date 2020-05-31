@@ -83,11 +83,6 @@ const useStyles = makeStyles({
 		maxHeight: '9vh',
 	},
 	deleteIcon: {
-		// position: 'absolute',
-		// maxHeight: '1.3rem',
-		// minHeight: '1.3rem',
-		// top: '-0.099rem',
-		// left: '-0.15rem',
 		position: 'absolute',
 		top: '12%',
 		left: '11%',
@@ -108,6 +103,7 @@ const useStyles = makeStyles({
 });
 
 const CustomCard = ({
+	order,
 	chapter,
 	deleteChapterFunction,
 	updateTitleFunction,
@@ -126,12 +122,12 @@ const CustomCard = ({
 
 	const handleThumbnailSelection = (path) => {
 		if (path === 'primary') {
-			chapter.thumbnail = getPresentationScreenShot();
+			chapter.img = getPresentationScreenShot();
 		} else if (path === 'secondary') {
-			chapter.thumbnail = getPresenterScreenShot();
+			chapter.img = getPresenterScreenShot();
 		}
-		selectThumbnailFunction(chapter.id, chapter.thumbnail);
-		setThumbnailImage(chapter.thumbnail);
+		selectThumbnailFunction(chapter.id, chapter.img);
+		setThumbnailImage(chapter.img);
 	};
 
 	const { getRootProps, getInputProps, open } = useDropzone({
@@ -154,22 +150,16 @@ const CustomCard = ({
 				className={classes.cardHeader}
 				title={
 					<Typography className={classes.title} variant="h5" component="h5">
-						Capítulo {chapter.id}
+						Capítulo {order}
 					</Typography>
 				}
 				action={
-					// <Box
-					// 	// display="flex"
-					// 	// justifyContent="center"
-					// 	className={classes.deleteBox}
-					// >
 						<Button
 							key={chapter.id}
 							className={classes.deleteButton}
 							startIcon={<FaTimes className={classes.deleteIcon} />}
 							onClick={() => deleteChapterFunction()}
 						/>
-					// </Box>
 				}
 			></CardHeader>
 			<div className={styles['unselectable-image']}>
@@ -217,7 +207,7 @@ const CustomCard = ({
 			</div>
 			<div className={classes.cardActions}>
 				<div className={styles['CustomCard__TimeLabel']}>
-					In {chapter.initTime}
+					In {chapter.position}
 				</div>
 				<EditableTextField
 					type="text"

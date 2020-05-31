@@ -10,8 +10,7 @@ import classNames from 'classnames';
 
 // TODO: integrar com o componente do video-editor
 // TODO: fazer o negócio ficar laranja
-
-// TODO: se tiver tempo: deixar o botão de deletar mais pra esquerda
+// TODO: resolver o bug diminuindo o tamanho da fonte do textField.
 const useStyles = makeStyles({
 	leftArrow: {
 		position: 'relative',
@@ -147,8 +146,14 @@ const CustomSlider = ({
 		}
 	};
 
+	const noChapters = (
+		<span>Crie capítulos para visualizá-los</span>
+	);
+
 	const cardsToShow = () => {
+		let order = 0;
 		return chapters.map((chapter) => {
+			order++;
 			return (
 				<CustomCard
 					key={chapter.id}
@@ -156,6 +161,7 @@ const CustomSlider = ({
 					deleteChapterFunction={() =>
 						modifiedDeleteChapterFunction(chapter.id)
 					}
+					order={order}
 					updateTitleFunction={updateTitleFunction}
 					selectThumbnailFunction={selectThumbnailFunction}
 					getPresenterScreenShot={getPresenterScreenShot}

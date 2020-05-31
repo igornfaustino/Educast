@@ -60,24 +60,31 @@
 .custom-slider__input100::-webkit-slider-thumb {
 	width: 100%;
 }
+
 .custom-slider__input20::-webkit-slider-thumb {
 	width: 20%;
 }
+
 .custom-slider__input30::-webkit-slider-thumb {
 	width: 30%;
 }
+
 .custom-slider__input40::-webkit-slider-thumb {
 	width: 40%;
 }
+
 .custom-slider__input50::-webkit-slider-thumb {
 	width: 50%;
 }
+
 .custom-slider__input60::-webkit-slider-thumb {
 	width: 60%;
 }
+
 .custom-slider__input70::-webkit-slider-thumb {
 	width: 70%;
 }
+
 .custom-slider__input80::-webkit-slider-thumb {
 	width: 80%;
 }
