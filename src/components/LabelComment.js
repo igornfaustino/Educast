@@ -5,34 +5,14 @@ import ReactMde from "react-mde";
 
 // import TextareaAutosize from 'react-textarea-autosize';
 import style from './LabelComment.module.scss';
-import 'react-mde/lib/styles/css/react-mde-all.css';
+import './react-mde-all.css'
 
 const LabelComment = props => {
 
     
     const loadSuggestions = text => {
         return new Promise((accept, reject) => {
-            setTimeout(() => {
-                const suggestions = [
-                    {
-                        preview: "Andre",
-                        value: "@andre"
-                    },
-                    {
-                        preview: "Angela",
-                        value: "@angela"
-                    },
-                    {
-                        preview: "David",
-                        value: "@david"
-                    },
-                    {
-                        preview: "Louise",
-                        value: "@louise"
-                    }
-                ].filter(i => i.preview.toLowerCase().includes(text.toLowerCase()));
-                accept(suggestions);
-            }, 250);
+            
         });
     }
 
@@ -46,7 +26,7 @@ const LabelComment = props => {
     const [profileState] = useState(props);
 
     
-    const [value, setValue] = React.useState("**Hello world!!!**");
+    const [value, setValue] = React.useState("**Comentário**");
     const [selectedTab, setSelectedTab] = React.useState("write");
     return (
         <div>
@@ -60,21 +40,25 @@ const LabelComment = props => {
                         value={value}
                         onChange={setValue}
                         selectedTab={selectedTab}
-                        minEditorHeight="100px"
-                        minPreviewHeight="100px"
-                        maxEditorHeight="200px"
+                        minEditorHeight="97px"
+                        minPreviewHeight="8000px"
+                        maxEditorHeight="2200px"
                         onTabChange={setSelectedTab}
                         generateMarkdownPreview={markdown =>
                             Promise.resolve(converter.makeHtml(markdown))
                         }
-                        loadSuggestions={loadSuggestions}
+                        
                         childProps={{
                             writeButton: {
                                 tabIndex: -1
                             }
                         }}
                         classes={{
-                            textArea: style['text-area']
+                            reactMde: style['react-mde'],
+                            textArea: style['text-area'],
+                            preview: style['preview'],
+                            toolbar: style['toolbar'],
+                            grip: style['grip'],
                         }}
                     />
                     {/* <div className={style["img"]}></div>
