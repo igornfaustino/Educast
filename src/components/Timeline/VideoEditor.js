@@ -19,6 +19,7 @@ const VideoEditor = ({
 	const videoTimelineRef = useRef(null);
 
 	const duration = useSelector((state) => state.video.duration);
+
 	const visibleArea = useSelector((state) => state.timeline.visibleArea);
 	const currentTime = useSelector((state) => state.video.currentTime);
 
