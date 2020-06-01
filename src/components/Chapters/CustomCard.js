@@ -30,6 +30,9 @@ const useStyles = makeStyles({
 		fontSize: '2vh',
 	},
 	deleteButton: {
+		'&:focus': {
+			outline: 0,
+		},
 		borderRadius: '0px',
 		paddingTop: '3%',
 		paddingRight: '2%',
@@ -45,6 +48,9 @@ const useStyles = makeStyles({
 		},
 	},
 	thumbnailButton: {
+		'&:focus': {
+			outline: 0,
+		},
 		borderRadius: '0px',
 		maxWidth: '3vh',
 		maxHeight: '3vh',

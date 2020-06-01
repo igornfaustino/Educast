@@ -73,22 +73,23 @@ const Chapters = ({ getPresenterScreenShot, getPresentationScreenShot }) => {
 
 	// Corrigir essa função
 	const updateTitleFunction = (id, newTitle) => {
+		updateChapterTitle(newTitle, id);
 		setChapters(
 			chapters.filter((chapter) => {
 				if (chapter.id === id) {
 					chapter.thumbnail = newTitle;
 				}
-				updateChapterTitle(newTitle, id);
 				return chapter;
 			})
 		);
 	};
 
 	const deleteChapterFunction = async (id) => {
-		const chapter = chapters.find((chapter) => chapter.id === id);
+		const chapter = chs.find((chapter) => chapter.id === id);
 		let deleted = false;
+		const chTitle = chapter.title !== undefined ? chapter.title : '';
 		await Swal.fire({
-			text: 'Excluir Capítulo: ' + chapter.title + '?',
+			text: 'Excluir Capítulo: ' + chTitle + '?',
 			icon: 'warning',
 			showCancelButton: true,
 			confirmButtonColor: '#3085d6',
