@@ -13,7 +13,6 @@ const LabelChip = props => {
 		input: style['textarea-tag'],
 		chip: {
 			backgroundColor: 'white',
-			width: '100%'
 		},
 	});
 
@@ -37,8 +36,9 @@ const LabelChip = props => {
 						disableUnderline='false'
 						defaultValue={profileState.value}
 						classes={{
+							inputRoot: style['input-root'],
+							input: style['input'],
 							root: style['textarea-tag'],
-
 							chip: style['chip'],
 							chipContainer: style['chip-container']
 						}}
