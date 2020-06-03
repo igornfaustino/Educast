@@ -358,7 +358,7 @@ textarea:focus-visible{
   
   background-color: #eee;
   text-align: center;
-  height: 10px;
+  height: 0px;
 }
 .react-mde .grip .icon {
   height: 0px;
