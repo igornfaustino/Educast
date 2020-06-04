@@ -145,18 +145,20 @@ const dragOrRemoveChapterIfNecessary = (scene, state) => {
 };
 
 const removeChapterIfNecessary = (scene, state) => {
-	const chapters = getChaptersInsideDraggedScene(state);
-	if (!chapters.length) return [];
+	const chaptersInsideScene = getChaptersInsideDraggedScene(state);
+	if (!chaptersInsideScene.length) return state.chapters;
 
 	const sceneEndPassChapterStart =
-		chapters[chapters.length - 1] &&
-		scene.end.x < chapters[chapters.length - 1].position;
+		chaptersInsideScene[chaptersInsideScene.length - 1] &&
+		scene.end.x < chaptersInsideScene[chaptersInsideScene.length - 1].position;
 
 	if (!sceneEndPassChapterStart) return state.chapters;
 
 	const updatedChapters = [...state.chapters];
 	updatedChapters.splice(
-		updatedChapters.indexOf(chapters[chapters.length - 1]),
+		updatedChapters.indexOf(
+			chaptersInsideScene[chaptersInsideScene.length - 1]
+		),
 		1
 	);
 	return updatedChapters;
