@@ -13,6 +13,8 @@ function Documents() {
 	const [editingFilename, setEditingFilename] = useState('');
 	const [actualFilename, setActualFilename] = useState('');
 	const [extensionFilename, setExtensionFilename] = useState('')
+	const [editingUrl, setEditingUrl] = useState('')
+	const [isEditingUrl, setIsEditingUrl] = useState(false)
 
 	useEffect(() => {
 		getDocuments()
@@ -47,14 +49,7 @@ function Documents() {
 	};
 
 	const downloadFile = (filename) => {
-		axios
-			.get(`${apiUrlDocuments}${filename}`).then((res) => {
-				const blob = new Blob([res.data], { type: 'application/pdf' })
-				let link = document.createElement('a')
-				link.href = window.URL.createObjectURL(blob)
-				link.download = filename
-				link.click()
-			})
+		window.open(`${apiUrlDocuments}${filename}`)
 	}
 
 	const uploadFile = (event) => {
@@ -63,21 +58,27 @@ function Documents() {
 			for (var i = 0; i < event.dataTransfer.items.length; i++) {
 				if (event.dataTransfer.items[i].kind === 'file') {
 					const file = event.dataTransfer.items[i].getAsFile()
-					var formData = new FormData();
-					formData.append("data", file);
-					axios.post(apiUrlDocuments, formData, {
-						headers: {
-							"Content-Type": "multipart/form-data"
-						}
-					}).then((res) => {
-						if (res.status == 200) {
-							getDocuments()
-						}
-					})
+					upload(file)
 				}
 			}
 		}
 	}
+
+	const upload = (file) => {
+		var formData = new FormData();
+		formData.append("data", file);
+		axios.post(apiUrlDocuments, formData, {
+			headers: {
+				"Content-Type": "multipart/form-data"
+			}
+		}).then((res) => {
+			if (res.status == 200) {
+				getDocuments()
+			}
+		})
+	}
+
+
 	const onDragOver = (event) => {
 		event.preventDefault()
 		event.stopPropagation()
@@ -89,10 +90,21 @@ function Documents() {
 		}
 	};
 
+	const onChangeUrl = (event) => {
+		if (event !== null && event !== '') {
+			setEditingUrl(event.target.value);
+		}
+	};
+
 	const editInput = (filename) => {
 		setExtensionFilename(filename.slice(filename.length - 4))
 		setActualFilename(filename.substring(0, filename.length - 4));
 		setEditingFilename(filename)
+	};
+
+	const editUrl = (filename) => {
+		setEditingUrl('');
+		setIsEditingUrl(true)
 	};
 
 	const onEditInputKeyDown = (event) => {
@@ -101,8 +113,33 @@ function Documents() {
 		if (code === 13) submitEditing(event);
 	};
 
+	const onEditUrlKeydown = (event) => {
+		var code = event.charCode || event.keyCode;
+		if (code === 27) stopEditingUrl();
+		if (code === 13) submitEditingUrl(event);
+	};
+
 	const stopEditing = () => {
 		setEditingFilename('');
+	};
+
+	const stopEditingUrl = () => {
+		setIsEditingUrl(false);
+	};
+
+	const submitEditingUrl = (event) => {
+		const url = event.target.value
+		fetch(url).then((res) => {
+			const header =  res.headers.get('Content-Disposition')
+			if(!header) return
+
+			const filename = header.match(/"([^']+)"/)[1]
+			res.blob().then((resBlob) => {
+				const file = new File([resBlob], filename)
+				upload(file)
+			})
+		})
+		setIsEditingUrl(false)
 	};
 
 	const submitEditing = (event) => {
@@ -143,6 +180,29 @@ function Documents() {
 		}
 	};
 
+	const renderAddByUrl = () => {
+		if (isEditingUrl) {
+			return (
+				<input
+					className="link-upload-container"
+					value={editingUrl}
+					autoFocus={true}
+					onChange={(event) => onChangeUrl(event)}
+					onKeyDown={(event) => onEditUrlKeydown(event)}
+				/>
+			)
+		} else {
+			return (
+				<div
+					className="link-upload-text-container link-upload-container"
+					onClick={() => editUrl()}
+				>
+					<span className="text">Adicionar o URL de um ficheiro</span>
+				</div>
+			)
+		}
+	}
+
 	return (
 		<div className="general-container">
 			<div className="side left">
@@ -150,9 +210,7 @@ function Documents() {
 					<div className="link-icon-container">
 						<FaLink size="1.25rem" color="white" className="link-icon" />
 					</div>
-					<div className="link-upload-text-container">
-						<span className="text">Adicionar o URL de um ficheiro</span>
-					</div>
+					{renderAddByUrl()}
 				</div>
 				<div className="or-text-container">
 					<span className="text">ou</span>
@@ -163,9 +221,7 @@ function Documents() {
 					<div className="folder-icon">
 						<AiFillFolderOpen size="3.0rem" color="#0099ff" />
 					</div>
-					<div className="upload-file-text-container">
-						<span className="text text-center">Arraste e solte seus documentos</span>
-					</div>
+					<span className="text text-center">Arraste e solte seus documentos</span>
 				</div>
 			</div>
 			<div className="side right">
@@ -185,13 +241,13 @@ function Documents() {
 									className="trash-icon"
 									onClick={() => deleteDocument(document.title)}
 									cursor="pointer"
-								></BsTrashFill>
+								/>
 								<TiEdit
 									size="1.75rem"
 									color="#d0d0d0"
 									onClick={() => editInput(document.title)}
 									cursor="pointer"
-								></TiEdit>
+								/>
 							</div>
 						);
 					})}
