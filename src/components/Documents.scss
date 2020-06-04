@@ -44,7 +44,7 @@
 }
 
 .text {
-	font-weight: 500 !important;
+	font-weight: normal !important;
 	color: black;
 }
 
@@ -65,6 +65,15 @@
 	justify-content: center;
 	align-items: center;
 	flex-direction: column;
+}
+
+.upload-file-text-container {
+	width: 150px;
+	display: flex;
+}
+
+.text-center {
+	justify-content: center;
 }
 
 .list-documents-title-text {

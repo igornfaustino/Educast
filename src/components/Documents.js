@@ -119,7 +119,7 @@ function Documents() {
 	};
 
 	const renderFilename = (document) => {
-		if (editingFilename == document.title) {
+		if (editingFilename === document.title) {
 			return (
 				<input
 					className="text list-documents-input-item"
@@ -161,10 +161,10 @@ function Documents() {
 					onDrop={(event) => uploadFile(event)}
 					onDragOver={(event) => onDragOver(event)}>
 					<div className="folder-icon">
-						<AiFillFolderOpen size="4.0rem" color="#0099ff" />
+						<AiFillFolderOpen size="3.0rem" color="#0099ff" />
 					</div>
-					<div>
-						<span className="text">Arraste e solte seus documentos</span>
+					<div className="upload-file-text-container">
+						<span className="text text-center">Arraste e solte seus documentos</span>
 					</div>
 				</div>
 			</div>
