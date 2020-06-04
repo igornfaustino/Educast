@@ -113,15 +113,22 @@ function Tabs({ step, setStep, timelineProps }) {
 		[buttons, onButtonClick]
 	);
 
+	const infoButton = useMemo(() => {
+		const editTab = buttons.find((btn) => btn.title === 'Edição');
+		return editTab.active ? (
+			<ButtonToggle className="info-button" onClick={onToggle}>
+				<FaInfoCircle size="1.4rem" />
+			</ButtonToggle>
+		) : null;
+	}, [buttons, onToggle]);
+
 	return (
 		<div className="full tabs">
 			<div className="buttons-wrapper">
 				<ButtonGroup className="container-buttons-tab">
 					{renderTabButtons}
 				</ButtonGroup>
-				<ButtonToggle className="info-button" onClick={onToggle}>
-					<FaInfoCircle size="1.4rem" />
-				</ButtonToggle>
+				{infoButton}
 			</div>
 
 			<div className="container-tabs-content">
