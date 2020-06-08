@@ -27,6 +27,8 @@ function Documents() {
 					return { title: file['name'] };
 				});
 				setDocuments(formattedFiles);
+			}).catch(_ => {
+				alert("Ocorreu um erro tentando obter os documentos")
 			});
 	}
 
@@ -36,15 +38,26 @@ function Documents() {
 			.then((response) => {
 				if (response.status === 200) {
 					setDocuments(documents.filter((doc) => doc.title !== documentTitle));
+				} else {
+					alert("Ocorreu um erro ao deletar o documento")
 				}
-			});
+			}).catch(_ => {
+				alert("Ocorreu um erro ao deletar o documento")
+
+			})
 	};
 
 	const editDocument = (oldTitle, newTitle, callback) => {
 		axios
 			.put(apiUrlDocuments, { oldName: oldTitle, newName: newTitle })
-			.then((_) => {
-				callback();
+			.then((res) => {
+				if (res.status == 200) {
+					callback();
+				} else {
+					alert("Ocorreu um erro ao editar o documento")
+				}
+			}).catch(_ => {
+				alert("Ocorreu um erro ao editar o documento")
 			});
 	};
 
@@ -74,7 +87,11 @@ function Documents() {
 		}).then((res) => {
 			if (res.status == 200) {
 				getDocuments()
+			} else {
+				alert("Ocorreu um erro ao fazer upload do documento")
 			}
+		}).catch(_ => {
+			alert("Ocorreu um erro ao fazer upload do documento")
 		})
 	}
 
@@ -130,14 +147,19 @@ function Documents() {
 	const submitEditingUrl = (event) => {
 		const url = event.target.value
 		fetch(url).then((res) => {
-			const header =  res.headers.get('Content-Disposition')
-			if(!header) return
+			const header = res.headers.get('Content-Disposition')
+			if (!header) {
+				alert('Link inválido')
+				return
+			}
 
 			const filename = header.match(/"([^']+)"/)[1]
 			res.blob().then((resBlob) => {
 				const file = new File([resBlob], filename)
 				upload(file)
 			})
+		}).catch((_) => {
+			alert('Não foi possível acessar o URL')
 		})
 		setIsEditingUrl(false)
 	};
