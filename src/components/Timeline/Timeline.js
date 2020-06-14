@@ -182,18 +182,10 @@ const Timeline = (
 	useHotkeys(
 		'o',
 		() => {
-			if (!scenes.length) return;
-
-			// 1. Verify if the cursor is inside a scene
-
-			// 2. If it is not then get the nearest left scene
-
-			// 3. Change the Scene End position
-
-			// 4. GG
+			dispatch({ type: 'SHORTCUT_O', currentPosition: cursorPosition });
 		},
 		{},
-		[]
+		[cursorPosition, dispatch]
 	);
 
 	const renderChapter = useMemo(

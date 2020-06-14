@@ -274,7 +274,6 @@ const handleShortcutI = (state, action) => {
 		...state,
 		...setChaptersInsideDraggedScene(state, { scene: sceneToMove }),
 	};
-	console.log(newState);
 
 	const sceneIdx = state.scenes.findIndex(findScene);
 	sceneToMove.start.x = currentPosition.x;
@@ -294,6 +293,38 @@ const handleShortcutI = (state, action) => {
 
 const handleShortcutO = (state, action) => {
 	const { currentPosition } = action;
+
+	const findScene = (scene, idx) => {
+		if (idx === state.scenes.length - 1) return true;
+		return scene.start.x <= currentPosition.x;
+	};
+
+	const reversedScenes = [...state.scenes].reverse();
+
+	const sceneToMove = {
+		...reversedScenes.find(findScene),
+	};
+
+	const newState = {
+		...state,
+		...setChaptersInsideDraggedScene(state, { scene: sceneToMove }),
+	};
+
+	const sceneIdx =
+		state.scenes.length - 1 - reversedScenes.findIndex(findScene);
+	sceneToMove.end.x = currentPosition.x;
+	if (sceneToMove.start.x > sceneToMove.end.x) {
+		sceneToMove.start.x = 0;
+	}
+
+	return {
+		...updateScene(newState, {
+			scene: sceneToMove,
+			type: 'DRAG_RIGHT',
+			sceneIdx,
+		}),
+		chaptersInsideDraggedScene: [],
+	};
 };
 
 export const sceneAndChaptersReducer = (state = initialState, action) => {
