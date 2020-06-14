@@ -175,5 +175,7 @@ export function useTimeline(
 		selectedScenes,
 		isAddVideoDisabled,
 		isChapterButtonDisabled,
+		setSelectedScenes,
+		setSelectedChapters,
 	};
 }

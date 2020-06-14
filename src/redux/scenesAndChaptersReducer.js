@@ -130,18 +130,26 @@ const deleteChapterIfNecessary = (chapters) => {
 };
 
 const dragOrRemoveChapterIfNecessary = (scene, state) => {
-	const chapters = getChaptersInsideDraggedScene(state);
-	if (!chapters.length) return [];
+	const chaptersInsideScene = getChaptersInsideDraggedScene(state);
+	if (!chaptersInsideScene.length) return state.chapters;
 
-	const chapterStateWithDeletedChapters = deleteChapterIfNecessary(chapters);
+	const chapterStateWithDeletedChapters = deleteChapterIfNecessary(
+		chaptersInsideScene
+	);
 	if (chapterStateWithDeletedChapters) return chapterStateWithDeletedChapters;
 
-	const sceneStartPassChapterStart = scene.start.x > chapters[0].position;
+	const sceneStartPassChapterStart =
+		scene.start.x > chaptersInsideScene[0].position;
 	if (!sceneStartPassChapterStart) return state.chapters;
 
 	let tmpChapters = [...state.chapters];
-	tmpChapters[chapters.indexOf(chapters[0])].position = scene.start.x;
-	return [...tmpChapters];
+	tmpChapters[tmpChapters.indexOf(chaptersInsideScene[0])].position =
+		scene.start.x;
+
+	return tmpChapters.filter((chapter) => {
+		if (!chaptersInsideScene.includes(chapter)) return true;
+		return chapter.position >= scene.start.x;
+	});
 };
 
 const removeChapterIfNecessary = (scene, state) => {
@@ -250,6 +258,44 @@ const createScene = (state, action) =>
 		),
 	});
 
+const handleShortcutI = (state, action) => {
+	const { currentPosition } = action;
+
+	const findScene = (scene, idx) => {
+		if (idx === state.scenes.length - 1) return true;
+		return scene.end.x >= currentPosition.x;
+	};
+
+	const sceneToMove = {
+		...state.scenes.find(findScene),
+	};
+
+	const newState = {
+		...state,
+		...setChaptersInsideDraggedScene(state, { scene: sceneToMove }),
+	};
+	console.log(newState);
+
+	const sceneIdx = state.scenes.findIndex(findScene);
+	sceneToMove.start.x = currentPosition.x;
+	if (sceneToMove.start.x > sceneToMove.end.x) {
+		sceneToMove.end.x = 1;
+	}
+
+	return {
+		...updateScene(newState, {
+			scene: sceneToMove,
+			type: 'DRAG_LEFT',
+			sceneIdx,
+		}),
+		chaptersInsideDraggedScene: [],
+	};
+};
+
+const handleShortcutO = (state, action) => {
+	const { currentPosition } = action;
+};
+
 export const sceneAndChaptersReducer = (state = initialState, action) => {
 	switch (action.type) {
 		case 'DELETE':
@@ -273,6 +319,10 @@ export const sceneAndChaptersReducer = (state = initialState, action) => {
 			return Object.assign({}, state, {
 				chapters: action.chapters,
 			});
+		case 'SHORTCUT_I':
+			return handleShortcutI(state, action);
+		case 'SHORTCUT_O':
+			return handleShortcutO(state, action);
 		default:
 			return state;
 	}
