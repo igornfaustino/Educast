@@ -1,0 +1,37 @@
+.text {
+	font-weight: bold;
+	text-align: center;
+}
+
+.titleWrapper {
+	margin: 30px;
+}
+
+.button {
+	text-align: center;
+
+	button {
+		background-color: #009cff;
+		border-color: #009cff;
+		width: 100px;
+	}
+}
+
+.iconsWrapper {
+	display: flex;
+	justify-content: space-evenly;
+}
+
+.iconTextWrapper {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	padding: 16px;
+
+	span {
+		font-style: normal;
+		font-weight: normal;
+		font-size: 12px;
+	}
+}

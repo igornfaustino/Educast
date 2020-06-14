@@ -1,7 +1,7 @@
-import React, { useState, useMemo } from 'react';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import React, { useMemo } from 'react';
 import { FaWindowClose } from 'react-icons/fa';
 import styles from './InfoModal.module.scss';
+import Modal from './Modal';
 
 const shortcuts = [
 	'Space bar: Alternar entre play/pause no vídeo',
@@ -29,29 +29,13 @@ const InfoModal = ({ onToggle, isOpen }) => {
 		[]
 	);
 	return (
-		<div>
-			<Modal
-				isOpen={isOpen}
-				toggle={onToggle}
-				size="lg"
-				contentClassName={styles.modal}
-			>
-				<ModalHeader
-					toggle={onToggle}
-					className={styles.modalHeader}
-					close={
-						<FaWindowClose
-							size="1.3rem"
-							className={styles.closeIcon}
-							onClick={onToggle}
-						/>
-					}
-				>
-					Atalhos
-				</ModalHeader>
-				<ModalBody>{shortcutsNodes}</ModalBody>
-			</Modal>
-		</div>
+		<Modal
+			isOpen={isOpen}
+			onToggle={onToggle}
+			body={shortcutsNodes}
+			title="Atalhos"
+			isClosable
+		/>
 	);
 };
 

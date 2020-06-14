@@ -9,9 +9,20 @@ import StepperComponent from './components/Stepper';
 import { FaSave, FaShare } from 'react-icons/fa';
 import { useCallback } from 'react';
 
+import useModal from './hooks/useModal';
+
+import SaveModal from './components/SaveModal';
+import PublishModal from './components/PublishModal';
+
 function App() {
 	const [step, setStep] = useState(0);
 	const videoComponentRef = useRef(null);
+
+	const { isOpen: isSaveModalOpen, onToggle: onToggleSaveModal } = useModal();
+	const {
+		isOpen: isPublishModalOpen,
+		onToggle: onTogglePublishModal,
+	} = useModal();
 
 	/**
 	 * @returns `string` DataURI
@@ -45,6 +56,11 @@ function App() {
 
 	return (
 		<Container fluid className="app">
+			<SaveModal isOpen={isSaveModalOpen} onToggle={onToggleSaveModal} />
+			<PublishModal
+				isOpen={isPublishModalOpen}
+				onToggle={onTogglePublishModal}
+			/>
 			<div className="video-div">
 				<VideoContainer ref={videoComponentRef} />
 			</div>
@@ -59,11 +75,19 @@ function App() {
 						<StepperComponent step={step} />
 					</div>
 					<div className="app-buttons-container">
-						<Button color="warning" className="app-buttons app-home-buttons">
+						<Button
+							color="warning"
+							className="app-buttons app-home-buttons"
+							onClick={onToggleSaveModal}
+						>
 							<FaSave size="1rem" className="icon-btn" />
 							Salvar
 						</Button>
-						<Button color="primary" className="app-buttons  app-home-buttons">
+						<Button
+							color="primary"
+							className="app-buttons  app-home-buttons"
+							onClick={onTogglePublishModal}
+						>
 							<FaShare size="1rem" className="icon-btn" />
 							Publicar
 						</Button>
