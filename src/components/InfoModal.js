@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import { FaWindowClose } from 'react-icons/fa';
 import styles from './InfoModal.module.scss';
 import Modal from './Modal';
 
@@ -28,6 +27,7 @@ const InfoModal = ({ onToggle, isOpen }) => {
 			}),
 		[]
 	);
+
 	return (
 		<Modal
 			isOpen={isOpen}

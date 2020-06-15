@@ -1,12 +1,10 @@
-import React, { useEffect, useMemo, forwardRef, useCallback } from 'react';
+import React, { useEffect, useMemo, forwardRef } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 
 import TimeIndicator from './TimeIndicator';
 import { FINAL_SPACE } from '../../utils/constants';
 import { useWindowSize } from '../../hooks/useWindowSize';
-
-import { useHotkeys } from 'react-hotkeys-hook';
 
 import cx from 'classnames';
 import styles from './Timeline.module.scss';
@@ -45,8 +43,6 @@ const Timeline = (
 		handleChapterSelectedSelect,
 		selectedScenes,
 		handleSceneSelect,
-		setSelectedChapters,
-		setSelectedScenes,
 		isAddVideoDisabled,
 		createScene,
 		isChapterButtonDisabled,
@@ -56,136 +52,6 @@ const Timeline = (
 		handleTimelineClick,
 		getPresenterScreenShot,
 		getPresentationScreenShot
-	);
-
-	useHotkeys(
-		's',
-		() => {
-			if (isAddVideoDisabled) return;
-			createScene();
-		},
-		{},
-		[isAddVideoDisabled, createScene]
-	);
-
-	useHotkeys(
-		'c',
-		() => {
-			if (isChapterButtonDisabled) return;
-			createChapter();
-		},
-		{},
-		[isChapterButtonDisabled, createChapter]
-	);
-
-	useHotkeys(
-		'delete, backspace',
-		() => {
-			deleteChapter();
-			deleteScene();
-		},
-		{},
-		[deleteChapter, deleteScene]
-	);
-
-	const handleHotkeyToSelectScene = useCallback(
-		(type) => {
-			if (selectedScenes.length !== 1) return;
-			switch (type) {
-				case 'previous':
-					return setSelectedScenes((prevState) => {
-						const lastSelectedScene = prevState[0];
-						if (lastSelectedScene === 0) return prevState;
-						return [lastSelectedScene - 1];
-					});
-				case 'next':
-					return setSelectedScenes((prevState) => {
-						const lastSelectedScene = prevState[0];
-						if (lastSelectedScene === scenes.length - 1) return prevState;
-						return [lastSelectedScene + 1];
-					});
-				default:
-					return;
-			}
-		},
-		[scenes.length, selectedScenes.length, setSelectedScenes]
-	);
-
-	const handleHotkeyToSelectChapter = useCallback(
-		(type) => {
-			if (selectedChapters.length !== 1) return;
-			const idxOfLastSelectedChapter = chapters.findIndex(
-				(chapter) => chapter.id === selectedChapters[0]
-			);
-			switch (type) {
-				case 'previous':
-					return setSelectedChapters((prevState) => {
-						if (idxOfLastSelectedChapter === 0) return prevState;
-						return [chapters[idxOfLastSelectedChapter - 1].id];
-					});
-				case 'next':
-					return setSelectedChapters((prevState) => {
-						if (idxOfLastSelectedChapter === chapters.length - 1)
-							return prevState;
-						return [chapters[idxOfLastSelectedChapter + 1].id];
-					});
-				default:
-					return;
-			}
-		},
-		[chapters, selectedChapters, setSelectedChapters]
-	);
-
-	useHotkeys(
-		'a',
-		() => {
-			if (!selectedChapters.length && !selectedScenes.length) return;
-			if (selectedChapters.length && selectedScenes.length) return;
-			if (selectedScenes.length) return handleHotkeyToSelectScene('previous');
-			return handleHotkeyToSelectChapter('previous');
-		},
-		{},
-		[
-			selectedChapters,
-			selectedScenes,
-			handleHotkeyToSelectChapter,
-			handleHotkeyToSelectScene,
-		]
-	);
-
-	useHotkeys(
-		'p',
-		() => {
-			if (!selectedChapters.length && !selectedScenes.length) return;
-			if (selectedChapters.length && selectedScenes.length) return;
-			if (selectedScenes.length) return handleHotkeyToSelectScene('next');
-			return handleHotkeyToSelectChapter('next');
-		},
-		{},
-		[
-			selectedChapters,
-			selectedScenes,
-			handleHotkeyToSelectChapter,
-			handleHotkeyToSelectScene,
-		]
-	);
-
-	useHotkeys(
-		'i',
-		() => {
-			dispatch({ type: 'SHORTCUT_I', currentPosition: cursorPosition });
-		},
-		{},
-		[cursorPosition, dispatch]
-	);
-
-	useHotkeys(
-		'o',
-		() => {
-			dispatch({ type: 'SHORTCUT_O', currentPosition: cursorPosition });
-		},
-		{},
-		[cursorPosition, dispatch]
 	);
 
 	const renderChapter = useMemo(

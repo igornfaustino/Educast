@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { useCursor } from './useCursor';
 import { getPositionInPercent } from '../utils/conversions';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHotkeys } from 'react-hotkeys-hook';
 
 export function useTimeline(
 	timerDivWidth,
@@ -11,6 +12,7 @@ export function useTimeline(
 ) {
 	const dispatch = useDispatch();
 	const scenes = useSelector((state) => state.sceneChapters.scenes);
+	const currentTime = useSelector((state) => state.video.currentTime);
 	const chapters = useSelector((state) => state.sceneChapters.chapters);
 
 	const {
@@ -73,7 +75,6 @@ export function useTimeline(
 	}, [chapters, dispatch, selectedChapters]);
 
 	const createScene = useCallback(() => {
-		console.log({ isCursorInScene: isCursorInScene() });
 		if (isCursorInScene()) return;
 
 		const endPosition = getSceneBarEndPosition();
@@ -138,6 +139,178 @@ export function useTimeline(
 		getPresentationScreenShot,
 		isCursorInScene,
 	]);
+
+	const handleHotkeyToSelectScene = useCallback(
+		(type) => {
+			if (selectedScenes.length !== 1) return;
+			switch (type) {
+				case 'previous':
+					return setSelectedScenes((prevState) => {
+						const lastSelectedScene = prevState[0];
+						if (lastSelectedScene === 0) return prevState;
+						return [lastSelectedScene - 1];
+					});
+				case 'next':
+					return setSelectedScenes((prevState) => {
+						const lastSelectedScene = prevState[0];
+						if (lastSelectedScene === scenes.length - 1) return prevState;
+						return [lastSelectedScene + 1];
+					});
+				default:
+					return;
+			}
+		},
+		[scenes.length, selectedScenes.length, setSelectedScenes]
+	);
+
+	const handleHotkeyToSelectChapter = useCallback(
+		(type) => {
+			if (selectedChapters.length !== 1) return;
+			const idxOfLastSelectedChapter = chapters.findIndex(
+				(chapter) => chapter.id === selectedChapters[0]
+			);
+			switch (type) {
+				case 'previous':
+					return setSelectedChapters((prevState) => {
+						if (idxOfLastSelectedChapter === 0) return prevState;
+						return [chapters[idxOfLastSelectedChapter - 1].id];
+					});
+				case 'next':
+					return setSelectedChapters((prevState) => {
+						if (idxOfLastSelectedChapter === chapters.length - 1)
+							return prevState;
+						return [chapters[idxOfLastSelectedChapter + 1].id];
+					});
+				default:
+					return;
+			}
+		},
+		[chapters, selectedChapters, setSelectedChapters]
+	);
+
+	useHotkeys(
+		'a',
+		() => {
+			if (!selectedChapters.length && !selectedScenes.length) return;
+			if (selectedChapters.length && selectedScenes.length) return;
+			if (selectedScenes.length) return handleHotkeyToSelectScene('previous');
+			return handleHotkeyToSelectChapter('previous');
+		},
+		{},
+		[
+			selectedChapters,
+			selectedScenes,
+			handleHotkeyToSelectChapter,
+			handleHotkeyToSelectScene,
+		]
+	);
+
+	useHotkeys(
+		'p',
+		() => {
+			if (!selectedChapters.length && !selectedScenes.length) return;
+			if (selectedChapters.length && selectedScenes.length) return;
+			if (selectedScenes.length) return handleHotkeyToSelectScene('next');
+			return handleHotkeyToSelectChapter('next');
+		},
+		{},
+		[
+			selectedChapters,
+			selectedScenes,
+			handleHotkeyToSelectChapter,
+			handleHotkeyToSelectScene,
+		]
+	);
+
+	useHotkeys(
+		's',
+		() => {
+			if (isAddVideoDisabled) return;
+			createScene();
+		},
+		{},
+		[isAddVideoDisabled, createScene]
+	);
+
+	useHotkeys(
+		'c',
+		() => {
+			if (isChapterButtonDisabled) return;
+			createChapter();
+		},
+		{},
+		[isChapterButtonDisabled, createChapter]
+	);
+
+	useHotkeys(
+		'delete, backspace',
+		() => {
+			deleteChapter();
+			deleteScene();
+		},
+		{},
+		[deleteChapter, deleteScene]
+	);
+
+	useHotkeys(
+		'i',
+		() => {
+			dispatch({ type: 'SHORTCUT_I', currentPosition: cursorPosition });
+		},
+		{},
+		[cursorPosition, dispatch]
+	);
+
+	useHotkeys(
+		'o',
+		() => {
+			dispatch({ type: 'SHORTCUT_O', currentPosition: cursorPosition });
+		},
+		{},
+		[cursorPosition, dispatch]
+	);
+
+	useHotkeys(
+		'left',
+		() => {
+			const frameSize = 1 / 25;
+			const currentFrame = Math.round(currentTime / frameSize);
+			const previousFramePosition = (currentFrame - 1) * frameSize;
+			handleTimelineClick(previousFramePosition);
+		},
+		{},
+		[currentTime]
+	);
+
+	useHotkeys(
+		'right',
+		() => {
+			const frameSize = 1 / 25;
+			const currentFrame = Math.round(currentTime / frameSize);
+			const nextFramePosition = (currentFrame + 1) * frameSize;
+			handleTimelineClick(nextFramePosition);
+		},
+		{},
+		[currentTime]
+	);
+
+	useHotkeys(
+		'shift+right',
+		() => {
+			handleTimelineClick(parseInt(currentTime) + 1);
+		},
+		{},
+		[currentTime]
+	);
+
+	useHotkeys(
+		'shift+left',
+		() => {
+			handleTimelineClick(parseInt(currentTime) - 1);
+		},
+		{},
+		[currentTime]
+	);
 
 	useEffect(() => {
 		setSelectedChapters((selectedChapters) => {

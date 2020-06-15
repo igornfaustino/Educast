@@ -1,4 +1,4 @@
-import React, { useState, useRef, useMemo } from 'react';
+import React, { useState, useRef, useMemo, useCallback } from 'react';
 import './App.scss';
 
 import VideoContainer from './components/VideoPlayer/VideoContainer';
@@ -7,7 +7,6 @@ import { BrowserRouter } from 'react-router-dom';
 import { Container, Button } from 'reactstrap';
 import StepperComponent from './components/Stepper';
 import { FaSave, FaShare } from 'react-icons/fa';
-import { useCallback } from 'react';
 
 import useModal from './hooks/useModal';
 
