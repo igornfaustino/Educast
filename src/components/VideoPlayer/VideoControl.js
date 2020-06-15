@@ -6,6 +6,7 @@ import { MdFullscreen } from 'react-icons/md';
 import moment from 'moment';
 import VolumeButton from './VolumeButton';
 import { useHotkeys } from 'react-hotkeys-hook';
+import { useSelector } from 'react-redux';
 
 import styles from './VideoControl.module.scss';
 
@@ -21,6 +22,8 @@ function VideoControl({
 	useHotkeys('space', handlePlayPauseButton, {}, [handlePlayPauseButton]);
 
 	const progressBar = useRef(null);
+
+	const chapters = useSelector((state) => state.sceneChapters.chapters);
 
 	const [volume, setVolume] = useState(1);
 	const [previousVolume, setPreviousVolume] = useState(1);
@@ -72,6 +75,17 @@ function VideoControl({
 		[handleVolume]
 	);
 
+	const chapterIndicators = useMemo(
+		() =>
+			chapters.map((chapter) => (
+				<div
+					className={styles.chapterIndicator}
+					style={{ left: chapter.position * 100 + '%' }}
+				/>
+			)),
+		[chapters]
+	);
+
 	const currentTimeFormatted = useMemo(() => {
 		const currentTimeInMs = currentTime * 1000;
 		return moment.utc(currentTimeInMs).format('HH:mm:ss:SSS');
@@ -99,6 +113,7 @@ function VideoControl({
 				ref={progressBar}
 				onClick={onProgressClickHandle}
 			>
+				{chapterIndicators}
 				<div className={styles.played} style={style} />
 			</div>
 			<div className={styles.control}>

@@ -33,6 +33,17 @@
 	width: 100%;
 	height: 5px;
 	background-color: #fff;
+	position: relative;
+}
+
+.chapterIndicator {
+	height: 10px;
+	width: 10px;
+	position: absolute;
+	z-index: 1;
+	background-color: $chapter-indicator-color;
+	border-radius: 8px;
+	transform: translateY(-25%);
 }
 
 .played {
