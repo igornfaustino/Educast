@@ -77,12 +77,17 @@ function VideoControl({
 
 	const chapterIndicators = useMemo(
 		() =>
-			chapters.map((chapter) => (
-				<div
-					className={styles.chapterIndicator}
-					style={{ left: chapter.position * 100 + '%' }}
-				/>
-			)),
+			chapters.map((chapter) => {
+				const classNames = chapter.isSelected
+					? cx(styles.chapterIndicator, styles.chapterSelected)
+					: styles.chapterIndicator;
+				return (
+					<div
+						className={classNames}
+						style={{ left: chapter.position * 100 + '%' }}
+					/>
+				);
+			}),
 		[chapters]
 	);
 
