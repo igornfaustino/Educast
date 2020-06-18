@@ -21,17 +21,17 @@
 	border-radius: 0px !important;
 }
 
-.titleWrapper {
-	display: flex;
-	text-align: center;
-
-	&:first-child() {
-		justify-self: center;
-	}
-}
-
 .closeIcon {
 	cursor: pointer;
+}
+
+.titleWrapper {
+	display: flex;
+	align-items: center;
+
+	svg {
+		margin-right: 8px;
+	}
 }
 
 .textBox {

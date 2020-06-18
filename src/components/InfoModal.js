@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import styles from './InfoModal.module.scss';
 import Modal from './Modal';
+import { FaRegKeyboard } from 'react-icons/fa';
 
 const shortcuts = [
 	'Space bar: Alternar entre play/pause no vídeo',
@@ -28,12 +29,22 @@ const InfoModal = ({ onToggle, isOpen }) => {
 		[]
 	);
 
+	const title = useMemo(
+		() => (
+			<div className={styles.titleWrapper}>
+				<FaRegKeyboard />
+				<span>Atalhos</span>
+			</div>
+		),
+		[]
+	);
+
 	return (
 		<Modal
 			isOpen={isOpen}
 			onToggle={onToggle}
 			body={shortcutsNodes}
-			title="Atalhos"
+			title={title}
 			isClosable
 		/>
 	);

@@ -2,9 +2,13 @@ import React, { useMemo } from 'react';
 import styles from './PublishModal.module.scss';
 import Modal from './Modal';
 
-import { FaRegImages } from 'react-icons/fa';
+import { FaRegImages, FaLink } from 'react-icons/fa';
 
 import { Button } from 'reactstrap';
+
+import { ReactComponent as Streaming } from '../assets/Streaming.svg';
+import { ReactComponent as Desktop } from '../assets/Desktop.svg';
+import { ReactComponent as Mobile } from '../assets/Mobile.svg';
 
 const SaveModal = ({ onToggle, isOpen }) => {
 	const body = useMemo(
@@ -17,15 +21,15 @@ const SaveModal = ({ onToggle, isOpen }) => {
 				</p>
 				<div className={styles.iconsWrapper}>
 					<div className={styles.iconTextWrapper}>
-						<FaRegImages size="2rem" />
+						<Streaming className={styles.icon} />
 						<span>Streaming</span>
 					</div>
 					<div className={styles.iconTextWrapper}>
-						<FaRegImages size="2rem" />
+						<Desktop className={styles.icon} />
 						<span>Desktop</span>
 					</div>
 					<div className={styles.iconTextWrapper}>
-						<FaRegImages size="2rem" />
+						<Mobile className={styles.icon} />
 						<span>Mobile</span>
 					</div>
 				</div>
@@ -46,6 +50,7 @@ const SaveModal = ({ onToggle, isOpen }) => {
 	const title = useMemo(
 		() => (
 			<div className={styles.titleWrapper}>
+				<FaLink />
 				<span>Publicação</span>
 			</div>
 		),

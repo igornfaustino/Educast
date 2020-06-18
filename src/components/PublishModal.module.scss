@@ -4,7 +4,25 @@
 }
 
 .titleWrapper {
-	margin: 30px;
+	display: flex;
+	align-items: center;
+
+	svg {
+		margin-right: 8px;
+	}
+}
+
+.icon {
+	height: 30px;
+	path {
+		fill: black;
+	}
+	polygon {
+		fill: black;
+	}
+	rect {
+		fill: black;
+	}
 }
 
 .button {
