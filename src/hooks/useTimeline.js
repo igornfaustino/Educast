@@ -13,6 +13,7 @@ export function useTimeline(
 	const dispatch = useDispatch();
 	const scenes = useSelector((state) => state.sceneChapters.scenes);
 	const currentTime = useSelector((state) => state.video.currentTime);
+	const duration = useSelector((state) => state.video.duration);
 	const chapters = useSelector((state) => state.sceneChapters.chapters);
 
 	const {
@@ -140,27 +141,50 @@ export function useTimeline(
 		isCursorInScene,
 	]);
 
+	const moveCursorToBeginningOfScene = useCallback(
+		(scene) => {
+			const newTime = duration * scene.start.x;
+			handleTimelineClick(newTime);
+		},
+		[duration, handleTimelineClick]
+	);
+
 	const handleHotkeyToSelectScene = useCallback(
 		(type) => {
 			if (selectedScenes.length !== 1) return;
 			switch (type) {
 				case 'previous':
+				case 'previous&move':
 					return setSelectedScenes((prevState) => {
 						const lastSelectedScene = prevState[0];
-						if (lastSelectedScene === 0) return prevState;
-						return [lastSelectedScene - 1];
+						const newState = [];
+						if (lastSelectedScene === 0) newState.push(lastSelectedScene);
+						else newState.push(lastSelectedScene - 1);
+
+						if (type === 'previous&move')
+							moveCursorToBeginningOfScene(scenes[newState[0]]);
+
+						return newState;
 					});
 				case 'next':
+				case 'next&move':
 					return setSelectedScenes((prevState) => {
 						const lastSelectedScene = prevState[0];
-						if (lastSelectedScene === scenes.length - 1) return prevState;
-						return [lastSelectedScene + 1];
+						const newState = [];
+						if (lastSelectedScene === scenes.length - 1)
+							newState.push(lastSelectedScene);
+						else newState.push(lastSelectedScene + 1);
+
+						if (type === 'next&move')
+							moveCursorToBeginningOfScene(scenes[newState[0]]);
+
+						return newState;
 					});
 				default:
 					return;
 			}
 		},
-		[scenes.length, selectedScenes.length, setSelectedScenes]
+		[moveCursorToBeginningOfScene, scenes, selectedScenes.length]
 	);
 
 	const handleHotkeyToSelectChapter = useCallback(
@@ -206,6 +230,17 @@ export function useTimeline(
 	);
 
 	useHotkeys(
+		'shift+a',
+		() => {
+			if (selectedScenes.length === 1) {
+				return handleHotkeyToSelectScene('previous&move');
+			}
+		},
+		{},
+		[selectedScenes, handleHotkeyToSelectScene]
+	);
+
+	useHotkeys(
 		'p',
 		() => {
 			if (!selectedChapters.length && !selectedScenes.length) return;
@@ -220,6 +255,17 @@ export function useTimeline(
 			handleHotkeyToSelectChapter,
 			handleHotkeyToSelectScene,
 		]
+	);
+
+	useHotkeys(
+		'shift+p',
+		() => {
+			if (selectedScenes.length === 1) {
+				return handleHotkeyToSelectScene('next&move');
+			}
+		},
+		{},
+		[selectedScenes, handleHotkeyToSelectScene]
 	);
 
 	useHotkeys(
