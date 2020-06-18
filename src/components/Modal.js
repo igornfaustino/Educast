@@ -28,6 +28,7 @@ const Modal = ({ onToggle, isOpen, title, body, isClosable, size = 'lg' }) => {
 				toggle={onToggle}
 				size={size}
 				contentClassName={styles.modal}
+				centered
 			>
 				<ModalHeader
 					toggle={toggle}

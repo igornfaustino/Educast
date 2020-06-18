@@ -16,7 +16,7 @@
 }
 
 .app-buttons {
-	margin: 3px !important;
+	margin: 5px 5px 5px 0px !important;
 	color: white !important;
 	border-radius: 0px !important;
 	font-size: 0.875rem !important;
@@ -36,6 +36,7 @@
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
+	background-color: white;
 }
 
 .stepper-container {
