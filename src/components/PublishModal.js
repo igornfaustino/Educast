@@ -2,13 +2,13 @@ import React, { useMemo } from 'react';
 import styles from './PublishModal.module.scss';
 import Modal from './Modal';
 
-import { FaRegImages, FaLink } from 'react-icons/fa';
+import { FaLink } from 'react-icons/fa';
 
 import { Button } from 'reactstrap';
 
-import { ReactComponent as Streaming } from '../assets/Streaming.svg';
-import { ReactComponent as Desktop } from '../assets/Desktop.svg';
-import { ReactComponent as Mobile } from '../assets/Mobile.svg';
+import Streaming from '../assets/Streaming.png';
+import Desktop from '../assets/Desktop.png';
+import Mobile from '../assets/Mobile.png';
 
 const SaveModal = ({ onToggle, isOpen }) => {
 	const body = useMemo(
@@ -21,15 +21,15 @@ const SaveModal = ({ onToggle, isOpen }) => {
 				</p>
 				<div className={styles.iconsWrapper}>
 					<div className={styles.iconTextWrapper}>
-						<Streaming className={styles.icon} />
+						<img className={styles.icon} src={Streaming} alt="streaming" />
 						<span>Streaming</span>
 					</div>
 					<div className={styles.iconTextWrapper}>
-						<Desktop className={styles.icon} />
+						<img className={styles.icon} src={Desktop} alt="desktop" />
 						<span>Desktop</span>
 					</div>
 					<div className={styles.iconTextWrapper}>
-						<Mobile className={styles.icon} />
+						<img className={styles.icon} src={Mobile} alt="mobile" />
 						<span>Mobile</span>
 					</div>
 				</div>
