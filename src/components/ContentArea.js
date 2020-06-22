@@ -1,11 +1,16 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import Documents from './Documents';
+import VideoEditor from './Timeline/VideoEditor';
 
-function RouteContentArea() {
+function RouteContentArea({ timelineProps }) {
 	return (
 		<Switch>
-			<Route exact path="/editor" component={() => <div>editor</div>} />
+			<Route
+				exact
+				path="/editor"
+				component={() => <VideoEditor {...timelineProps} />}
+			/>
 			<Route exact path="/chapters" component={() => <div>Capitulos</div>} />
 			<Route exact path="/documents" component={Documents} />
 			<Route exact path="/branding" component={() => <div>Branding</div>} />

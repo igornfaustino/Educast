@@ -1,7 +1,9 @@
+@import '../variables.scss';
+
 .btn-tab {
 	background-color: #333333 !important;
-	max-width: 150px;
-	max-height: 35;
+	width: 150px;
+	height: 35;
 	text-align: left !important;
 	@media (max-width: 615px) {
 		span {
@@ -16,25 +18,40 @@
 }
 
 .btn.active {
-	background-color: #0099ff !important;
-	border-color: #0099ff !important;
+	background-color: $primary-color !important;
+	border-color: $primary-color !important;
 	box-shadow: none !important;
 }
 
 .container-tabs-content {
 	background-color: white;
 	height: 100%;
-	width: 100% !important;
-	margin: 3px !important;
+	// width: 100% !important;
+	// margin: 3px !important;
 	margin-top: 0 !important;
 }
 
 .container-buttons-tab {
-	display: flex-wrap;
+	display: flex;
 	width: 70%;
 }
 
 .tabs {
 	display: flex;
 	flex-direction: column;
+}
+
+.buttons-wrapper {
+	display: flex;
+	justify-content: space-between;
+}
+
+.info-button {
+	border-radius: 0px !important;
+	background-color: $primary-color !important;
+	border: none !important;
+	flex-grow: 0 !important;
+	// height: 75%;
+	padding: 2px 4px 4px 4px !important;
+	align-self: flex-end;
 }

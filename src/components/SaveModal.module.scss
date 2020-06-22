@@ -1,0 +1,23 @@
+.text {
+	font-weight: bold;
+	text-align: center;
+}
+
+.button {
+	text-align: center;
+
+	button {
+		background-color: #009cff;
+		border-color: #009cff;
+		width: 100px;
+	}
+}
+
+.titleWrapper {
+	display: flex;
+	align-items: center;
+
+	svg {
+		margin-right: 8px;
+	}
+}

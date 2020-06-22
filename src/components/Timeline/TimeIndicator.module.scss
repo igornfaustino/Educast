@@ -1,0 +1,29 @@
+.timeIndicator__container {
+	height: 25%;
+	background-color: rgb(53, 52, 52);
+	top: 0;
+	color: white;
+	position: relative;
+	font-size: 0.8rem;
+
+	-webkit-touch-callout: none; /* iOS Safari */
+	-webkit-user-select: none; /* Safari */
+	-khtml-user-select: none; /* Konqueror HTML */
+	-moz-user-select: none; /* Old versions of Firefox */
+	-ms-user-select: none; /* Internet Explorer/Edge */
+	user-select: none; /* Non-prefixed version, currently
+																supported by Chrome, Edge, Opera and Firefox */
+}
+
+.timer-vertical-whitebar {
+	position: absolute;
+	height: 7px;
+	width: 2px;
+	bottom: 0;
+	background-color: white;
+}
+
+.timer-vertical-whitebar--big {
+	height: 15px;
+	width: 3px;
+}
