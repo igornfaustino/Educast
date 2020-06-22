@@ -18,17 +18,46 @@ const Branding = (props) => {
 			<span className={cx(styles.titleText, styles.upperRightTitle)}>
 				Imagem de Cabeçalho
 			</span>
+
 			<div className={cx(styles.coverImage)}>
-				<div>
-					<FaImages />
-				</div>
-				<div>
-					<FaChalkboardTeacher />
-				</div>
-				<div>
-					<FaUpload />
+				<div className={styles.iconWrapper}>
+					<div className={styles.iconBackground}>
+						<FaChalkboardTeacher className={styles.icon} size={19} />
+					</div>
+					<div className={styles.iconBackground}>
+						<FaImages className={styles.icon} size={19} />
+					</div>
+					<div className={styles.iconBackground}>
+						<FaUpload className={styles.icon} size={18} />
+					</div>
 				</div>
 			</div>
+
+			<input
+				type="file"
+				id="myFile"
+				name="filename"
+				className={styles.selectFile}
+			/>
+
+			<p className={styles.text}>
+				<strong>Nota: </strong>
+				<a href="">Recomendações Ténicas</a> para a criação da imagem de
+				cabeçalho
+			</p>
+
+			<span className={cx(styles.bottomRightTitle)}>Vídeo Pre-Roll</span>
+			<input
+				type="file"
+				id="myFile"
+				name="filename"
+				className={styles.selectFile}
+				style={{ marginTop: '18px' }}
+			/>
+			<p className={styles.text}>
+				<strong>Nota: </strong>
+				<a href="">Recomendações Ténicas</a> para a criação do vídeo PreRoll
+			</p>
 		</div>
 	);
 };

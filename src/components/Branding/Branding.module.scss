@@ -1,14 +1,17 @@
 .titleText {
 	width: fit-content;
 	display: inline-block;
+	font-size: 18px;
+	color: #000000;
+	line-height: 24px;
 }
 
 .leftTitle {
-	padding: 26px 0px 5px 20px;
+	padding: 26px 0px 18px 20px;
 }
 
 .upperRightTitle {
-	padding: 26px 0px 5px 483px;
+	padding: 26px 0px 0px 469px;
 }
 
 .coverImage {
@@ -18,7 +21,58 @@
 
 	background-image: url(https://kanto.legiaodosherois.com.br/w760-h398-gnw-cfill-q80/wp-content/uploads/2015/06/luffy-images.png.jpeg);
 	background-size: cover;
+	position: absolute;
 }
 
 .bottomRightTitle {
+	margin-top: 233px;
+	margin-left: 624px;
+
+	font-size: 18px;
+	color: #000000;
+	line-height: 24px;
+
+	padding-bottom: 18px;
+}
+
+.iconWrapper {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 20px;
+	position: relative;
+	margin-left: 237px;
+	margin-top: 43px;
+}
+
+.iconBackground {
+	position: relative;
+	width: 30px;
+	height: 30px;
+	margin-top: 5px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: #f1f1f1;
+}
+
+.icon {
+	fill: #0099ff;
+}
+
+.selectFile {
+	margin-left: 624px;
+	width: 520px;
+
+	label {
+		background-color: black;
+	}
+}
+
+.text {
+	margin-left: 624px;
+	font-size: 14px;
+	line-height: 19px;
+	margin-top: 6px;
 }
