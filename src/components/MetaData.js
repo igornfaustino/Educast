@@ -6,14 +6,14 @@ import InputComment from "./InputComment"
 import InputChip from "./InputChip"
 
 
-const MetaData = () => {
+const MetaData = ({title, subtitle, date, local, description, tag}) => {
     const [data] = useState({
-        title: "Educast - grava, edita e publica",
-        subtitle: "Grave as aulas com o Educast",
-        date: "13 Agosto",
-        local: "Laboratório Nacional de Engenharia Civil",
-        description: "Comentário",
-        tag: ["Aula de React"],
+        title: title,
+        subtitle: subtitle,
+        date: date,
+        local: local,
+        description: description,
+        tag: tag,
     });
 
 

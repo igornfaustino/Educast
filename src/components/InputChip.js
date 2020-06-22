@@ -17,9 +17,7 @@ const InputChip = ({title, type, value}) => {
 	}
 
 	const handleDeleteChip = (chip, index) => {
-		console.log(tags);
 		tags.splice(index, 1);
-		console.log(tags);
 	}
 
 	const inputClasses = useMemo(() => ({

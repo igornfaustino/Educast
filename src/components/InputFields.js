@@ -14,7 +14,7 @@ const InputFields = ({ title, type, value, fowardedRef }) => {
                         type={type}
                         name={title}
                         defaultValue={inputValue}
-                        onChange={e => { setInputValue(e.target.value); console.log(inputValue) }}
+                        onChange={value}
                         ref={fowardedRef}
                     />
                 </h5>
