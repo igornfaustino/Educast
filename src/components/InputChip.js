@@ -31,7 +31,7 @@ const InputChip = ({title, type, value}) => {
 	return (
 		<div>
 			<label className={style["label"]}>
-				<h4> {title} </h4>
+				<h4 className={style["h4-margin"]}> {title} </h4>
 
 				<h5>
 					<ChipInput

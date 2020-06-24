@@ -49,9 +49,8 @@ const InputComment = ({ title, type, value }) => {
                         value={description}
                         onChange={setDescription}
                         selectedTab={selectedTab}
-                        minEditorHeight="100px"
-                        minPreviewHeight="100px"
-                        maxEditorHeight="100px"
+                        minEditorHeight="5%"
+                        minPreviewHeight="5%"
                         onTabChange={setSelectedTab}
                         generateMarkdownPreview={handlerMarkdownPreview}
                         childProps={childProps}
