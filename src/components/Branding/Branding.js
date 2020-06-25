@@ -4,15 +4,9 @@ import styles from './Branding.module.scss';
 import ModalImage from './ModalImage';
 import ModalPreRoll from './ModalPreRoll';
 import useModal from '../../hooks/useModal';
+import CoverImage from './CoverImage';
 
-import {
-	FaUpload,
-	FaImages,
-	FaTimes,
-	FaChalkboardTeacher,
-} from 'react-icons/fa';
-
-const Branding = (props) => {
+const Branding = ({ getPresenterScreenShot, getPresentationScreenShot }) => {
 	const [headerImage, setHeaderImage] = useState('Nenhum ficheiro selecionado');
 	const [preRollImage, setPreRollImage] = useState(
 		'Nenhum ficheiro selecionado'
@@ -36,20 +30,10 @@ const Branding = (props) => {
 		<div className={styles.branding}>
 			<div className={styles.leftColumn}>
 				<p className={cx(styles.titleText)}>Imagem de Capa</p>
-
-				<div className={cx(styles.coverImage)}>
-					<div className={styles.iconWrapper}>
-						<div className={styles.iconBackground}>
-							<FaChalkboardTeacher className={styles.icon} size={19} />
-						</div>
-						<div className={styles.iconBackground}>
-							<FaImages className={styles.icon} size={19} />
-						</div>
-						<div className={styles.iconBackground}>
-							<FaUpload className={styles.icon} size={18} />
-						</div>
-					</div>
-				</div>
+				<CoverImage
+					getPresentationScreenShot={getPresentationScreenShot}
+					getPresenterScreenShot={getPresenterScreenShot}
+				/>
 			</div>
 
 			<div className={styles.rightColumn}>

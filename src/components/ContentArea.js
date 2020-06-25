@@ -14,7 +14,11 @@ function RouteContentArea({ timelineProps }) {
 			/>
 			<Route exact path="/chapters" component={() => <div>Capitulos</div>} />
 			<Route exact path="/documents" component={Documents} />
-			<Route exact path="/branding" component={Branding} />
+			<Route
+				exact
+				path="/branding"
+				component={() => <Branding {...timelineProps} />}
+			/>
 			<Route exact path="/subtitles" component={() => <div>Legendas</div>} />
 			<Route path="*" component={() => <div>metadados</div>} />
 		</Switch>
