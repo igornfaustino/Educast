@@ -1,0 +1,32 @@
+.text {
+	font-weight: bold;
+	text-align: center;
+}
+
+.title {
+	font-size: 18px;
+	line-height: 24px;
+	text-align: center;
+}
+
+.bodyWrapper {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+button {
+	background-color: #009cff;
+	border-radius: 0 !important;
+	border-color: #009cff;
+	width: 150px;
+}
+
+.titleWrapper {
+	display: flex;
+	align-items: center;
+
+	svg {
+		margin-right: 8px;
+	}
+}

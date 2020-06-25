@@ -1,23 +1,72 @@
-.titleText {
-	width: fit-content;
-	display: inline-block;
-	font-size: 18px;
-	color: #000000;
-	line-height: 24px;
+.branding {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	padding: 1.25rem;
+
+	@media (max-width: 950px) {
+		flex-direction: column;
+	}
 }
 
-.leftTitle {
-	padding: 26px 0px 18px 20px;
+.leftColumn {
+	width: 100%;
+}
+
+.rightColumn {
+	width: 100%;
+}
+
+.labelBtn {
+	width: 12.375rem;
+	height: 2.1875rem;
+	text-align: center;
+	color: white;
+	background: #0099ff;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.fileName {
+	width: 100%;
+	height: 2.1875rem;
+	padding-left: 1.25rem;
+
+	display: flex;
+	align-items: center;
+
+	background: #ececec;
+}
+
+.inputWrapper {
+	display: flex;
+	margin-top: 0.3125rem;
+	height: 2.1875rem;
+}
+
+.titleText {
+	font-size: 1.125rem;
+	color: #000000;
+	line-height: 1.5rem;
+}
+
+.link {
+	color: #007bff;
+
+	:hover {
+		cursor: pointer;
+	}
 }
 
 .upperRightTitle {
-	padding: 26px 0px 0px 469px;
 }
 
 .coverImage {
 	width: 17.37rem;
 	height: 9.87rem;
-	margin-left: 20px;
+	margin-left: 1.25rem;
 
 	background-image: url(https://kanto.legiaodosherois.com.br/w760-h398-gnw-cfill-q80/wp-content/uploads/2015/06/luffy-images.png.jpeg);
 	background-size: cover;
@@ -25,14 +74,13 @@
 }
 
 .bottomRightTitle {
-	margin-top: 233px;
-	margin-left: 624px;
+	margin-top: 14.5625rem;
 
-	font-size: 18px;
+	font-size: 1.125rem;
 	color: #000000;
-	line-height: 24px;
+	line-height: 1.5rem;
 
-	padding-bottom: 18px;
+	padding-bottom: 1.125rem;
 }
 
 .iconWrapper {
@@ -40,17 +88,17 @@
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	width: 20px;
+	width: 1.25rem;
 	position: relative;
-	margin-left: 237px;
-	margin-top: 43px;
+	margin-left: 14.8125rem;
+	margin-top: 2.6875rem;
 }
 
 .iconBackground {
 	position: relative;
-	width: 30px;
-	height: 30px;
-	margin-top: 5px;
+	width: 1.875rem;
+	height: 1.875rem;
+	margin-top: 0.3125rem;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -62,17 +110,17 @@
 }
 
 .selectFile {
-	margin-left: 624px;
-	width: 520px;
+	width: 100%;
+	background-color: #ececec;
+	display: none;
 
-	label {
-		background-color: black;
+	::-webkit-file-upload-button {
+		background: blue;
 	}
 }
 
 .text {
-	margin-left: 624px;
-	font-size: 14px;
-	line-height: 19px;
-	margin-top: 6px;
+	font-size: 0.875rem;
+	line-height: 1.1875rem;
+	margin-top: 0.375rem;
 }
