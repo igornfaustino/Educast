@@ -37,11 +37,7 @@ const Chapters = ({ getPresenterScreenShot, getPresentationScreenShot }) => {
 	const selectChapter = useCallback(
 		(id) => {
 			const updatedChapters = chs.map((ch) => {
-				if (id === ch.id) {
-					ch.isSelected = true;
-				} else {
-					ch.isSelected = false;
-				}
+				ch.isSelected = id === ch.id;
 				return ch;
 			});
 			dispatch({ type: 'SET_CHAPTERS', chapters: updatedChapters });

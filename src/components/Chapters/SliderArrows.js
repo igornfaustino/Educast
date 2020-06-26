@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import 'react-multi-carousel/lib/styles.css';
 import IconButton from '@material-ui/core/IconButton';
@@ -13,7 +13,7 @@ const getMaxTranslateX = (carouselRef) => {
 		if (totalItems === slidesToShow) {
 			return itemWidth;
 		}
-		return Math.round(itemWidth * (totalItems - slidesToShow));
+		return Math.round(itemWidth * (totalItems - slidesToShow)) / 100;
 	}
 };
 
@@ -24,12 +24,7 @@ const getMaxScrollbarValue = (value, carouselRef) => {
 };
 
 const CustomRightArrow = ({ carouselRef }) => {
-	let value = 0;
-	if (carouselRef.current) {
-		const maxTranslateX = getMaxTranslateX(carouselRef);
-		value = maxTranslateX / 100;
-	}
-	const handleOnClick = () => {
+	const handleOnClick = useCallback(() => {
 		carouselRef.current.isAnimationAllowed = true;
 		const {
 			slidesToShow,
@@ -37,6 +32,7 @@ const CustomRightArrow = ({ carouselRef }) => {
 			itemWidth,
 			currentSlide,
 		} = carouselRef.current.state;
+		const value = getMaxTranslateX(carouselRef);
 		const max = getMaxScrollbarValue(value, carouselRef);
 		let nextTransform;
 		let nextSlide;
@@ -61,20 +57,17 @@ const CustomRightArrow = ({ carouselRef }) => {
 			transform: -nextTransform,
 			currentSlide: nextSlide,
 		});
-	};
+	}, [carouselRef]);
+
 	return (
-		<IconButton
-			variant="outlined"
-			className={styles['arrow']}
-			onClick={() => handleOnClick()}
-		>
+		<IconButton className={styles['arrow']} onClick={handleOnClick}>
 			<FaChevronRight />
 		</IconButton>
 	);
 };
 
 const CustomLeftArrow = ({ carouselRef }) => {
-	const handleOnClick = () => {
+	const handleOnClick = useCallback(() => {
 		carouselRef.current.isAnimationAllowed = true;
 		const {
 			slidesToShow,
@@ -95,9 +88,10 @@ const CustomLeftArrow = ({ carouselRef }) => {
 			transform: -nextTransform,
 			currentSlide: nextSlide,
 		});
-	};
+	}, [carouselRef]);
+
 	return (
-		<IconButton className={styles['arrow']} onClick={() => handleOnClick()}>
+		<IconButton className={styles['arrow']} onClick={handleOnClick}>
 			<FaChevronLeft />
 		</IconButton>
 	);

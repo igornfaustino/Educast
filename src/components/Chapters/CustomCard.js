@@ -17,6 +17,7 @@ import classNames from 'classnames';
 
 import EditableTextField from './EditableTextField';
 import styles from './CustomCard.module.scss';
+import { timeFormatter } from '../../utils/formatting';
 
 const CustomCard = ({
 	order,
@@ -69,25 +70,6 @@ const CustomCard = ({
 			selectThumbnailFunction(chapter.id, image.preview);
 		},
 	});
-
-	// Helper for formatting time label.
-	const pad = (num) => {
-		return ('0' + num).slice(-2);
-	};
-
-	// Helper for formatting time label (returns hh:mm:ss given position in seconds).
-	const hhmmss = (secs) => {
-		let minutes = Math.floor(secs / 60);
-		secs = secs % 60;
-		let hours = Math.floor(minutes / 60);
-		minutes = minutes % 60;
-		return `${pad(hours)}:${pad(minutes)}:${pad(secs)}`;
-	};
-
-	// Returns position of chapter in seconds.
-	const inSeconds = (position) => {
-		return Math.floor(videoInSeconds * position);
-	};
 
 	const layoutChapterSelected = useMemo(() => {
 		return chapter.isSelected === true
@@ -164,7 +146,7 @@ const CustomCard = ({
 			</div>
 			<div className={styles['card-description']}>
 				<div className={styles['time-label']}>
-					In {hhmmss(inSeconds(chapter.position))}
+					In {timeFormatter(chapter.position, videoInSeconds)}
 				</div>
 				<EditableTextField
 					type="text"

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 
 import Input from '@material-ui/core/Input';
 
@@ -15,45 +15,57 @@ const EditableTextField = ({
 	const [fieldValue, setFieldValue] = useState(value);
 	const [fieldBackupValue, setFieldBackupValue] = useState('');
 
-	const handleInputOnChange = (event) => {
+	const handleInputOnChange = useCallback((event) => {
 		setFieldValue(event.target.value);
-	};
+	}, []);
 
-	const handleInputOnBlur = () => {
+	const handleInputOnBlur = useCallback(() => {
 		setEditable(false);
 		isTextFieldBeingEdited(false);
 		updateTitleFunction(chapter.id, fieldValue);
-	};
+	}, [chapter.id, fieldValue, isTextFieldBeingEdited, updateTitleFunction]);
 
-	const handleInputOnFocus = (event) => {
-		const value = event.target.value;
-		event.target.value = '';
-		event.target.value = value;
-		setFieldBackupValue(fieldValue);
-	};
+	const handleInputOnFocus = useCallback(
+		(event) => {
+			const value = event.target.value;
+			event.target.value = '';
+			event.target.value = value;
+			setFieldBackupValue(fieldValue);
+		},
+		[fieldValue]
+	);
 
-	const handleInputOnKeyUp = (event) => {
-		if (event.key === 'Escape') {
-			setEditable(false);
-			isTextFieldBeingEdited(false);
-			setFieldValue(fieldBackupValue);
-			updateTitleFunction(chapter.id, fieldBackupValue);
-		}
-		if (event.key === 'Enter') {
-			setEditable(false);
-			isTextFieldBeingEdited(false);
-			updateTitleFunction(chapter.id, fieldValue);
-		}
-	};
+	const handleInputOnKeyUp = useCallback(
+		(event) => {
+			if (event.key === 'Escape') {
+				setEditable(false);
+				isTextFieldBeingEdited(false);
+				setFieldValue(fieldBackupValue);
+				updateTitleFunction(chapter.id, fieldBackupValue);
+			}
+			if (event.key === 'Enter') {
+				setEditable(false);
+				isTextFieldBeingEdited(false);
+				updateTitleFunction(chapter.id, fieldValue);
+			}
+		},
+		[
+			chapter.id,
+			fieldBackupValue,
+			fieldValue,
+			isTextFieldBeingEdited,
+			updateTitleFunction,
+		]
+	);
 
-	const handleFieldOnClick = () => {
+	const handleFieldOnClick = useCallback(() => {
 		setEditable(editable === false);
 		isTextFieldBeingEdited(editable === false);
-	};
+	}, [editable, isTextFieldBeingEdited]);
 
-	return (
-		<div>
-			{editable ? (
+	const textField = useMemo(
+		() =>
+			editable ? (
 				<Input
 					id="chapter-title"
 					type={type}
@@ -75,9 +87,20 @@ const EditableTextField = ({
 				<div className={styles['textField-label']} onClick={handleFieldOnClick}>
 					{fieldValue}
 				</div>
-			)}
-		</div>
+			),
+		[
+			editable,
+			fieldValue,
+			handleFieldOnClick,
+			handleInputOnBlur,
+			handleInputOnChange,
+			handleInputOnFocus,
+			handleInputOnKeyUp,
+			type,
+		]
 	);
+
+	return <div>{textField}</div>;
 };
 
 export default EditableTextField;
