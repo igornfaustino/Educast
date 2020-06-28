@@ -11,24 +11,27 @@ import styles from './CoverImage.module.scss';
 const CoverImage = ({ getPresentationScreenShot, getPresenterScreenShot }) => {
 	const [coverImage, setCoverImage] = useState('');
 
+	const selectThumbnail = useCallback(
+		(path) => {
+			let cover;
+			switch (path) {
+				case 'presentation':
+					cover = getPresentationScreenShot();
+					break;
+				case 'presenter':
+					cover = getPresenterScreenShot();
+					break;
+				default:
+					cover = path;
+			}
+			setCoverImage(cover);
+		},
+		[getPresentationScreenShot, getPresenterScreenShot]
+	);
+
 	useEffect(() => {
 		selectThumbnail('presentation');
-	}, [getPresenterScreenShot]);
-
-	const selectThumbnail = useCallback((path) => {
-		let cover;
-		switch (path) {
-			case 'presentation':
-				cover = getPresentationScreenShot();
-				break;
-			case 'presenter':
-				cover = getPresenterScreenShot();
-				break;
-			default:
-				cover = path;
-		}
-		setCoverImage(cover);
-	}, [getPresentationScreenShot, getPresenterScreenShot]);
+	}, [selectThumbnail]);
 
 	const { getRootProps, getInputProps, open } = useDropzone({
 		accept: 'image/*',
