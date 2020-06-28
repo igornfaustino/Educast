@@ -220,7 +220,7 @@ const updateSceneImage = (state, action) => {
 const updateChapterImage = (state, action) => {
 	const { img, id } = action;
 	const chapterIdx = state.chapters.findIndex((chapter) => chapter.id === id);
-	if (!img || !chapterIdx) return state;
+	if (!img || chapterIdx === -1) return state;
 
 	const updatedState = [...state.chapters];
 	updatedState[chapterIdx].img = img;
@@ -233,7 +233,7 @@ const updateChapterImage = (state, action) => {
 const updateChapterTitle = (state, action) => {
 	const { title, id } = action;
 	const chapterIdx = state.chapters.findIndex((chapter) => chapter.id === id);
-	if (!title || !chapterIdx) return state;
+	if (!title || chapterIdx === -1) return state;
 
 	const updatedState = [...state.chapters];
 	updatedState[chapterIdx].title = title;
