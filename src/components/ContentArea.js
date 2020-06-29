@@ -4,6 +4,7 @@ import Documents from './Documents';
 import VideoEditor from './Timeline/VideoEditor';
 import Chapters from './Chapters/Chapters';
 import Branding from './Branding/Branding';
+import MetaData from './MetaData/MetaData';
 
 function RouteContentArea({ timelineProps }) {
 	return (
@@ -21,7 +22,7 @@ function RouteContentArea({ timelineProps }) {
 				component={() => <Branding {...timelineProps} />}
 			/>
 			<Route exact path="/subtitles" component={() => <div>Legendas</div>} />
-			<Route path="*" component={() => <div>metadados</div>} />
+			<Route path="*" component={() => <MetaData {...timelineProps} />} />
 		</Switch>
 	);
 }
