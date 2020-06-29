@@ -7,8 +7,7 @@
   padding: 0 !important;
 }
 
-
-.input{
+.input {
   margin: 0 !important;
   font-size: 0.7em;
   padding: 0 !important;
@@ -16,20 +15,30 @@
 
 .h4-margin {
   font-size: 0.7em;
-  margin-bottom: 3.5% !important
+  margin-bottom: 10px !important;
+}
+
+.label {
+  margin-top: 2.6% !important;
+}
+
+@media (min-width: 1400px) {
+  .label {
+    margin-top: 1% !important;
+  }
 }
 
 .chip {
   background-color: white !important;
-  margin: 0 !important;
+  margin: 0 2px !important;
   padding: 0 !important;
-  font-size: 0.7em;
-  height: 50% !important;
+  font-size: 1em !important;
+  height: 20px !important;
 }
 
-.chip-container{
-  margin: 1% !important;
+.chip-container {
+  margin: 3px !important;
   padding: 0 !important;
-  font-size: 0.7em;
-
+  min-height: 0px !important;
+  font-size: 0.5em;
 }
