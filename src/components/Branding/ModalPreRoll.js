@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import styles from './ModalPreRoll.module.scss';
 import Modal from '../Modal';
+import cx from 'classnames';
 
 import { FaFilm } from 'react-icons/fa';
 
@@ -18,7 +19,11 @@ const ModalPreRoll = ({ onToggle, isOpen }) => {
 				<br />
 				<Button
 					color="primary"
-					className="app-buttons  app-home-buttons"
+					className={cx(
+						'app-buttons',
+						'app-home-buttons',
+						styles['modal-button']
+					)}
 					onClick={onToggle}
 				>
 					OK

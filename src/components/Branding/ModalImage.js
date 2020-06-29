@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import styles from './ModalImage.module.scss';
 import Modal from '../Modal';
+import cx from 'classnames';
 
 import { FaImage } from 'react-icons/fa';
 
@@ -19,7 +20,11 @@ const ModalImage = ({ onToggle, isOpen }) => {
 				<br />
 				<Button
 					color="primary"
-					className="app-buttons  app-home-buttons"
+					className={cx(
+						'app-buttons',
+						'app-home-buttons',
+						styles['modal-button']
+					)}
 					onClick={onToggle}
 				>
 					OK
