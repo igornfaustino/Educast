@@ -1,0 +1,53 @@
+.coverImage {
+	width: 17.875rem;
+	height: 10.375rem;
+	background-size: cover;
+	border: 4px solid #ececec;
+}
+
+.thumbnailButton {
+	max-width: 1.875rem !important;
+	max-height: 1.875rem !important;
+	min-width: 1.875rem !important;
+	min-height: 1.875rem !important;
+}
+
+.button {
+	border-radius: 0 !important;
+	color: #12aada !important;
+	background-color: white !important;
+
+	display: flex;
+	justify-content: flex-end;
+
+	&:focus {
+		outline: 0;
+	}
+
+	&:hover {
+		color: #12aada;
+		background-color: #edd9ff !important;
+	}
+}
+
+.firstButtonBox {
+	display: flex;
+	justify-content: flex-end;
+	padding-top: 2.6875rem;
+	padding-right: 0.6875rem;
+	padding-bottom: 0.1875rem;
+}
+
+.buttonBoxes {
+	display: flex;
+	justify-content: flex-end;
+	padding-right: 0.6875rem;
+	padding-bottom: 0.1875rem;
+}
+
+.thumbnailIcons {
+	max-width: 1.25rem !important;
+	max-height: 1rem !important;
+	min-width: 1.25rem !important;
+	min-height: 1rem !important;
+}
