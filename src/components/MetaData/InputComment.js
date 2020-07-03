@@ -3,7 +3,7 @@ import * as Showdown from "showdown";
 import ReactMde from "react-mde";
 
 import style from "./InputComment.module.scss";
-import "./react-mde-all.scss"
+import "./react-mde-all.scss";
 
 const InputComment = ({ title, type, value }) => {
 
