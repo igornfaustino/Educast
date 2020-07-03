@@ -11,7 +11,7 @@ function RouteContentArea() {
       <Route exact path="/documents" component={() => <div>Documentos</div>} />
       <Route exact path="/branding" component={() => <div>Branding</div>} />
       <Route exact path="/subtitles" component={() => <div>Legendas</div>} />
-      <Route path="*" component={() => <MetaData />} title="Nome" />
+      <Route path="*" component={MetaData} />
     </Switch>
   );
 }
