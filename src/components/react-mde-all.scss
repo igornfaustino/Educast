@@ -44,15 +44,10 @@
 
 }
 
-
 .mde-header ul.mde-header-group:last-child {
   display: none;
 }
 
-.mde-header ul.mde-header-group:nth-child(3) {
-  /* visibility: hidden; */
-  display: none;
-}
 .mde-header ul.mde-header-group.hidden {
   visibility: hidden;
 }
@@ -193,6 +188,7 @@
   position: relative;
   border: none !important;
 }
+
 .mde-textarea-wrapper textarea.mde-text {
   width: 100%;
   border: none !important;
@@ -200,31 +196,14 @@
   vertical-align: top;
   resize: none;
   overflow-y: auto;
-  /* background-color: red !important; */
+  font-size: 0.7em !important;
+
 }
 
-/* .mde-textarea-wrapper textarea.mde-text:focus-visible {
+.mde-textarea-wrapper textarea.mde-text:focus {
   border: none !important;
-  outline:0 !important;
-} */
-
-.mde-textarea-wrapper textarea.mde-text:focus{
-  border: none !important;
-  outline:0 !important;
+  outline: 0 !important;
 }
-
-
-/* 
-textarea{
-  outline:0 !important;
-}
-textarea:focus{
-  outline:0 !important;
-}
-
-textarea:focus-visible{
-  outline:0 !important;
-} */
 
 .mde-preview .mde-preview-content {
   padding: 0;
@@ -270,7 +249,6 @@ textarea:focus-visible{
 }
 .mde-preview .mde-preview-content blockquote > :first-child {
   margin-top: 0;
-  
 }
 .mde-preview .mde-preview-content blockquote > :last-child {
   margin-bottom: 0;
@@ -359,7 +337,6 @@ textarea:focus-visible{
   box-sizing: border-box;
 }
 .react-mde .grip {
-  
   background-color: #eee;
   text-align: center;
   height: 0px;
