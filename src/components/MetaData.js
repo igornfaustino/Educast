@@ -8,21 +8,12 @@ import LabelChip from './LabelChip'
 
 const MetaData = () => {
     const [data] = useState({
-<<<<<<< HEAD
         titulo: 'Educast - grava, edita e publica',
         subtitulo: 'Grave as aulas com o Educast',
         data: '13 Agosto',
         local: 'Laboratório Nacional de Engenharia Civil',
         descricao: 'Comentário Comentário Comentário Comentário Comentário Comentário Comentário Comentário Comentário',
         tag: ['Aula de React'],
-=======
-        title: "Educast - grava, edita e publica",
-        subtitle: "Grave as aulas com o Educast",
-        date: "13 Agosto",
-        local: "Laboratório Nacional de Engenharia Civil",
-        description: "Comentário",
-        tag: ["Aula de React"],
->>>>>>> parent of b0d3d8c... Adicionado props no componente Metadata.
     });
 
     return (
