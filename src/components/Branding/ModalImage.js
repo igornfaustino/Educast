@@ -16,7 +16,7 @@ const ModalImage = ({ onToggle, isOpen }) => {
 				<span>Dimensões da imagem: 960x60px</span>
 				<span>Formatos Suportados: jpg, jpeg e png</span>
 				<span>Tamanho Máximo: 2MB</span>
-				<a href="">Download Template</a>
+				<a href="/">Download Template</a>
 				<br />
 				<Button
 					color="primary"
