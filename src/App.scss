@@ -16,7 +16,7 @@
 }
 
 .app-buttons {
-	margin: 5px 5px 5px 0px !important;
+	margin: 0px 5px 0px 0px !important;
 	color: white !important;
 	border-radius: 0px !important;
 	font-size: 0.875rem !important;
@@ -37,6 +37,32 @@
 	flex-direction: column;
 	justify-content: center;
 	background-color: white;
+}
+
+.blue-btn {
+	margin-right: 20px !important;
+	background-color: #0099ff !important;
+	border-color: #0099ff !important;
+	&:focus {
+		outline: none !important;
+		border: none !important;
+		outline-style: none !important;
+		box-shadow: none !important;
+	}
+}
+
+.no-hover {
+	background-color: #f69333 !important;
+	border-color: #f69333 !important;
+	&:hover {
+		background-color: #f69333 !important;
+	}
+	&:focus {
+		outline: none !important;
+		border: none !important;
+		outline-style: none !important;
+		box-shadow: none !important;
+	}
 }
 
 .stepper-container {

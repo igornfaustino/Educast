@@ -20,11 +20,7 @@ const ModalImage = ({ onToggle, isOpen }) => {
 				<br />
 				<Button
 					color="primary"
-					className={cx(
-						'app-buttons',
-						'app-home-buttons',
-						styles['modal-button']
-					)}
+					className={cx(styles['modal-button'])}
 					onClick={onToggle}
 				>
 					OK

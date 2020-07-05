@@ -55,12 +55,9 @@
 .link {
 	color: #007bff;
 
-	:hover {
+	&:hover {
 		cursor: pointer;
 	}
-}
-
-.upperRightTitle {
 }
 
 .bottomRightTitle {

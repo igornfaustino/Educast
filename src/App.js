@@ -75,8 +75,7 @@ function App() {
 					</div>
 					<div className="app-buttons-container">
 						<Button
-							color="warning"
-							className="app-buttons app-home-buttons"
+							className="app-buttons app-home-buttons no-hover"
 							onClick={onToggleSaveModal}
 						>
 							<FaSave size="1rem" className="icon-btn" />
@@ -84,7 +83,7 @@ function App() {
 						</Button>
 						<Button
 							color="primary"
-							className="app-buttons  app-home-buttons"
+							className="app-buttons  app-home-buttons blue-btn"
 							onClick={onTogglePublishModal}
 						>
 							<FaShare size="1rem" className="icon-btn" />
