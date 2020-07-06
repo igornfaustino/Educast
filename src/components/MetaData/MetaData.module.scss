@@ -28,15 +28,21 @@
 	}
 }
 
-.container {
+.containerLeft {
 	float: left;
 	width: 50%;
-
 	padding-right: 25px;
+}
+
+.containerRight {
+	float: left;
+	width: 50%;
 	padding-left: 25px;
 }
+
 @media (max-width: 1250px) {
-	.container {
+	.containerLeft,
+	.containerRight {
 		float: left;
 		width: 100%;
 		padding-right: 5px;

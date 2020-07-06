@@ -19,13 +19,13 @@ const MetaData = ({ title, subtitle, date, local, description, tag }) => {
 		<div className={style.metadata}>
 			<form>
 				<div>
-					<div className={style.container}>
+					<div className={style.containerLeft}>
 						<InputFields title="Título" type="text" value={data.title} />
 						<InputFields title="Subtítulo" type="text" value={data.subtitle} />
 						<InputFields title="Data" type="text" value={data.date} />
 						<InputFields title="Local" type="text" value={data.local} />
 					</div>
-					<div className={style.container}>
+					<div className={style.containerRight}>
 						<InputComment
 							title="Descrição"
 							type="text"

@@ -25,7 +25,7 @@
 
 .container-tabs-content {
 	background-color: white;
-	height: 100%;
+	min-height: 36vh !important;
 	// width: 100% !important;
 	// margin: 3px !important;
 	margin-top: 0 !important;
@@ -45,6 +45,7 @@
 .buttons-wrapper {
 	display: flex;
 	justify-content: space-between;
+	background-color: #f1f1f1;
 }
 
 .info-button {
