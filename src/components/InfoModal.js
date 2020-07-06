@@ -23,8 +23,12 @@ const shortcuts = [
 const InfoModal = ({ onToggle, isOpen }) => {
 	const shortcutsNodes = useMemo(
 		() =>
-			shortcuts.map((text) => {
-				return <div className={styles.textBox}>{text}</div>;
+			shortcuts.map((text, idx) => {
+				return (
+					<div className={styles.textBox} key={idx}>
+						{text}
+					</div>
+				);
 			}),
 		[]
 	);
