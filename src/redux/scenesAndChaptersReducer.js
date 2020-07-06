@@ -102,7 +102,7 @@ const isSceneInvadingOther = (sceneIdx, scene, { scenes }, type) => {
 			scene.start.x < otherScene.start.x;
 
 		if (isSceneInvadingLeft || isSceneLeftInsideScene) {
-			validScene.start.x = otherScene.end.x;
+			validScene.start.x = scenes[sceneIdx - 1].end.x;
 			return true;
 		}
 
