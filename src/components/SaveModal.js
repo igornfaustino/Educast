@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import styles from './SaveModal.module.scss';
 import Modal from './Modal';
 
@@ -6,7 +6,12 @@ import { FaSave } from 'react-icons/fa';
 
 import { Button } from 'reactstrap';
 
-const SaveModal = ({ onToggle, isOpen }) => {
+const SaveModal = ({ onToggle, isOpen, okFunction }) => {
+	const saveFunction = useCallback(() => {
+		okFunction();
+		onToggle();
+	}, [okFunction, onToggle]);
+
 	const body = useMemo(
 		() => (
 			<>
@@ -19,14 +24,14 @@ const SaveModal = ({ onToggle, isOpen }) => {
 					<Button
 						color="primary"
 						className="app-buttons  app-home-buttons"
-						onClick={onToggle}
+						onClick={saveFunction}
 					>
 						OK
 					</Button>
 				</div>
 			</>
 		),
-		[onToggle]
+		[saveFunction]
 	);
 
 	const title = useMemo(

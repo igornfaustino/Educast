@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import styles from './PublishModal.module.scss';
 import Modal from './Modal';
 
@@ -10,7 +10,12 @@ import Streaming from '../assets/Streaming.png';
 import Desktop from '../assets/Desktop.png';
 import Mobile from '../assets/Mobile.png';
 
-const SaveModal = ({ onToggle, isOpen }) => {
+const SaveModal = ({ onToggle, isOpen, okFunction }) => {
+	const publishFunction = useCallback(() => {
+		okFunction();
+		onToggle();
+	}, [okFunction, onToggle]);
+
 	const body = useMemo(
 		() => (
 			<>
@@ -37,14 +42,14 @@ const SaveModal = ({ onToggle, isOpen }) => {
 					<Button
 						color="primary"
 						className="app-buttons  app-home-buttons"
-						onClick={onToggle}
+						onClick={publishFunction}
 					>
 						OK
 					</Button>
 				</div>
 			</>
 		),
-		[onToggle]
+		[publishFunction]
 	);
 
 	const title = useMemo(
